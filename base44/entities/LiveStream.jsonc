@@ -1,0 +1,73 @@
+{
+  "name": "LiveStream",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "host_name": {
+      "type": "string"
+    },
+    "host_handle": {
+      "type": "string"
+    },
+    "host_avatar": {
+      "type": "string"
+    },
+    "thumbnail": {
+      "type": "string"
+    },
+    "stream_id": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "default": "Just chatting"
+    },
+    "viewers": {
+      "type": "number",
+      "default": 0
+    },
+    "is_live": {
+      "type": "boolean",
+      "default": true
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "host_name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

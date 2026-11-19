@@ -1,0 +1,84 @@
+{
+  "name": "Movie",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "poster": {
+      "type": "string"
+    },
+    "synopsis": {
+      "type": "string"
+    },
+    "genre": {
+      "type": "string"
+    },
+    "release_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "language": {
+      "type": "string"
+    },
+    "trailer": {
+      "type": "string"
+    },
+    "video_uri": {
+      "type": "string",
+      "description": "Public URL of an uploaded movie file"
+    },
+    "uploader_name": {
+      "type": "string"
+    },
+    "uploader_handle": {
+      "type": "string"
+    },
+    "ai_generated": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "coming_soon",
+        "now_showing"
+      ],
+      "default": "coming_soon"
+    }
+  },
+  "required": [
+    "title",
+    "genre"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

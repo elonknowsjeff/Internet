@@ -1,0 +1,96 @@
+{
+  "name": "MusicListing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_handle": {
+      "type": "string"
+    },
+    "genre": {
+      "type": "string"
+    },
+    "bpm": {
+      "type": "number"
+    },
+    "musical_key": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "license_type": {
+      "type": "string",
+      "enum": [
+        "Basic Lease",
+        "Premium Lease",
+        "Exclusive Rights",
+        "Full Track"
+      ],
+      "default": "Basic Lease"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "string"
+    },
+    "artwork": {
+      "type": "string"
+    },
+    "preview_file_uri": {
+      "type": "string"
+    },
+    "sold": {
+      "type": "number",
+      "default": 0
+    },
+    "plays": {
+      "type": "number",
+      "default": 0
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "seller_name",
+    "price"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

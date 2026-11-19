@@ -1,0 +1,101 @@
+{
+  "name": "Ride",
+  "type": "object",
+  "properties": {
+    "pickup": {
+      "type": "string"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "ride_type": {
+      "type": "string",
+      "enum": [
+        "UberX",
+        "Comfort",
+        "Black",
+        "XL"
+      ],
+      "default": "UberX"
+    },
+    "fare": {
+      "type": "number"
+    },
+    "eta_minutes": {
+      "type": "number",
+      "default": 5
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "accepted",
+        "arriving",
+        "in_progress",
+        "completed"
+      ],
+      "default": "requested"
+    },
+    "driver_name": {
+      "type": "string"
+    },
+    "driver_rating": {
+      "type": "number",
+      "default": 4.9
+    },
+    "vehicle": {
+      "type": "string"
+    },
+    "shared": {
+      "type": "boolean",
+      "default": false
+    },
+    "co_rider": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "pickup",
+    "destination",
+    "fare"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

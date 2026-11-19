@@ -1,0 +1,41 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "default": 4.5
+    },
+    "reviews": {
+      "type": "number",
+      "default": 0
+    },
+    "prime": {
+      "type": "boolean",
+      "default": true
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "price",
+    "category"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Restaurant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "cuisine": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "default": 4.5
+    },
+    "delivery_fee": {
+      "type": "number",
+      "default": 2.99
+    },
+    "delivery_time": {
+      "type": "string",
+      "default": "20-30 min"
+    },
+    "price_range": {
+      "type": "string",
+      "enum": [
+        "$",
+        "$$",
+        "$$$",
+        "$$$$"
+      ],
+      "default": "$$"
+    },
+    "menu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "cuisine"
+  ]
+}

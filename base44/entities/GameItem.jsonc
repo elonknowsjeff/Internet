@@ -1,0 +1,86 @@
+{
+  "name": "GameItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "game": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "default": "Skin"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": [
+        "Consumer",
+        "Industrial",
+        "Mil-Spec",
+        "Restricted",
+        "Classified",
+        "Covert",
+        "Contraband"
+      ],
+      "default": "Mil-Spec"
+    },
+    "wear": {
+      "type": "string",
+      "default": "Field-Tested"
+    },
+    "float": {
+      "type": "number",
+      "default": 0.2
+    },
+    "price": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "listings": {
+      "type": "number",
+      "default": 1
+    },
+    "stattrak": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name",
+    "game",
+    "price"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

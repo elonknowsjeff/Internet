@@ -1,0 +1,114 @@
+{
+  "name": "FlightBooking",
+  "type": "object",
+  "properties": {
+    "airline": {
+      "type": "string"
+    },
+    "flight_number": {
+      "type": "string"
+    },
+    "from_code": {
+      "type": "string"
+    },
+    "from_city": {
+      "type": "string"
+    },
+    "to_code": {
+      "type": "string"
+    },
+    "to_city": {
+      "type": "string"
+    },
+    "depart_time": {
+      "type": "string"
+    },
+    "arrive_time": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "stops": {
+      "type": "number",
+      "default": 0
+    },
+    "cabin": {
+      "type": "string",
+      "default": "Economy"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "passengers": {
+      "type": "number",
+      "default": 1
+    },
+    "price": {
+      "type": "number"
+    },
+    "passenger_name": {
+      "type": "string"
+    },
+    "passenger_email": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "cancelled"
+      ],
+      "default": "confirmed"
+    }
+  },
+  "required": [
+    "airline",
+    "from_code",
+    "to_code",
+    "price"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

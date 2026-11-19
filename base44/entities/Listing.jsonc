@@ -1,0 +1,143 @@
+{
+  "name": "Listing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "default": 0
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Furniture",
+        "Electronics",
+        "Vehicles",
+        "Fashion",
+        "Home",
+        "Sports",
+        "Toys",
+        "Free",
+        "Other"
+      ],
+      "default": "Other",
+      "enumColors": [
+        "blue",
+        "purple",
+        "yellow",
+        "pink",
+        "green",
+        "orange",
+        "gray",
+        "green",
+        "gray"
+      ]
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Like new",
+        "Good",
+        "Fair",
+        "For parts"
+      ],
+      "default": "Good",
+      "enumColors": [
+        "green",
+        "green",
+        "blue",
+        "yellow",
+        "red"
+      ]
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "location": {
+      "type": "string"
+    },
+    "delivery": {
+      "type": "string",
+      "enum": [
+        "pickup",
+        "shipping",
+        "both"
+      ],
+      "default": "pickup",
+      "enumColors": [
+        "blue",
+        "purple",
+        "green"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "sold"
+      ],
+      "default": "available",
+      "enumColors": [
+        "green",
+        "gray"
+      ]
+    },
+    "seller_id": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_handle": {
+      "type": "string"
+    },
+    "seller_avatar": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "price",
+    "images"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

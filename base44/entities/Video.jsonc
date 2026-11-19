@@ -1,0 +1,93 @@
+{
+  "name": "Video",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "file",
+        "youtube"
+      ],
+      "default": "youtube"
+    },
+    "youtube_id": {
+      "type": "string"
+    },
+    "file_uri": {
+      "type": "string"
+    },
+    "thumbnail": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string",
+      "default": ""
+    },
+    "channel_name": {
+      "type": "string"
+    },
+    "channel_handle": {
+      "type": "string"
+    },
+    "channel_avatar": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "default": "Entertainment"
+    },
+    "is_short": {
+      "type": "boolean",
+      "default": false
+    },
+    "views": {
+      "type": "number",
+      "default": 0
+    },
+    "likes": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "channel_name",
+    "channel_handle"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
