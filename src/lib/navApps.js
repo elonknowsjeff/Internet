@@ -1,5 +1,5 @@
 import { MessageSquare, BookOpen } from "lucide-react";
-import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane } from "lucide-react";
+import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane, UtensilsCrossed, Truck } from "lucide-react";
 
 export const NAV_SECTIONS = [
   {
@@ -25,6 +25,8 @@ export const NAV_SECTIONS = [
       { key: "market", to: "/market", label: "Market", icon: Store },
       { key: "hotels", to: "/hotels", label: "Hotels", icon: BedDouble },
       { key: "flights", to: "/flights", label: "Flights", icon: Plane },
+      { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed },
+      { key: "logistics", to: "/logistics", label: "Logistics", icon: Truck },
     ],
   },
   {

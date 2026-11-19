@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   Home, MessageSquare, Newspaper, Music2, Youtube, Heart, Sparkles, LayoutGrid,
-  Settings as SettingsIcon, User, LogOut, LogIn, UserPlus, BarChart3,
+  Settings as SettingsIcon, User, LogOut, LogIn, UserPlus, BarChart3, UtensilsCrossed,
 } from "lucide-react";
 import { ALL_APPS } from "@/lib/navApps";
 import AppsMenu from "@/components/os/AppsMenu";
@@ -17,6 +17,7 @@ const PRIMARY = [
   { key: "studio", to: "/studio", label: "Studio", icon: BarChart3 },
   { key: "music", to: "/music", label: "Music", icon: Music2 },
   { key: "video", to: "/video", label: "Video", icon: Youtube },
+  { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed },
   { key: "dating", to: "/dating", label: "Dating", icon: Heart },
   { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles },
 ];

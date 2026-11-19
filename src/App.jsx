@@ -42,6 +42,8 @@ import ArticlesPage from '@/pages/ArticlesPage';
 import Terms from '@/pages/Terms';
 import Messages from '@/pages/Messages';
 import Stories from '@/pages/Stories';
+import Eats from '@/pages/Eats';
+import Logistics from '@/pages/Logistics';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -104,6 +106,8 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/stories" element={<Stories />} />
         <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="/eats" element={<Eats />} />
+        <Route path="/logistics" element={<Logistics />} />
         <Route path="/terms" element={<Terms />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

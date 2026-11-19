@@ -1,268 +1,285 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { Star, Clock, MapPin, LocateFixed, ExternalLink, Search, Loader2, ChevronDown, ShoppingCart, X } from "lucide-react";
-import { STORES } from "@/components/eats/storeData";
-import StoreOrderSheet from "@/components/eats/StoreOrderSheet";
-import PlaceAutocomplete from "@/components/places/PlaceAutocomplete";
-import { StoreRow, FeaturedStore } from "@/components/eats/UberEatsCards";
-import LogisticsHub from "@/components/eats/LogisticsHub";
-import DishRail from "@/components/eats/DishRail";
+import { UtensilsCrossed, Search, X, ShoppingBag, Loader2, Store, Star, Clock, Bike, ChefHat, Package } from "lucide-react";
+import DishCard from "@/components/eats/DishCard";
+import CartDrawer from "@/components/eats/CartDrawer";
 
-const FOOD_IMG = {
-  pizza: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500",
-  sushi: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500",
-  burger: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=500",
-  coffee: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500",
-  dessert: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=500",
-  salad: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500",
-  seafood: "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=500",
-};
-const foodImg = (cuisine) => {
-  const c = (cuisine || "").toLowerCase();
-  for (const key of Object.keys(FOOD_IMG)) if (c.includes(key)) return FOOD_IMG[key];
-  return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500";
+const CATEGORIES = ["All", "Chicken", "Beef", "Pasta", "Seafood", "Vegetarian", "Dessert", "Breakfast"];
+
+const STATUS_META = {
+  placed: { label: "Placed", color: "text-amber-400", bg: "bg-amber-500/15" },
+  preparing: { label: "Preparing", color: "text-orange-400", bg: "bg-orange-500/15" },
+  on_the_way: { label: "On the way", color: "text-sky-400", bg: "bg-sky-500/15" },
+  delivered: { label: "Delivered", color: "text-emerald-400", bg: "bg-emerald-500/15" },
 };
 
-const TABS = [
-  { k: "restaurant", l: "Restaurants", e: "🍔" },
-  { k: "grocery", l: "Grocery", e: "🛒" },
-  { k: "animals", l: "Pets", e: "🐾" },
-  { k: "live", l: "Search live", e: "🔎" },
-  { k: "logistics", l: "Logistics", e: "🚚" },
-];
+const STATUS_FLOW = ["placed", "preparing", "on_the_way", "delivered"];
 
 export default function Eats() {
-  const [tab, setTab] = useState("restaurant");
-  const [storeQuery, setStoreQuery] = useState("");
-  const [openStore, setOpenStore] = useState(null);
+  const [tab, setTab] = useState("dishes");
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [dishes, setDishes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [restaurants, setRestaurants] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [placing, setPlacing] = useState(false);
+  const [placed, setPlaced] = useState(false);
+  const [address, setAddress] = useState("");
   const [orders, setOrders] = useState([]);
 
-  const [query, setQuery] = useState("");
-  const [location, setLocation] = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
-  const [locating, setLocating] = useState(false);
-
-  const loadOrders = async () => {
-    try { setOrders(await base44.entities.Order.list("-created_date", 5)); } catch (e) {}
-  };
-  useEffect(() => { loadOrders(); }, []);
-
-  const useLocation = () => {
-    if (!navigator.geolocation) { setErr("Geolocation isn't supported."); return; }
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      try {
-        const res = await base44.integrations.Core.InvokeLLM({
-          prompt: `Reverse geocode latitude ${latitude}, longitude ${longitude} to a short place name (neighborhood or city). Return only the place name. Use live web context.`,
-          add_context_from_internet: true, model: "gemini_3_flash",
-          response_json_schema: { type: "object", properties: { place: { type: "string" } } },
-        });
-        setLocation(res?.place || `${latitude.toFixed(3)}, ${longitude.toFixed(3)}`);
-      } catch { setLocation(`${latitude.toFixed(3)}, ${longitude.toFixed(3)}`); }
-      setLocating(false);
-    }, () => { setLocating(false); setErr("Location permission denied."); }, { enableHighAccuracy: true, timeout: 10000 });
-  };
-
-  const search = async (e) => {
-    e?.preventDefault();
-    if (!query.trim()) return;
-    setLoading(true); setErr("");
+  const loadDishes = async () => {
+    setLoading(true);
     try {
-      const loc = location.trim() || "near me";
-      const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `Find real restaurants currently delivering ${query.trim()} ${loc === "near me" ? "near the user" : `in ${loc}`}. Return up to 10. For each: name, cuisine, rating (number out of 5), price_range ($ to $$$$), delivery_time (e.g. "25-35 min"), description. These must be real restaurants you'd find on DoorDash and Uber Eats. Use live web context. Current date October 2026.`,
-        add_context_from_internet: true, model: "gemini_3_flash",
-        response_json_schema: { type: "object", properties: { restaurants: { type: "array", items: { type: "object", properties: { name: { type: "string" }, cuisine: { type: "string" }, rating: { type: "number" }, price_range: { type: "string" }, delivery_time: { type: "string" }, description: { type: "string" } } } } } },
+      const res = await base44.functions.invoke("foodApi", {
+        query: query.trim(),
+        category: category === "All" ? "" : category,
       });
-      setResults(res?.restaurants || []);
-    } catch (e2) { setErr("Couldn't fetch restaurants right now."); }
+      setDishes(res.data?.dishes || []);
+    } catch {
+      setDishes([]);
+    }
     setLoading(false);
   };
 
-  const stores = STORES.filter((s) => s.category === tab).filter((s) => {
-    const q = storeQuery.trim().toLowerCase();
-    if (!q) return true;
-    return s.name.toLowerCase().includes(q) || s.cuisine.toLowerCase().includes(q) || s.menu.some((m) => m.name.toLowerCase().includes(q));
-  });
-  const featured = stores.slice(0, 2);
-  const list = stores.slice(2);
-  const groceries = STORES.filter((s) => s.category === "grocery").slice(0, 6);
-  const walmart = STORES.find((s) => s.id === "walmart");
+  const loadRestaurants = async () => {
+    try {
+      const data = await base44.entities.Restaurant.list("-rating", 30);
+      setRestaurants(Array.isArray(data) ? data : data?.items || []);
+    } catch {
+      setRestaurants([]);
+    }
+  };
+
+  const loadOrders = async () => {
+    try {
+      const data = await base44.entities.Order.list("-created_date", 20);
+      setOrders(Array.isArray(data) ? data : data?.items || []);
+    } catch {
+      setOrders([]);
+    }
+  };
+
+  useEffect(() => { loadDishes(); }, []);
+  useEffect(() => { loadRestaurants(); loadOrders(); }, []);
+
+  // live order status progression
+  useEffect(() => {
+    const id = setInterval(async () => {
+      const active = orders.filter((o) => o.status && o.status !== "delivered");
+      if (!active.length) return;
+      const next = STATUS_FLOW[STATUS_FLOW.indexOf(active[0].status) + 1];
+      if (next) {
+        await base44.entities.Order.update(active[0].id, { status: next }).catch(() => {});
+        loadOrders();
+      }
+    }, 12000);
+    return () => clearInterval(id);
+  }, [orders]);
+
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+
+  const addToCart = (dish) => {
+    setCart((c) => {
+      const ex = c.find((x) => x.id === dish.id);
+      if (ex) return c.map((x) => (x.id === dish.id ? { ...x, qty: x.qty + 1 } : x));
+      return [...c, { id: dish.id, name: dish.name, price: dish.price, image: dish.image, qty: 1 }];
+    });
+    setCartOpen(true);
+    setPlaced(false);
+  };
+  const inc = (i) => setCart((c) => c.map((x) => (x.id === i.id ? { ...x, qty: x.qty + 1 } : x)));
+  const dec = (i) => setCart((c) => c.flatMap((x) => (x.id === i.id ? (x.qty > 1 ? [{ ...x, qty: x.qty - 1 }] : []) : [x])));
+  const removeItem = (i) => setCart((c) => c.filter((x) => x.id !== i.id));
+
+  const checkout = async () => {
+    if (placing || !cart.length || !address.trim()) return;
+    setPlacing(true);
+    try {
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0) + 2.99;
+      await base44.entities.Order.create({
+        restaurant_name: "XSI Eats Kitchen",
+        items: cart.map((i) => ({ name: i.name, price: i.price, quantity: i.qty })),
+        total,
+        status: "placed",
+        delivery_address: address.trim(),
+      });
+      setCart([]);
+      setPlaced(true);
+      loadOrders();
+    } catch {
+      setPlacing(false);
+    }
+    setPlacing(false);
+  };
+
+  const filteredDishes = useMemo(
+    () => dishes.filter((d) => (query.trim() ? (d.name + " " + d.area).toLowerCase().includes(query.toLowerCase()) : true)),
+    [dishes, query]
+  );
 
   return (
-    <div className="max-w-5xl mx-auto pb-28">
-      <header className="sticky top-2 z-30 rounded-2xl border border-white/[0.1] bg-[#0b0818]/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] backdrop-blur-2xl">
-        <div className="px-4 pt-3 pb-2.5 space-y-2.5">
-          <div className="flex items-center gap-2">
-            <button onClick={useLocation} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 min-w-0">
-              <MapPin className={`w-4 h-4 shrink-0 text-emerald-300 ${locating ? "animate-pulse" : ""}`} />
-              <span className="text-sm font-semibold truncate max-w-[46vw]">{location.trim() || "Delivery address"}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-white/50 shrink-0" />
-            </button>
-            <span className="ml-auto text-[11px] font-semibold text-white/45">Deliver now</span>
-          </div>
-          <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2.5 shadow-lg shadow-black/20">
-            <Search className="w-4 h-4 text-neutral-500 shrink-0" />
-            <input
-              value={storeQuery}
-              onChange={(e) => setStoreQuery(e.target.value)}
-              placeholder={tab === "grocery" ? "Search stores or items (milk, eggs…)" : tab === "animals" ? "Search pets & animals…" : "Search restaurants or dishes…"}
-              className="flex-1 bg-transparent outline-none text-sm text-black placeholder:text-neutral-500 min-w-0"
-            />
-            {storeQuery && <button onClick={() => setStoreQuery("")}><X className="w-4 h-4 text-neutral-400" /></button>}
-          </div>
-          <div className="flex gap-1.5 overflow-x-auto thin-scrollbar pb-0.5">
-            {TABS.map((t) => (
-              <button key={t.k} onClick={() => setTab(t.k)} className={`shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold border transition-colors ${tab === t.k ? "bg-white text-black border-white" : "bg-white/5 border-white/15 text-white/75 hover:bg-white/10"}`}>
-                <span>{t.e}</span> {t.l}
-              </button>
-            ))}
-          </div>
-        </div>
+    <div className="px-4 py-5 pb-28">
+      <header className="mb-5">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-amber-300">Food delivery</p>
+        <h1 className="text-2xl sm:text-3xl font-black font-display flex items-center gap-2 mt-1">
+          <UtensilsCrossed className="w-6 h-6 text-amber-300" /> Eats
+        </h1>
+        <p className="text-sm text-neutral-400 mt-1">Browse dishes, pick a restaurant and get it delivered to your door.</p>
       </header>
 
-      {tab === "logistics" && (
-        <LogisticsHub onBrowse={() => setTab("restaurant")} onChanged={loadOrders} />
-      )}
+      <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[.04] p-1 mb-4 w-full sm:w-auto sm:inline-flex">
+        {[
+          { k: "dishes", l: "Dishes", icon: ChefHat },
+          { k: "restaurants", l: "Restaurants", icon: Store },
+          { k: "orders", l: "Orders", icon: Package },
+        ].map(({ k, l, icon: Icon }) => (
+          <button
+            key={k}
+            onClick={() => setTab(k)}
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition ${tab === k ? "bg-white text-black" : "text-neutral-300 hover:bg-white/10"}`}
+          >
+            <Icon className="w-4 h-4" /> {l}
+          </button>
+        ))}
+      </div>
 
-      {tab !== "live" && tab !== "logistics" && (
-        <div className="px-4 pt-4 space-y-6">
-          <div className="flex gap-3 overflow-x-auto thin-scrollbar pb-1 -mx-4 px-4">
-            {[
-              { t: "$0 delivery fee", s: "On your first 3 orders", c: "from-emerald-500/80 to-teal-600/70" },
-              { t: "XSI+ saves you more", s: "Free delivery on every order", c: "from-fuchsia-500/80 to-violet-600/70" },
-            ].map((b) => (
-              <div key={b.t} className={`shrink-0 w-[78%] sm:w-72 rounded-2xl bg-gradient-to-br ${b.c} border border-white/15 p-4`}>
-                <p className="font-bold">{b.t}</p>
-                <p className="text-xs text-white/80 mt-0.5">{b.s}</p>
-              </div>
-            ))}
-          </div>
-
-          <DishRail />
-
-          <section>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-bold">Groceries & delivery</h2>
-              <button onClick={() => setTab("grocery")} className="text-xs font-semibold text-emerald-300 hover:underline">See all</button>
-            </div>
-            {walmart && (
-              <button
-                onClick={() => setOpenStore(walmart)}
-                className="w-full flex items-center gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-3 mb-2 text-left hover:bg-emerald-500/15"
-              >
-                <span className="w-12 h-12 rounded-xl bg-white grid place-items-center shrink-0 overflow-hidden">
-                  <img src={walmart.logo} alt="" className="w-8 h-8 object-contain" onError={(e) => { e.currentTarget.src = walmart.image; }} />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-sm">Walmart Delivery</span>
-                  <span className="block text-[11px] text-white/60 truncate">Groceries, household & more · {walmart.eta}</span>
-                </span>
-                <span className="text-[11px] font-bold text-emerald-300 shrink-0">Open</span>
-              </button>
-            )}
-            <div className="flex gap-2 overflow-x-auto thin-scrollbar pb-1">
-              {groceries.map((s) => (
-                <button key={s.id} onClick={() => setOpenStore(s)} className="shrink-0 w-28 rounded-xl overflow-hidden border border-white/10 bg-white/5 text-left hover:border-white/25">
-                  <img src={s.image} alt="" className="w-full h-16 object-cover" />
-                  <span className="block px-2 py-1.5 text-[11px] font-semibold truncate">{s.name}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {featured.length > 0 && (
-            <section>
-              <h2 className="text-lg font-bold mb-2">Featured near you</h2>
-              <div className="grid grid-cols-2 gap-3">
-                {featured.map((s) => <FeaturedStore key={s.id} store={s} onOpen={setOpenStore} />)}
-              </div>
-            </section>
-          )}
-
-          <section>
-            <h2 className="text-lg font-bold mb-1">{tab === "grocery" ? "Grocery stores" : tab === "animals" ? "Pets & animals" : "All stores"}</h2>
-            {list.length === 0 && featured.length === 0 ? (
-              <p className="text-sm text-white/50 py-8 text-center">No stores match “{storeQuery}”.</p>
-            ) : (
-              <div>{list.map((s) => <StoreRow key={s.id} store={s} onOpen={setOpenStore} />)}</div>
-            )}
-          </section>
-
-          {orders.length > 0 && (
-            <section>
-              <h2 className="text-lg font-bold mb-2 flex items-center gap-1.5"><ShoppingCart className="w-4 h-4" /> Your orders</h2>
-              <div className="space-y-2">
-                {orders.map((o) => (
-                  <div key={o.id} className="rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 flex items-center justify-between text-sm">
-                    <div className="min-w-0">
-                      <p className="truncate font-medium">{o.restaurant_name}</p>
-                      <p className="text-[11px] text-white/55">{(o.items || []).length} items · {o.status}</p>
-                    </div>
-                    <span className="font-semibold">${Number(o.total || 0).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
-      )}
-
-      {tab === "live" && (
+      {tab === "dishes" && (
         <>
-          <form onSubmit={search} className="px-4 py-4 space-y-2.5">
-            <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2.5">
-              <Search className="w-4 h-4 text-neutral-500 shrink-0" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="What are you craving? (pizza, sushi, thai…)" className="flex-1 min-w-0 bg-transparent outline-none text-sm text-black placeholder:text-neutral-500" />
+          <div className="flex flex-col sm:flex-row gap-2 mb-4">
+            <div className="flex items-center gap-2 flex-1 rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5">
+              <Search className="w-4 h-4 text-neutral-500" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search dishes…" className="flex-1 bg-transparent outline-none text-sm" />
+              {query && <button onClick={() => setQuery("")} className="text-neutral-500 hover:text-white"><X className="w-4 h-4" /></button>}
             </div>
-            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2.5">
-              <MapPin className="w-4 h-4 text-emerald-300 shrink-0" />
-              <PlaceAutocomplete value={location} onChange={setLocation} placeholder="Address or city" />
-              <button type="button" onClick={useLocation} disabled={locating} title="Use my location" className="text-white/60 hover:text-emerald-300 disabled:opacity-50">
-                <LocateFixed className={`w-5 h-5 ${locating ? "animate-pulse" : ""}`} />
-              </button>
-            </div>
-            <button type="submit" disabled={loading || !query.trim()} className="w-full brand-grad text-black font-semibold py-3 rounded-full disabled:opacity-40 flex items-center justify-center gap-2">
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Searching…</> : "Find restaurants"}
-            </button>
-          </form>
-
-          {err && <p className="px-4 text-sm text-rose-300">{err}</p>}
-
-          <div className="px-4 space-y-2">
-            {results.map((r, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-                <div className="flex items-center gap-3 p-3">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0"><img src={foodImg(r.cuisine)} alt={r.name} className="w-full h-full object-cover" /></div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-semibold truncate">{r.name}</p>
-                    <p className="text-[11px] text-white/55 truncate">{r.cuisine} · {r.price_range}</p>
-                    <p className="text-[11px] text-white/70 mt-0.5 flex items-center gap-1">
-                      {r.rating != null && <><Star className="w-3 h-3 fill-amber-300 text-amber-300" /> {Number(r.rating).toFixed(1)} · </>}
-                      <Clock className="w-3 h-3" /> {r.delivery_time}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2 px-3 pb-3">
-                  <a href={`https://www.ubereats.com/search?q=${encodeURIComponent(r.name)}`} target="_blank" rel="noreferrer" className="flex-1 text-xs px-3 py-2 rounded-full bg-white/10 border border-white/20 flex items-center justify-center gap-1 hover:border-emerald-300">Order on Uber Eats <ExternalLink className="w-3 h-3" /></a>
-                  <a href={`https://www.doordash.com/search/store/${encodeURIComponent(r.name)}`} target="_blank" rel="noreferrer" className="flex-1 text-xs px-3 py-2 rounded-full bg-white/10 border border-white/20 flex items-center justify-center gap-1 hover:border-emerald-300">DoorDash <ExternalLink className="w-3 h-3" /></a>
-                </div>
-              </div>
-            ))}
-            {!loading && results.length === 0 && !err && (
-              <div className="p-10 text-center text-white/55 border border-dashed border-white/20 rounded-2xl">
-                <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                Search a cuisine to discover real restaurants delivering to you.
-              </div>
-            )}
           </div>
+          <div className="flex gap-2 overflow-x-auto pb-1 mb-5 scrollbar-none">
+            {CATEGORIES.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${category === c ? "bg-amber-500 text-black border-amber-500" : "border-white/12 bg-white/[.04] text-neutral-300 hover:bg-white/[.08]"}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div className="py-16 text-center text-neutral-500 flex flex-col items-center gap-2"><Loader2 className="w-6 h-6 animate-spin" /> Loading dishes…</div>
+          ) : filteredDishes.length === 0 ? (
+            <p className="text-center text-neutral-500 py-12">No dishes found. Try another search or category.</p>
+          ) : (
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredDishes.map((d) => <DishCard key={d.id} dish={d} onAdd={addToCart} />)}
+            </div>
+          )}
         </>
       )}
 
-      {openStore && <StoreOrderSheet store={openStore} onClose={() => setOpenStore(null)} onPlaced={loadOrders} />}
+      {tab === "restaurants" && (
+        <>
+          {restaurants.length === 0 ? (
+            <p className="text-center text-neutral-500 py-12">No restaurants listed yet.</p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {restaurants.map((r) => (
+                <article key={r.id} className="rounded-2xl overflow-hidden border border-white/10 bg-white/[.03] hover:border-amber-400/40 transition flex flex-col">
+                  {r.image && (
+                    <div className="relative h-36">
+                      <img src={r.image} alt={r.name} loading="lazy" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/65 text-[10px] font-semibold text-amber-300 flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-amber-300" /> {r.rating?.toFixed(1) || "4.5"}
+                      </span>
+                    </div>
+                  )}
+                  <div className="p-3.5 flex flex-col flex-1">
+                    <h3 className="font-bold leading-tight">{r.name}</h3>
+                    <p className="text-[11px] text-neutral-400 mt-0.5">{r.cuisine}</p>
+                    <div className="flex items-center gap-3 mt-2 text-[11px] text-neutral-400">
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {r.delivery_time || "20-30 min"}</span>
+                      <span className="flex items-center gap-1"><Bike className="w-3 h-3" /> ${r.delivery_fee?.toFixed(2) || "2.99"}</span>
+                      <span className="text-amber-400">{r.price_range || "$$"}</span>
+                    </div>
+                    {r.menu?.length > 0 && (
+                      <div className="mt-3 space-y-1.5">
+                        {r.menu.slice(0, 3).map((m, idx) => (
+                          <div key={idx} className="flex items-center justify-between text-[12px]">
+                            <span className="text-neutral-300 truncate pr-2">{m.name}</span>
+                            <span className="font-bold text-amber-400 shrink-0">${m.price?.toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {tab === "orders" && (
+        <div className="space-y-3">
+          {orders.length === 0 ? (
+            <p className="text-center text-neutral-500 py-12">No orders yet. Place one from the Dishes tab.</p>
+          ) : (
+            orders.map((o) => {
+              const meta = STATUS_META[o.status] || STATUS_META.placed;
+              const stepIdx = STATUS_FLOW.indexOf(o.status);
+              return (
+                <div key={o.id} className="rounded-2xl border border-white/10 bg-white/[.03] p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-sm">{o.restaurant_name}</p>
+                      <p className="text-[11px] text-neutral-400">{o.delivery_address}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">${o.total?.toFixed(2)}</p>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.color}`}>{meta.label}</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5">
+                    {STATUS_FLOW.map((s, idx) => (
+                      <React.Fragment key={s}>
+                        <span className={`w-2.5 h-2.5 rounded-full ${idx <= stepIdx ? "bg-amber-500" : "bg-white/15"}`} />
+                        {idx < STATUS_FLOW.length - 1 && <span className={`flex-1 h-0.5 rounded ${idx < stepIdx ? "bg-amber-500" : "bg-white/10"}`} />}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-[11px] text-neutral-400">{o.items?.map((i) => `${i.quantity}× ${i.name}`).join(", ")}</div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* floating cart button */}
+      {cartCount > 0 && (
+        <button
+          onClick={() => setCartOpen(true)}
+          className="fixed bottom-24 lg:bottom-6 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold shadow-2xl shadow-amber-500/30"
+        >
+          <ShoppingBag className="w-5 h-5" /> {cartCount} item{cartCount > 1 ? "s" : ""} · ${(cart.reduce((s, i) => s + i.price * i.qty, 0) + 2.99).toFixed(2)}
+        </button>
+      )}
+
+      <CartDrawer
+        open={cartOpen}
+        items={cart}
+        onClose={() => setCartOpen(false)}
+        onInc={inc}
+        onDec={dec}
+        onRemove={removeItem}
+        onCheckout={checkout}
+        placing={placing}
+        address={address}
+        setAddress={setAddress}
+        placed={placed}
+      />
     </div>
   );
 }

@@ -38,6 +38,7 @@ export const LAYOUTS = {
   "/finance": "wide",
   "/hotels": "wide",
   "/flights": "wide",
+  "/logistics": "wide",
   "/settings": "wide",
   "/profile": "wide",
   "/calculator": "wide",
