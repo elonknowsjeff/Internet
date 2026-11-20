@@ -28,7 +28,7 @@ export default function MacBar(props) {
         <button onClick={() => setMenu(menu === "apple" ? null : "apple")} className="relative rounded px-1.5 hover:bg-white/15">
           <Apple className="h-3.5 w-3.5" />
         </button>
-        <span className="relative bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-300 bg-clip-text font-bold text-transparent">XSI</span>
+        <span className="relative bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-300 bg-clip-text font-bold text-transparent">Valo</span>
         <button onClick={() => setMenu(menu === "view" ? null : "view")} className="relative hidden rounded px-1.5 text-white/80 hover:bg-white/15 sm:block">View</button>
         <button onClick={() => setMenu(menu === "window" ? null : "window")} className="relative hidden rounded px-1.5 text-white/80 hover:bg-white/15 sm:block">Window</button>
         <button onClick={onShowDesktop} className="relative hidden rounded px-1.5 text-white/80 hover:bg-white/15 sm:block">Show desktop</button>
@@ -56,7 +56,7 @@ export default function MacBar(props) {
           <div className={`absolute bottom-9 z-50 w-60 overflow-hidden rounded-xl gloss-strong p-1.5 animate-slide-up ${menu === "more" ? "right-2" : "left-2"}`}>
             {menu === "apple" && (
               <>
-                <p className="px-3 py-1 text-[11px] text-white/45">XSI OS 2</p>
+                <p className="px-3 py-1 text-[11px] text-white/45">Valo OS 2</p>
                 <div className="my-1 h-px bg-white/10" />
                 <MenuItem label="All apps" onClick={() => setLauncher(true)} icon={LayoutGrid} />
                 <MenuItem label="Open Settings" onClick={() => openApp("settings")} icon={LayoutGrid} />

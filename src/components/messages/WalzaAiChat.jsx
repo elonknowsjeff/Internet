@@ -5,7 +5,7 @@ import { Send, Sparkles, Loader2, Trash2 } from "lucide-react";
 const SEED = {
   id: "seed",
   role: "ai",
-  content: "Hey, I'm XSI AI. Ask me anything — write a caption, plan a trip, fix a sentence, or find your way around the app.",
+  content: "Hey, I'm Valo AI. Ask me anything — write a caption, plan a trip, fix a sentence, or find your way around the app.",
 };
 
 export default function WalzaAiChat() {
@@ -24,12 +24,12 @@ export default function WalzaAiChat() {
     setMsgs(next);
     setBusy(true);
     try {
-      const convo = next.slice(-8).map((m) => `${m.role === "user" ? "User" : "XSI AI"}: ${m.content}`).join("\n");
+      const convo = next.slice(-8).map((m) => `${m.role === "user" ? "User" : "Valo AI"}: ${m.content}`).join("\n");
       const res = await base44.integrations.Core.InvokeLLM({
         prompt:
-          "You are XSI AI, the assistant built into Super Internet — a social and services app with a Feed, Messages, Music, Movies, Video, Gaming, Mail, Cloud, Eats, Rides, Flights and Hotels.\n" +
+          "You are Valo AI, the assistant built into Super Internet — a social and services app with a Feed, Messages, Music, Movies, Video, Gaming, Mail, Cloud, Eats, Rides, Flights and Hotels.\n" +
           "Be warm, concise and practical. Answer in the language the user writes in. Keep replies under 120 words unless asked for detail.\n\n" +
-          `Conversation so far:\n${convo}\n\nReply as XSI AI:`,
+          `Conversation so far:\n${convo}\n\nReply as Valo AI:`,
       });
       const answer = typeof res === "string" ? res : res?.response || res?.text || "";
       setMsgs((m) => [...m, { id: `a${Date.now()}`, role: "ai", content: answer.trim() || "I didn't catch that — try asking again." }]);
@@ -76,7 +76,7 @@ export default function WalzaAiChat() {
         })}
         {busy && (
           <div className="flex items-center gap-2 text-xs text-white/45 pl-9">
-            <Loader2 className="w-3.5 h-3.5 animate-spin" /> XSI AI is thinking…
+            <Loader2 className="w-3.5 h-3.5 animate-spin" /> Valo AI is thinking…
           </div>
         )}
         <div ref={endRef} />
@@ -88,7 +88,7 @@ export default function WalzaAiChat() {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           rows={1}
-          placeholder="Ask XSI AI anything…"
+          placeholder="Ask Valo AI anything…"
           className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5 outline-none text-sm resize-none max-h-28 focus:border-fuchsia-400/60"
         />
         <button onClick={send} disabled={!draft.trim() || busy} className="w-10 h-10 rounded-full bg-[linear-gradient(100deg,#fbbf24,#e879f9)] text-black flex items-center justify-center disabled:opacity-40 shrink-0">

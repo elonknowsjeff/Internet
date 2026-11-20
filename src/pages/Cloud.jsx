@@ -131,7 +131,7 @@ export default function Cloud() {
       <header className="px-4 pt-5 sm:px-6">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">XSI</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">Valo</p>
             <h1 className="mt-1 font-display text-[26px] font-semibold leading-none tracking-[-0.02em]">Cloud</h1>
             <p className="mt-1.5 text-[12px] text-white/40">Private storage for everything you keep.</p>
           </div>

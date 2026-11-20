@@ -36,7 +36,7 @@ export default function WelcomeOverlay() {
         <div className="flex justify-center">
           <BrandLogo size={76} />
         </div>
-        <p className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 mt-4">XSI</p>
+        <p className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 mt-4">Valo</p>
         <h2 className="text-2xl font-black font-display mt-1 bg-gradient-to-r from-fuchsia-300 via-amber-200 to-cyan-300 bg-clip-text text-transparent">Welcome, {name}!</h2>
         <p className="text-sm text-neutral-300 mt-3">The whole internet in one app — your feed, food, rides, music, movies, games, news, docs and more. Real people only.</p>
         <div className="flex items-center justify-center gap-2 mt-4 text-xs text-neutral-400">

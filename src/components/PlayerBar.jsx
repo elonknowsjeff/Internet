@@ -20,13 +20,13 @@ export default function PlayerBar() {
   return (
     <div className="fixed z-40 bottom-[calc(78px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 lg:left-[calc(50%+44px)] w-[min(1160px,calc(100vw-160px))] rounded-2xl border border-white/10 bg-[#0b0716]/92 backdrop-blur-2xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.95)] animate-slide-up">
       <div className="flex items-center gap-3 px-3 py-2.5">
-        <Link to="/music" title="Open XSI Music" className="flex items-center gap-2.5 min-w-0 w-[26%] shrink-0">
+        <Link to="/music" title="Open Valo Music" className="flex items-center gap-2.5 min-w-0 w-[26%] shrink-0">
           <span className="w-11 h-11 rounded-lg overflow-hidden bg-white/10 shrink-0 grid place-items-center">
             {current.art ? <img src={current.art} alt="" className="w-full h-full object-cover" /> : <Music2 className="w-4 h-4 text-white/40" />}
           </span>
           <span className="min-w-0 hidden sm:block">
             <span className="block text-[13px] font-semibold truncate leading-tight">{current.title}</span>
-            <span className="block text-[11px] text-white/45 truncate leading-tight mt-0.5">{current.subtitle || "XSI Music"}</span>
+            <span className="block text-[11px] text-white/45 truncate leading-tight mt-0.5">{current.subtitle || "Valo Music"}</span>
           </span>
         </Link>
 
@@ -75,7 +75,7 @@ export default function PlayerBar() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden xl:block text-[9px] uppercase tracking-[0.18em] text-white/25">XSI Music</span>
+          <span className="hidden xl:block text-[9px] uppercase tracking-[0.18em] text-white/25">Valo Music</span>
           <div className="hidden md:flex items-center gap-1.5">
             <button onClick={() => setVolume(volume > 0 ? 0 : 0.9)} title={volume > 0 ? "Mute" : "Unmute"} className="text-white/55 hover:text-white">
               {volume > 0 ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}

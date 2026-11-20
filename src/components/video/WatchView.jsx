@@ -34,7 +34,7 @@ export default function WatchView({ video, list = [], onClose, onSelect, onLike,
           <button onClick={onClose} className="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center"><ArrowLeft className="w-5 h-5" /></button>
           <div className="flex items-center gap-1.5">
             <span className="w-7 h-5 rounded-md bg-red-600 flex items-center justify-center"><Play className="w-3 h-3 fill-white" /></span>
-            <span className="font-bold tracking-tight text-sm hidden sm:block">XSI<span className="text-fuchsia-400"> Video</span></span>
+            <span className="font-bold tracking-tight text-sm hidden sm:block">Valo<span className="text-fuchsia-400"> Video</span></span>
           </div>
           <button onClick={onClose} className="ml-auto w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center lg:hidden"><X className="w-5 h-5" /></button>
         </div>

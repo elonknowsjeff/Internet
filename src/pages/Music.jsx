@@ -221,7 +221,7 @@ export default function Music() {
           <div className="rounded-2xl bg-[#0f0f14] border border-white/[0.06] p-3">
             <div className="flex items-center gap-2 px-1 pb-3">
               <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#FA2D48] to-[#B0103A] flex items-center justify-center shadow-[0_4px_14px_-2px_rgba(250,45,72,0.55)]"><Music2 className="w-4 h-4 text-white" /></span>
-              <span className="font-black tracking-tight text-[15px]">XSI <span className="text-[#FA2D48]">Music</span></span>
+              <span className="font-black tracking-tight text-[15px]">Valo <span className="text-[#FA2D48]">Music</span></span>
             </div>
             <div className="grid grid-cols-2 gap-1 rounded-lg bg-black/40 p-1 mb-2">
               <span className="py-1.5 rounded-md text-[11px] font-bold text-center bg-white text-black">Apple Music</span>

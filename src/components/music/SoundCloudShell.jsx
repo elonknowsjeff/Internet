@@ -134,7 +134,7 @@ export default function SoundCloudShell({
       )}
 
       <p className="px-2 text-[10.5px] leading-relaxed text-white/25">
-        XSI Sound · community audio. Legal · Privacy · Cookies · Imprint
+        Valo Sound · community audio. Legal · Privacy · Cookies · Imprint
       </p>
     </aside>
   );
@@ -142,12 +142,12 @@ export default function SoundCloudShell({
   return (
     <div className="text-white">
       <header className="sticky top-0 z-20 -mx-2 sm:-mx-4 px-3 sm:px-4 h-14 flex items-center gap-3 bg-[#0b0b0d]/95 backdrop-blur-xl border-b border-white/[0.08]">
-        <button onClick={() => setView("home")} className="flex items-center gap-2 shrink-0" title="XSI Sound">
+        <button onClick={() => setView("home")} className="flex items-center gap-2 shrink-0" title="Valo Sound">
           <span className="w-8 h-8 rounded-lg grid place-items-center" style={{ backgroundColor: ORANGE }}>
             <Cloud className="w-4 h-4 text-black" />
           </span>
           <span className="hidden sm:block font-black tracking-tight text-[15px]">
-            XSI <span style={{ color: ORANGE }}>Sound</span>
+            Valo <span style={{ color: ORANGE }}>Sound</span>
           </span>
         </button>
 

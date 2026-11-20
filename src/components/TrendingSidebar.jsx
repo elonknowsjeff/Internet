@@ -36,7 +36,7 @@ export default function TrendingSidebar({ posts = [], onTag, onOpenUser, query =
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search XSI"
+            placeholder="Search Valo"
             className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder-white/45"
           />
           {q && <button onClick={() => setQ("")}><X className="w-4 h-4 text-white/45" /></button>}
@@ -60,7 +60,7 @@ export default function TrendingSidebar({ posts = [], onTag, onOpenUser, query =
       {settings.stripeLink && (
         <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 via-violet-600/15 to-cyan-500/15 p-4">
           <h3 className="text-[19px] font-extrabold leading-tight">Subscribe to Premium</h3>
-          <p className="text-sm text-white/75 mt-1 leading-snug">Unlock creator tools, music, gaming and every XSI service in one place.</p>
+          <p className="text-sm text-white/75 mt-1 leading-snug">Unlock creator tools, music, gaming and every Valo service in one place.</p>
           <a
             href={settings.stripeLink}
             target="_blank"
@@ -104,7 +104,7 @@ export default function TrendingSidebar({ posts = [], onTag, onOpenUser, query =
         <Link to="/terms" className="hover:underline">Terms of Service</Link>
         <Link to="/settings" className="hover:underline">Settings</Link>
         <Link to="/profile" className="hover:underline">Profile</Link>
-        <span>© {new Date().getFullYear()} XSI</span>
+        <span>© {new Date().getFullYear()} Valo</span>
       </footer>
     </aside>
   );

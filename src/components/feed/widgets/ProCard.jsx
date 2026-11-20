@@ -22,7 +22,7 @@ export default function ProCard({ user, onHide }) {
   };
 
   return (
-    <WidgetShell title="XSI Pro" onHide={onHide}>
+    <WidgetShell title="Valo Pro" onHide={onHide}>
       <div className="px-3.5 pb-3.5">
         <div className="rounded-xl border border-white/[0.1] bg-[linear-gradient(135deg,rgba(168,85,247,0.22),rgba(56,189,248,0.12))] p-3">
           <p className="flex items-center gap-1.5 text-[12.5px] font-semibold">

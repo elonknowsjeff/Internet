@@ -58,7 +58,7 @@ export default function Finance() {
       <header className="sticky top-2 z-30 flex items-center gap-3 rounded-2xl border border-white/[0.1] bg-[#0b0818]/72 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] backdrop-blur-2xl">
         <div className="min-w-0 flex-1">
           <h1 className="flex items-center gap-2 font-display text-[17px] font-semibold tracking-[-0.02em]">
-            <TrendingUp className="h-4 w-4" style={{ color: "var(--brand)" }} /> XSI Money
+            <TrendingUp className="h-4 w-4" style={{ color: "var(--brand)" }} /> Valo Money
           </h1>
           <p className="truncate text-[10.5px] text-white/40">Live NASDAQ quotes, your accounts and real-time rates</p>
         </div>

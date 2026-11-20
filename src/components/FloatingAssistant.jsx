@@ -5,7 +5,7 @@ import { useSettings } from "@/components/SettingsContext";
 import { Sparkles, Send, X, Image as ImageIcon, Loader2, Trash2, Video, History, Plus, MessageSquare } from "lucide-react";
 import { Image as ContentImage } from "@/components/ui/image";
 
-const GREETING = { role: "assistant", content: "Hey — I'm XSI AI. Ask me anything, or tap the picture or video button to generate media with XSI AI." };
+const GREETING = { role: "assistant", content: "Hey — I'm Valo AI. Ask me anything, or tap the picture or video button to generate media with Valo AI." };
 
 // The assistant helps with the task in front of you: starters follow the page you're on.
 const PAGE_PROMPTS = {
@@ -100,9 +100,9 @@ export default function FloatingAssistant() {
       const history = messages
         .filter((m) => m.content && !m.image && !m.video)
         .slice(-8)
-        .map((m) => `${m.role === "user" ? "User" : "XSI AI"}: ${m.content}`)
+        .map((m) => `${m.role === "user" ? "User" : "Valo AI"}: ${m.content}`)
         .join("\n");
-      const prompt = `You are XSI AI, the assistant built into XSI — a social and services super-app with a Feed, Messages, News, Music, Movies, Video, Gaming, Eats, Rides, Flights, Hotels, Cloud and AI studios. Today is ${new Date().toDateString()}.
+      const prompt = `You are Valo AI, the assistant built into Valo — a social and services super-app with a Feed, Messages, News, Music, Movies, Video, Gaming, Eats, Rides, Flights, Hotels, Cloud and AI studios. Today is ${new Date().toDateString()}.
 
 How to answer:
 - Lead with the answer in the first line, then only the detail that earns its place. Never restate the question or pad with pleasantries.
@@ -115,7 +115,7 @@ Conversation so far:
 ${history}
 
 User: ${t}
-XSI AI:`;
+Valo AI:`;
       const res = await base44.integrations.Core.InvokeLLM({ prompt, add_context_from_internet: true, model: "gemini_3_flash" });
       const out = typeof res === "string" ? res : res?.output || res?.text || JSON.stringify(res);
       push({ role: "assistant", content: out });
@@ -171,7 +171,7 @@ XSI AI:`;
   return (
     <>
       <div className="fixed bottom-24 left-4 z-50 lg:left-[92px]">
-        <button onClick={() => setOpen((o) => !o)} title="XSI AI" className="w-14 h-14 rounded-full brand-grad text-black flex items-center justify-center shadow-2xl shadow-fuchsia-500/30 hover:scale-105 transition-transform">
+        <button onClick={() => setOpen((o) => !o)} title="Valo AI" className="w-14 h-14 rounded-full brand-grad text-black flex items-center justify-center shadow-2xl shadow-fuchsia-500/30 hover:scale-105 transition-transform">
           <Sparkles className="w-6 h-6" />
         </button>
         <button onClick={() => update({ hideFloatingAssistant: true })} title="Hide assistant" className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#2a2152] border border-white/25 flex items-center justify-center text-white/70 hover:bg-rose-500 hover:border-rose-500">
@@ -187,7 +187,7 @@ XSI AI:`;
                 <Sparkles className="w-4 h-4 text-black" />
               </div>
               <div className="leading-tight">
-                <p className="text-sm font-bold">XSI AI</p>
+                <p className="text-sm font-bold">Valo AI</p>
                 <p className="text-[10px] text-emerald-300 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" /> Online · chats saved</p>
               </div>
             </div>

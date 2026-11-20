@@ -13,7 +13,7 @@ export default function AboutPane() {
 
   return (
     <div>
-      <Group title="About" desc="XSI · social, services and tools in one place">
+      <Group title="About" desc="Valo · social, services and tools in one place">
         <SettingsRow title="Terms of Service" desc="How the app may be used" to="/terms" />
         <SettingsRow title="App version" desc="Base 1 · build 2026.11" />
       </Group>

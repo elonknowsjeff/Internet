@@ -225,7 +225,7 @@ export default function Rides() {
   const shareTrip = async () => {
     const text = `${selected.type} · ${pickup} → ${destination}${driver ? ` with ${driver.name} (${driver.car} · ${driver.plate})` : ""}`;
     try {
-      if (navigator.share) await navigator.share({ title: "Walza Rides", text, url: uberUrl });
+      if (navigator.share) await navigator.share({ title: "Valo Rides", text, url: uberUrl });
       else { await navigator.clipboard?.writeText(`${text}\n${uberUrl}`); setShared("Trip details copied"); setTimeout(() => setShared(""), 1800); }
     } catch (e) {}
   };

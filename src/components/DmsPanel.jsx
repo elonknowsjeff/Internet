@@ -123,7 +123,7 @@ export default function DmsPanel({ onClose, initialHandle }) {
                 <>
                   <span className="w-9 h-9 rounded-full bg-gradient-to-br from-fuchsia-400 to-cyan-400 flex items-center justify-center shrink-0"><Sparkles className="w-4 h-4 text-black" /></span>
                   <div className="min-w-0">
-                    <p className="text-[15px] font-bold leading-tight">XSI AI</p>
+                    <p className="text-[15px] font-bold leading-tight">Valo AI</p>
                     <p className="text-[11.5px] text-emerald-400">Always on</p>
                   </div>
                 </>
@@ -158,7 +158,7 @@ export default function DmsPanel({ onClose, initialHandle }) {
             <button onClick={() => setActive(AI)} className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-left border-y border-white/10">
               <span className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-400 to-cyan-400 flex items-center justify-center shrink-0"><Sparkles className="w-5 h-5 text-black" /></span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold flex items-center gap-1.5">XSI AI <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-400/15 text-emerald-300 font-semibold">NEW</span></p>
+                <p className="text-sm font-semibold flex items-center gap-1.5">Valo AI <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-400/15 text-emerald-300 font-semibold">NEW</span></p>
                 <p className="text-xs text-white/45 truncate">Ask anything — writing, plans, answers</p>
               </div>
             </button>

@@ -16,7 +16,7 @@ export default function NewsReader({ item, onClose }) {
       setBody(null);
       try {
         const res = await base44.integrations.Core.InvokeLLM({
-          prompt: `You are a senior news editor writing for a reader inside XSI. Write a complete, balanced, factual article expanding this report. Today is November 16, 2026.\n\nHeadline: ${item.headline}\nSummary: ${item.summary || ""}\nSource: ${item.source || ""}\nCategory: ${item.category || "news"}\n\nUse live web context when it helps add accurate, current detail. Never invent quotes attributed to real people; describe positions instead. Return a short one-sentence standfirst (dek), six body paragraphs of three to four sentences each, and three key points.`,
+          prompt: `You are a senior news editor writing for a reader inside Valo. Write a complete, balanced, factual article expanding this report. Today is November 16, 2026.\n\nHeadline: ${item.headline}\nSummary: ${item.summary || ""}\nSource: ${item.source || ""}\nCategory: ${item.category || "news"}\n\nUse live web context when it helps add accurate, current detail. Never invent quotes attributed to real people; describe positions instead. Return a short one-sentence standfirst (dek), six body paragraphs of three to four sentences each, and three key points.`,
           add_context_from_internet: true,
           model: "gemini_3_flash",
           response_json_schema: {
@@ -71,7 +71,7 @@ export default function NewsReader({ item, onClose }) {
           <span className="font-semibold text-white/60">{item.source}</span>
           <span className="w-1 h-1 rounded-full bg-white/25" />
           <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {mins} min read</span>
-          <span className="ml-auto flex items-center gap-1 text-[11px] text-white/30"><Sparkles className="w-3 h-3" /> Expanded by XSI AI</span>
+          <span className="ml-auto flex items-center gap-1 text-[11px] text-white/30"><Sparkles className="w-3 h-3" /> Expanded by Valo AI</span>
         </div>
 
         <div className="mt-5 rounded-2xl overflow-hidden">

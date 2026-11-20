@@ -236,7 +236,7 @@ export default function Feed() {
   return (
     <div className="relative flex justify-center">
       <LikeAnimation />
-      <div className="flex w-full max-w-[1250px] items-start gap-5 px-2 sm:px-4">
+      <div className="flex w-full max-w-[1280px] items-start gap-5 px-3 sm:px-5">
 
         {/* Timeline column — the app's editorial voice */}
         <div className="relative min-w-0 max-w-[720px] flex-1 pb-28">
@@ -428,7 +428,7 @@ export default function Feed() {
         </div>
 
         {/* Right rail — only where there is room for it */}
-        <aside className="sticky top-3 hidden w-[318px] shrink-0 xl:block">
+        <aside className="sticky top-3 hidden w-[318px] shrink-0 lg:block">
           <WidgetsRail user={user} />
         </aside>
       </div>

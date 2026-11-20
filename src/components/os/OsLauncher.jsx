@@ -71,7 +71,7 @@ export default function OsLauncher({ onClose, apps = [], shortcuts = [], openApp
             {isMac ? <Monitor className="h-3.5 w-3.5" /> : <Apple className="h-3.5 w-3.5" />}
             {isMac ? "Windows 11 style" : "macOS style"}
           </button>
-          <span className="ml-auto flex items-center gap-1.5 text-[10px] text-white/30"><Grid2x2 className="h-3 w-3" /> XSI OS</span>
+          <span className="ml-auto flex items-center gap-1.5 text-[10px] text-white/30"><Grid2x2 className="h-3 w-3" /> Valo OS</span>
         </div>
       </div>
     </div>
