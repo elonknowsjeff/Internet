@@ -46,9 +46,9 @@ export const LAYOUTS = {
 
 const FRAMES = {
   immersive: "w-full",
-  workspace: "w-full",
-  wide: "mx-auto w-full max-w-[1580px] px-2 sm:px-4",
-  column: "mx-auto w-full max-w-[1440px]",
+  workspace: "mx-auto w-full max-w-[1680px] px-3 sm:px-6 lg:px-8",
+  wide: "mx-auto w-full max-w-[1580px] px-3 sm:px-5 lg:px-8",
+  column: "mx-auto w-full max-w-[1440px] px-3 sm:px-5",
 };
 
 export function frameFor(pathname) {

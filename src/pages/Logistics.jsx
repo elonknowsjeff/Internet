@@ -150,9 +150,6 @@ export default function Logistics() {
             </button>
           </div>
 
-          {found === null && !searching && trackingInput && (
-            <p className="text-center text-neutral-500 py-6 text-sm">Press Track to find your shipment.</p>
-          )}
           {found === null && searching && (
             <p className="text-center text-neutral-500 py-6 text-sm flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Searching…</p>
           )}
