@@ -266,7 +266,7 @@ export default function Dating() {
               {tab === "matches" && (
                 <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
                   <div className="border-b border-white/[0.06] px-4 py-2.5 text-[12px] font-semibold text-white/55">{matches.length} mutual · {incoming.length} likes you</div>
-                  <MatchInbox matches={matches} incoming={incoming} onLikeBack={likeBack} onMessage={() => navigate("/messages")} />
+                  <MatchInbox matches={matches} incoming={incoming} onLikeBack={likeBack} onMessage={(p) => p?.created_by_id ? navigate(`/messages?u=${p.created_by_id}`) : navigate("/messages")} />
                 </div>
               )}
 
@@ -333,7 +333,7 @@ export default function Dating() {
             <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
               <h3 className="flex items-center gap-2 border-b border-white/[0.07] px-4 py-2.5 text-[13px] font-bold"><MessagesSquare className="h-3.5 w-3.5 text-white/50" /> Matches</h3>
               <div className="p-2">
-                <MatchInbox matches={matches} incoming={incoming} onLikeBack={likeBack} onMessage={() => navigate("/messages")} />
+                <MatchInbox matches={matches} incoming={incoming} onLikeBack={likeBack} onMessage={(p) => p?.created_by_id ? navigate(`/messages?u=${p.created_by_id}`) : navigate("/messages")} />
               </div>
             </section>
           </div>

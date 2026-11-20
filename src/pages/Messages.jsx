@@ -105,6 +105,20 @@ export default function Messages() {
     setActive(u);
   };
 
+  // Open a DM directly when arriving with ?u=<userId> (e.g. from a dating match)
+  useEffect(() => {
+    if (!users.length || !me) return;
+    const id = new URLSearchParams(window.location.search).get("u");
+    if (!id) return;
+    const found = users.find((x) => x.id === id);
+    if (found) {
+      openConversation(found);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("u");
+      window.history.replaceState({}, "", url);
+    }
+  }, [users, me]);
+
   const removeConversation = async (peerId) => {
     if (!me) return;
     if (!confirm("Delete this conversation? The messages are removed for both of you.")) return;

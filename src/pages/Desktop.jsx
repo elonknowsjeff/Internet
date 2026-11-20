@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Globe, FolderOpen, Calculator as CalcIcon, Settings as Gear, Trash2, Music2, UtensilsCrossed,
   Car, Clapperboard, Film, Newspaper, Mail, StickyNote, CalendarDays, Cloud, Gamepad2, Plane,
-  BedDouble, Heart, ShoppingBag, Store, MessageSquare, Sparkles, ListChecks,
+  BedDouble, Heart, ShoppingBag, Store, MessageSquare, Sparkles, ListChecks, Hash,
 } from "lucide-react";
 import WindowFrame from "@/components/desktop/WindowFrame";
 import CalculatorApp from "@/components/desktop/CalculatorApp";
@@ -30,6 +30,7 @@ const WINDOW_APPS = [
 ];
 
 const SHORTCUTS = [
+  { name: "Feed", to: "/feed", Icon: Hash, tone: "from-fuchsia-300 to-purple-600" },
   { name: "Music", to: "/music", Icon: Music2, tone: "from-fuchsia-300 to-purple-600" },
   { name: "Rides", to: "/rides", Icon: Car, tone: "from-purple-300 to-indigo-600" },
   { name: "Movies", to: "/movies", Icon: Clapperboard, tone: "from-indigo-300 to-fuchsia-700" },

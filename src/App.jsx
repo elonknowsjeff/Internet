@@ -82,7 +82,8 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/mfa" element={<Mfa />} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Feed />} />
+        <Route path="/" element={<Desktop />} />
+        <Route path="/feed" element={<Feed />} />
         <Route path="/rides" element={<Rides />} />
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />

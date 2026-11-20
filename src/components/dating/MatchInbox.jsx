@@ -1,6 +1,8 @@
 import React from "react";
 import { Heart, MessageCircle, MapPin, Sparkles } from "lucide-react";
 
+const ICEBREAKERS = ["Hey 👋", "Top spot in the city?", "Last great binge?", "Coffee or tea?"];
+
 export default function MatchInbox({ matches, incoming, onLikeBack, onMessage }) {
   return (
     <div className="space-y-5 mt-4">
@@ -20,9 +22,14 @@ export default function MatchInbox({ matches, incoming, onLikeBack, onMessage })
                 </div>
                 <div className="p-2.5">
                   <p className="text-sm font-semibold truncate">{p.display_name}{p.age ? `, ${p.age}` : ""}</p>
+                  <div className="mt-1.5 flex flex-wrap gap-1">
+                    {ICEBREAKERS.map((ib) => (
+                      <button key={ib} onClick={() => onMessage(p)} title="Open chat with this opener" className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] text-white/65 hover:bg-white/10 hover:text-white">{ib}</button>
+                    ))}
+                  </div>
                   <button
                     onClick={() => onMessage(p)}
-                    className="mt-1.5 w-full py-1.5 rounded-full brand-grad text-black text-[11px] font-bold flex items-center justify-center gap-1"
+                    className="mt-2 w-full py-1.5 rounded-full brand-grad text-black text-[11px] font-bold flex items-center justify-center gap-1"
                   >
                     <MessageCircle className="w-3 h-3" /> Message
                   </button>
