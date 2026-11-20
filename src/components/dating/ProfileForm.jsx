@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, ImagePlus, Loader2, Sparkles } from "lucide-react";
+import { X, ImagePlus, Loader2, Sparkles, Music2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const FIELDS = [
@@ -9,6 +9,7 @@ const FIELDS = [
   { key: "distance_km", label: "Distance from you (km)", placeholder: "12", type: "number" },
   { key: "interests", label: "Interests (comma separated)", placeholder: "music, hiking, coffee" },
   { key: "looking_for", label: "Looking for", placeholder: "Something real" },
+  { key: "bpm", label: "Resting heartbeat (BPM)", placeholder: "72", type: "number" },
 ];
 
 const MAX_PICS = 5;
@@ -21,14 +22,34 @@ export default function ProfileForm({ initial = {}, onClose, onSave }) {
     distance_km: "",
     interests: "",
     looking_for: "",
+    bpm: "",
     bio: "",
+    song_title: "",
+    song_artist: "",
     ...initial,
   });
   const [pics, setPics] = useState(() => [initial.photo, ...(initial.photos || [])].filter(Boolean));
+  const [songUrl, setSongUrl] = useState(initial.song_url || "");
   const [uploading, setUploading] = useState(false);
+  const [songUploading, setSongUploading] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  const uploadSong = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSongUploading(true);
+    try {
+      const res = await base44.integrations.Core.UploadPublicFile({ file });
+      if (res?.file_url) setSongUrl(res.file_url);
+    } catch (err) {
+      setError("Could not upload that song.");
+    } finally {
+      setSongUploading(false);
+      e.target.value = "";
+    }
+  };
 
   const addPhotos = async (e) => {
     const files = Array.from(e.target.files || []);
@@ -79,7 +100,11 @@ export default function ProfileForm({ initial = {}, onClose, onSave }) {
         distance_km: form.distance_km ? Number(form.distance_km) : 0,
         interests: form.interests,
         looking_for: form.looking_for,
+        bpm: form.bpm ? Number(form.bpm) : undefined,
         bio: form.bio,
+        song_url: songUrl || "",
+        song_title: form.song_title || "",
+        song_artist: form.song_artist || "",
         photo: pics[0] || "",
         photos: pics.slice(1),
       });
@@ -148,6 +173,38 @@ export default function ProfileForm({ initial = {}, onClose, onSave }) {
               className="mt-1 w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 outline-none text-sm resize-none focus:border-[color:var(--brand)]"
             />
           </label>
+
+          <div>
+            <span className="text-[10px] uppercase tracking-wide text-neutral-500">Profile song</span>
+            <div className="mt-1.5 flex items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2">
+              <Music2 className="h-4 w-4 text-white/50 shrink-0" />
+              {songUrl ? (
+                <>
+                  <span className="flex-1 truncate text-[12px] text-white/80">{songUrl.split("/").pop() || "Song attached"}</span>
+                  <button type="button" onClick={() => setSongUrl("")} className="text-white/40 hover:text-white"><X className="w-3.5 h-3.5" /></button>
+                </>
+              ) : (
+                <label className="flex-1 cursor-pointer text-[12px] text-white/55 hover:text-white">
+                  {songUploading ? "Uploading…" : "Choose an audio file"}
+                  <input type="file" accept="audio/*" onChange={uploadSong} className="hidden" />
+                </label>
+              )}
+            </div>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <input
+                value={form.song_title || ""}
+                onChange={(e) => setForm((s) => ({ ...s, song_title: e.target.value }))}
+                placeholder="Song title"
+                className="px-3 py-2 rounded-xl bg-black/40 border border-white/10 outline-none text-[12px] focus:border-[color:var(--brand)]"
+              />
+              <input
+                value={form.song_artist || ""}
+                onChange={(e) => setForm((s) => ({ ...s, song_artist: e.target.value }))}
+                placeholder="Artist"
+                className="px-3 py-2 rounded-xl bg-black/40 border border-white/10 outline-none text-[12px] focus:border-[color:var(--brand)]"
+              />
+            </div>
+          </div>
         </div>
         {error && <p className="text-xs text-rose-400 mt-3">{error}</p>}
         <button disabled={busy} className="mt-4 w-full py-2.5 rounded-full brand-grad text-black font-bold text-sm disabled:opacity-60">

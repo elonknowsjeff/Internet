@@ -36,6 +36,19 @@
     "distance_km": {
       "type": "number",
       "default": 0
+    },
+    "bpm": {
+      "type": "number",
+      "default": 72
+    },
+    "song_url": {
+      "type": "string"
+    },
+    "song_title": {
+      "type": "string"
+    },
+    "song_artist": {
+      "type": "string"
     }
   },
   "required": [

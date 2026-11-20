@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Heart, X, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import HeartbeatMonitor from "@/components/dating/HeartbeatMonitor";
+import ProfileSong from "@/components/dating/ProfileSong";
 
 export default function ProfileCard({ profile, onLike, onPass }) {
   const tags = (profile.interests || "").split(",").map((t) => t.trim()).filter(Boolean).slice(0, 4);
@@ -8,7 +10,7 @@ export default function ProfileCard({ profile, onLike, onPass }) {
   const step = (d) => setI((v) => (v + d + pics.length) % pics.length);
 
   return (
-    <article className="rounded-3xl overflow-hidden gloss-strong">
+    <article className="rounded-3xl overflow-hidden gloss-strong neon-edge">
       <div className="relative aspect-[4/5] bg-neutral-900">
         {pics.length > 0 ? (
           <img src={pics[i]} alt={profile.display_name} className="w-full h-full object-cover" />
@@ -54,12 +56,14 @@ export default function ProfileCard({ profile, onLike, onPass }) {
             ))}
           </div>
         )}
+        <HeartbeatMonitor profile={profile} />
+        {profile.song_url && <ProfileSong url={profile.song_url} title={profile.song_title} artist={profile.song_artist} />}
         {profile.looking_for ? <p className="text-[10px] text-neutral-500">Looking for {profile.looking_for}</p> : null}
         <div className="flex gap-2">
           <button onClick={() => onPass(profile)} className="flex-1 py-2 rounded-full border border-white/15 text-xs font-semibold text-neutral-300 hover:bg-white/10 flex items-center justify-center gap-1">
             <X className="w-3.5 h-3.5" /> Pass
           </button>
-          <button onClick={() => onLike(profile)} className="flex-1 py-2 rounded-full brand-grad text-black text-xs font-bold flex items-center justify-center gap-1">
+          <button onClick={() => onLike(profile)} className="flex-1 py-2 rounded-full neon-btn text-xs font-bold flex items-center justify-center gap-1">
             <Heart className="w-3.5 h-3.5" /> Like
           </button>
         </div>

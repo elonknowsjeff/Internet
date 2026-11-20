@@ -191,7 +191,8 @@ export default function Dating() {
                 const Icon = t.icon;
                 const on = tab === t.key;
                 return (
-                  <button key={t.key} onClick={() => setTab(t.key)} className={`flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors ${on ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}>
+                  <button key={t.key} onClick={() => setTab(t.key)} className={`relative flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors ${on ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}>
+                    {on && <span className="absolute inset-y-2 left-0 w-[3px] rounded-full" style={{ background: "var(--brand)", boxShadow: "0 0 12px var(--brand)" }} />}
                     <Icon className={`h-4 w-4 ${on ? "text-[color:var(--brand)]" : "text-white/55"}`} />
                     <span className={`text-[13px] font-semibold ${on ? "text-white" : "text-white/65"}`}>{t.label}</span>
                     {t.key === "matches" && matches.length > 0 && <span className="ml-auto rounded-full bg-rose-500/90 px-1.5 text-[10px] font-bold text-white">{matches.length}</span>}
@@ -215,9 +216,9 @@ export default function Dating() {
 
         {/* ---------- center ---------- */}
         <div className="min-w-0">
-          <header className="sticky top-0 z-30 mb-2 border-b border-white/[0.08] bg-[#06060a]/85 backdrop-blur-2xl">
+          <header className="sticky top-0 z-30 mb-2 border-b border-white/[0.08] bg-[#06060a]/85 backdrop-blur-2xl" style={{ boxShadow: "inset 0 -1px 0 color-mix(in srgb, var(--brand) 35%, transparent)" }}>
             <div className="flex items-center gap-2 px-4 py-3">
-              <span className="grid h-7 w-7 place-items-center rounded-[9px] lg:hidden" style={{ background: "var(--brand)" }}><Heart className="h-4 w-4 text-black" /></span>
+              <span className="grid h-7 w-7 place-items-center rounded-[9px] lg:hidden neon-btn"><Heart className="h-4 w-4" /></span>
               <h1 className="text-[16px] font-bold tracking-[-0.01em]">{TABS.find((t) => t.key === tab).label}</h1>
               <span className="ml-1 hidden rounded-full border border-white/[0.12] bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold text-white/50 sm:block">Real accounts only</span>
             </div>
@@ -250,7 +251,7 @@ export default function Dating() {
           ) : (
             <>
               {tab === "discover" && (
-                <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4">
+                <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 neon-edge-soft">
                   {deckList.length === 0 ? (
                     <div className="py-10 text-center text-[12.5px] text-white/45">
                       <p className="font-semibold">No new profiles nearby</p>
@@ -281,7 +282,7 @@ export default function Dating() {
                 <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4">
                   <div className="mb-3 flex items-center justify-between">
                     <h2 className="text-[14px] font-bold">My profile</h2>
-                    <button onClick={() => setFormOpen(true)} className="flex items-center gap-1.5 rounded-full brand-grad px-3.5 py-1.5 text-[12px] font-bold text-black">
+                    <button onClick={() => setFormOpen(true)} className="flex items-center gap-1.5 rounded-full neon-btn px-3.5 py-1.5 text-[12px] font-bold">
                       {mine ? <Pencil className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />} {mine ? "Edit" : "Create"}
                     </button>
                   </div>
@@ -303,9 +304,9 @@ export default function Dating() {
         {/* ---------- right rail ---------- */}
         <aside className="hidden xl:block">
           <div className="sticky top-3 space-y-3">
-            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
+            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] neon-edge-soft">
               <div className="flex items-center gap-2 border-b border-white/[0.07] px-4 py-2.5">
-                <Sparkles className="h-3.5 w-3.5 text-white/50" />
+                <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--brand)" }} />
                 <h3 className="text-[13px] font-bold">Stories</h3>
                 <Link to="/stories" className="ml-auto flex items-center gap-1 text-[11px] font-semibold text-white/45 hover:text-white">All <ArrowRight className="h-3 w-3" /></Link>
               </div>
