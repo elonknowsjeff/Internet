@@ -3,9 +3,8 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   Home as HomeIcon, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles,
-  LayoutGrid, Settings as SettingsIcon, User, LogOut, LogIn, UserPlus,
+  Settings as SettingsIcon, User, LogOut, LogIn, UserPlus,
 } from "lucide-react";
-import AppsMenu from "@/components/os/AppsMenu";
 import TranslatorPanel from "@/components/TranslatorPanel";
 import BrandLogo from "@/components/BrandLogo";
 
@@ -24,7 +23,6 @@ export default function SideNav() {
   const location = useLocation();
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
-  const [appsOpen, setAppsOpen] = useState(false);
   const [translatorOpen, setTranslatorOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -43,7 +41,7 @@ export default function SideNav() {
     return () => { if (typeof unsub === "function") unsub(); };
   }, []);
 
-  useEffect(() => { setAccountOpen(false); setAppsOpen(false); }, [location.pathname, location.search]);
+  useEffect(() => { setAccountOpen(false); }, [location.pathname, location.search]);
 
   const logout = async () => {
     try { await base44.auth.logout(); } catch { window.location.href = "/"; }
@@ -107,11 +105,6 @@ export default function SideNav() {
 
           <span className="mx-0.5 h-6 w-px shrink-0 bg-white/10" />
 
-          <button onClick={() => setAppsOpen(true)} title="All apps" className="group relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06]">
-            <LayoutGrid className="h-[21px] w-[21px] text-white/60 transition-transform duration-150 group-active:scale-90" strokeWidth={1.7} />
-            <span className="pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap text-white/70 opacity-0 group-hover:opacity-100 transition-opacity">Apps</span>
-          </button>
-
           <button onClick={() => setAccountOpen((v) => !v)} aria-label="Account" className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl overflow-hidden">
             {user?.avatar ? <img src={user.avatar} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><User className="h-4 w-4 text-white/70" /></span>}
           </button>
@@ -119,7 +112,6 @@ export default function SideNav() {
       </div>
       {accountOpen && <AccountMenu />}
 
-      <AppsMenu open={appsOpen} onClose={() => setAppsOpen(false)} onTranslate={() => setTranslatorOpen(true)} />
       {translatorOpen && <TranslatorPanel onClose={() => setTranslatorOpen(false)} />}
     </>
   );
