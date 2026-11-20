@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Gamepad2, Grid3x3, Zap, Sparkles, Crosshair } from "lucide-react";
+import { X, Gamepad2, Grid3x3, Zap, Sparkles, Crosshair, Hash, Bird, Circle } from "lucide-react";
 import SnakeGame from "@/components/SnakeGame";
 import MemoryGame from "@/components/games/MemoryGame";
 import TicTacToe from "@/components/games/TicTacToe";
@@ -9,6 +9,9 @@ import PacMan from "@/components/games/PacMan";
 import Breakout from "@/components/games/Breakout";
 import Shooter3D from "@/components/games/Shooter3D";
 import StreetFighter from "@/components/games/StreetFighter";
+import Game2048 from "@/components/games/Game2048";
+import FlappyBird from "@/components/games/FlappyBird";
+import Pong from "@/components/games/Pong";
 
 const GAMES = [
   { key: "shooter", title: "Nebula Strike 3D", desc: "3D first-person shooter", icon: Crosshair, color: "from-fuchsia-500 to-violet-700", Comp: Shooter3D, tag: "3D" },
@@ -19,6 +22,9 @@ const GAMES = [
   { key: "memory", title: "Memory Match", desc: "Find the pairs", icon: Grid3x3, color: "from-cyan-500 to-blue-600", Comp: MemoryGame, tag: "2D" },
   { key: "ttt", title: "Tic-Tac-Toe", desc: "Play vs the AI", icon: Grid3x3, color: "from-emerald-500 to-teal-600", Comp: TicTacToe, tag: "2D" },
   { key: "reaction", title: "Reaction Test", desc: "How fast are you?", icon: Zap, color: "from-amber-500 to-orange-600", Comp: ReactionGame, tag: "Arcade" },
+  { key: "2048", title: "2048", desc: "Slide & merge to 2048", icon: Hash, color: "from-amber-400 to-orange-600", Comp: Game2048, tag: "Puzzle" },
+  { key: "flappy", title: "Flappy", desc: "Tap to fly through gaps", icon: Bird, color: "from-yellow-400 to-amber-500", Comp: FlappyBird, tag: "Arcade" },
+  { key: "pong", title: "Pong", desc: "Beat the AI paddle", icon: Circle, color: "from-cyan-400 to-blue-600", Comp: Pong, tag: "Arcade" },
   { key: "ai", title: "AI Adventure", desc: "Generate a story game", icon: Sparkles, color: "from-cyan-400 to-fuchsia-500", Comp: AIAdventure, tag: "AI" },
 ];
 

@@ -2,7 +2,7 @@ import React from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import {
   Music2, Film, Youtube, Radio, Globe, LayoutGrid, Table, FileText, Presentation,
-  Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen,
+  Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen, Compass,
   UtensilsCrossed, Car, Store, BedDouble, Plane, TrendingUp, Truck,
   ListChecks, StickyNote, CalendarDays, MessageSquare, Heart, Sparkles, User,
 } from "lucide-react";
@@ -25,6 +25,7 @@ const SECTIONS = {
     title: "Tech",
     apps: [
       { to: "/browser", label: "Browser", icon: Globe },
+      { to: "/web", label: "Web", icon: Compass },
       { to: "/apps", label: "Apps", icon: LayoutGrid },
       { to: "/productivity", label: "Productivity", icon: ListChecks },
       { to: "/notes", label: "Notes", icon: StickyNote },
