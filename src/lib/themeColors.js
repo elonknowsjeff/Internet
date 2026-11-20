@@ -1,7 +1,10 @@
 export const ACCENTS = [
+  { id: "white", hex: "#ffffff", label: "White" },
+  { id: "blue", hex: "#0a84ff", label: "Blue" },
+  { id: "red", hex: "#ff453a", label: "Red" },
   { id: "purple", hex: "#a855f7", label: "Purple" },
-  { id: "blue", hex: "#38bdf8", label: "Sky" },
-  { id: "red", hex: "#fb7185", label: "Rose" },
+  { id: "sky", hex: "#38bdf8", label: "Sky" },
+  { id: "rose", hex: "#fb7185", label: "Rose" },
   { id: "orange", hex: "#fb923c", label: "Orange" },
   { id: "emerald", hex: "#34d399", label: "Emerald" },
   { id: "pink", hex: "#f472b6", label: "Pink" },
