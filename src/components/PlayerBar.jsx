@@ -18,7 +18,7 @@ export default function PlayerBar() {
   const canNext = !!current.onNext;
 
   return (
-    <div className="fixed z-40 bottom-[calc(78px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 lg:left-[calc(50%+44px)] w-[min(1160px,calc(100vw-160px))] rounded-2xl border border-white/10 bg-[#0b0716]/92 backdrop-blur-2xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.95)] animate-slide-up">
+    <div className="fixed z-40 bottom-[calc(92px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-[min(1160px,calc(100vw-160px))] rounded-2xl border border-white/10 bg-[#0b0716]/92 backdrop-blur-2xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.95)] animate-slide-up">
       <div className="flex items-center gap-3 px-3 py-2.5">
         <Link to="/music" title="Open Valo Music" className="flex items-center gap-2.5 min-w-0 w-[26%] shrink-0">
           <span className="w-11 h-11 rounded-lg overflow-hidden bg-white/10 shrink-0 grid place-items-center">

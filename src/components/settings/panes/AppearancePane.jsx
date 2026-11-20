@@ -47,6 +47,21 @@ export default function AppearancePane() {
               {c.label}
             </button>
           ))}
+          <label
+            className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11.5px] font-semibold transition-colors ${
+              settings.accent === "custom" ? "border-white/45 bg-white/[0.1] text-white" : "border-white/10 text-white/55 hover:border-white/25 hover:text-white"
+            }`}
+            title="Pick any colour"
+          >
+            <span className="h-3.5 w-3.5 rounded-full ring-1 ring-white/30" style={{ backgroundColor: settings.customColor || "#0a84ff" }} />
+            Custom
+            <input
+              type="color"
+              value={settings.customColor || "#0a84ff"}
+              onChange={(e) => update({ accent: "custom", customColor: e.target.value })}
+              className="sr-only"
+            />
+          </label>
         </div>
       </Group>
 

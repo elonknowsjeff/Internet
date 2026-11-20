@@ -13,7 +13,8 @@ const defaults = {
   dockOrder: [], // user-arranged nav order
   stripeLink: "https://buy.stripe.com/test_eVq14ndV84pJ5G6aC1bQY00",
   hideFloatingAssistant: false,
-  accent: "ocean", // ocean (apple blue) | purple | blue | red | orange
+  accent: "ocean", // ocean (apple blue) | purple | blue | red | orange | custom
+  customColor: "#0a84ff", // hex used when accent === "custom"
   sounds: { notification: true, reminder: true, startup: true },
 };
 
@@ -34,7 +35,15 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem("zync_settings", JSON.stringify(settings));
-    document.documentElement.dataset.accent = settings.accent || "blue";
+    const accent = settings.accent || "blue";
+    document.documentElement.dataset.accent = accent === "custom" ? "blue" : accent;
+    if (accent === "custom" && settings.customColor) {
+      document.documentElement.style.setProperty("--brand", settings.customColor);
+      document.documentElement.style.setProperty("--brand-2", settings.customColor);
+    } else {
+      document.documentElement.style.removeProperty("--brand");
+      document.documentElement.style.removeProperty("--brand-2");
+    }
   }, [settings]);
 
   const update = (patch) => setSettings((s) => ({ ...s, ...patch }));

@@ -170,7 +170,7 @@ Valo AI:`;
 
   return (
     <>
-      <div className="fixed bottom-24 left-4 z-50 lg:left-[92px]">
+      <div className="fixed bottom-[96px] right-4 z-50">
         <button onClick={() => setOpen((o) => !o)} title="Valo AI" className="w-14 h-14 rounded-full brand-grad text-black flex items-center justify-center shadow-2xl shadow-fuchsia-500/30 hover:scale-105 transition-transform">
           <Sparkles className="w-6 h-6" />
         </button>
@@ -180,7 +180,7 @@ Valo AI:`;
       </div>
 
       {open && (
-        <div className="fixed bottom-44 left-4 z-50 w-[92vw] max-w-sm h-[64vh] flex flex-col glass-card bg-[#2a2152]/85 overflow-hidden shadow-2xl animate-slide-up lg:left-[92px]">
+        <div className="fixed bottom-[156px] right-4 z-50 w-[92vw] max-w-sm h-[64vh] flex flex-col glass-card bg-[#2a2152]/85 overflow-hidden shadow-2xl animate-slide-up">
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/15">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg brand-grad flex items-center justify-center">

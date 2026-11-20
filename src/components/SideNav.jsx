@@ -10,19 +10,18 @@ import AppsMenu from "@/components/os/AppsMenu";
 import TranslatorPanel from "@/components/TranslatorPanel";
 import BrandLogo from "@/components/BrandLogo";
 
+// Bottom dock navigation. The same bar serves every viewport.
 const PRIMARY = [
-  { key: "feed", to: "/", label: "Home", icon: Home },
-  { key: "messages", to: "/messages", label: "Messages", icon: MessageSquare },
-  { key: "news", to: "/news", label: "News", icon: Newspaper },
-  { key: "studio", to: "/studio", label: "Studio", icon: BarChart3 },
-  { key: "music", to: "/music", label: "Music", icon: Music2 },
-  { key: "video", to: "/video", label: "Video", icon: Youtube },
-  { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed },
-  { key: "dating", to: "/dating", label: "Dating", icon: Heart },
-  { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles },
+  { key: "feed", to: "/", label: "Home", icon: Home, mobile: true },
+  { key: "messages", to: "/messages", label: "Messages", icon: MessageSquare, mobile: true },
+  { key: "news", to: "/news", label: "News", icon: Newspaper, mobile: true },
+  { key: "studio", to: "/studio", label: "Studio", icon: BarChart3, mobile: true },
+  { key: "music", to: "/music", label: "Music", icon: Music2, mobile: true },
+  { key: "video", to: "/video", label: "Video", icon: Youtube, mobile: false },
+  { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed, mobile: false },
+  { key: "dating", to: "/dating", label: "Dating", icon: Heart, mobile: false },
+  { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles, mobile: false },
 ];
-
-const MOBILE = ["feed", "messages", "news", "music", "studio"];
 
 const isActive = (pathname, to) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
@@ -53,10 +52,8 @@ export default function SideNav() {
     try { await base44.auth.logout(); } catch { window.location.href = "/"; }
   };
 
-  const mobileItems = MOBILE.map((k) => ALL_APPS.find((a) => a.key === k)).filter(Boolean);
-
   const AccountMenu = () => (
-    <div className="fixed bottom-[84px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up lg:left-3 lg:right-auto shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
+    <div className="fixed bottom-[88px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
       <div className="px-3.5 py-3 border-b border-white/[0.08]">
         <p className="text-sm font-semibold truncate">{user ? user.display_name || user.full_name || "Member" : "Browsing as a guest"}</p>
         <p className="text-[11px] text-white/45 truncate">{user ? user.email : "Sign in to save your work"}</p>
@@ -78,76 +75,54 @@ export default function SideNav() {
     </div>
   );
 
+  const NavButton = ({ item }) => {
+    const active = isActive(location.pathname, item.to);
+    return (
+      <Link to={item.to} title={item.label} className="group relative grid h-11 w-11 place-items-center rounded-2xl transition-colors">
+        {active && <span className="absolute inset-0 rounded-2xl bg-[var(--brand)]/15" />}
+        <item.icon
+          className="relative h-[21px] w-[21px] transition-transform duration-150 group-active:scale-90"
+          strokeWidth={active ? 2.2 : 1.7}
+          style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.55)" }}
+        />
+        {item.key === "messages" && unread > 0 && (
+          <span className="absolute right-1.5 top-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--brand)] text-[10px] font-bold text-white grid place-items-center">{unread > 9 ? "9+" : unread}</span>
+        )}
+        <span className={`pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${active ? "text-white" : "text-white/70"}`}>{item.label}</span>
+      </Link>
+    );
+  };
+
   return (
     <>
-      {/* ---------- desktop: slim icon rail ---------- */}
-      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 z-[52] w-[76px] flex-col items-center bg-[#0b0b0d] border-r border-white/[0.08]">
-        <Link to="/" className="flex h-16 w-full items-center justify-center shrink-0">
-          <BrandLogo size={24} />
-        </Link>
-
-        <nav className="flex-1 min-h-0 w-full flex flex-col items-center gap-1 overflow-y-auto scrollbar-none px-2 py-2">
-          {PRIMARY.map(({ key, to, label, icon: Icon }) => {
-            const active = isActive(location.pathname, to);
-            return (
-              <Link key={key} to={to} title={label} className="relative grid place-items-center w-12 h-12 rounded-2xl transition-colors">
-                {active && <span className="absolute inset-0 rounded-2xl bg-[var(--brand)]/15" />}
-                <Icon
-                  className="relative w-[21px] h-[21px] transition-colors"
-                  strokeWidth={active ? 2.2 : 1.7}
-                  style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.55)" }}
-                />
-                {key === "messages" && unread > 0 && (
-                  <span className="absolute top-1.5 right-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--brand)] text-[10px] font-bold text-white grid place-items-center">{unread > 9 ? "9+" : unread}</span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="w-full flex flex-col items-center gap-1 border-t border-white/[0.08] px-2 py-3">
-          <Link to="/settings" title="Settings" className="relative grid place-items-center w-12 h-12 rounded-2xl transition-colors hover:bg-white/[0.06]">
-            <SettingsIcon className={`w-[21px] h-[21px] ${isActive(location.pathname, "/settings") ? "text-[var(--brand)]" : "text-white/55"}`} strokeWidth={1.7} />
+      {/* ---------- unified bottom dock (all viewports) ---------- */}
+      <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2.5 pb-[calc(8px+env(safe-area-inset-bottom))]">
+        <div className="flex items-center gap-0.5 rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
+          <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Valo">
+            <BrandLogo size={22} />
           </Link>
-          <button onClick={() => setAppsOpen(true)} title="All apps" className="relative grid place-items-center w-12 h-12 rounded-2xl transition-colors hover:bg-white/[0.06]">
-            <LayoutGrid className="w-[21px] h-[21px] text-white/55" strokeWidth={1.7} />
+
+          {PRIMARY.map((item) => (
+            <div key={item.key} className={item.mobile ? "" : "hidden sm:block"}>
+              <NavButton item={item} />
+            </div>
+          ))}
+
+          <Link to="/settings" title="Settings" className="group relative hidden h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06] sm:grid">
+            <SettingsIcon className={`h-[21px] w-[21px] ${isActive(location.pathname, "/settings") ? "text-[var(--brand)]" : "text-white/55"}`} strokeWidth={1.7} />
+          </Link>
+
+          <button onClick={() => setAppsOpen(true)} title="All apps" className="group relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06]">
+            <LayoutGrid className="h-[21px] w-[21px] text-white/55 transition-transform duration-150 group-active:scale-90" strokeWidth={1.7} />
+            <span className="pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap text-white/70 opacity-0 group-hover:opacity-100 transition-opacity">Apps</span>
           </button>
-          <button onClick={() => setAccountOpen((v) => !v)} aria-label="Account menu" className="relative grid place-items-center w-12 h-12 rounded-2xl overflow-hidden mt-1">
+
+          <button onClick={() => setAccountOpen((v) => !v)} aria-label="Account" className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl overflow-hidden">
             {user?.avatar ? <img src={user.avatar} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><User className="h-4 w-4 text-white/70" /></span>}
           </button>
         </div>
-      </aside>
-      {accountOpen && <AccountMenu />}
-
-      {/* ---------- mobile: clean bottom tab bar ---------- */}
-      <div className="lg:hidden fixed inset-x-0 bottom-0 z-[52] px-2.5 pb-[calc(8px+env(safe-area-inset-bottom))]">
-        <div className="flex items-stretch rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1 py-1 backdrop-blur-xl">
-          {mobileItems.map(({ key, to, label, icon: Icon }) => {
-            const active = isActive(location.pathname, to);
-            return (
-              <Link key={key} to={to} title={label} className="group relative flex flex-1 flex-col items-center gap-[3px] rounded-xl py-1.5">
-                {active && <span className="absolute inset-1 rounded-xl bg-[var(--brand)]/15" />}
-                <Icon
-                  className="relative h-[20px] w-[20px] transition-transform duration-150 group-active:scale-90"
-                  strokeWidth={active ? 2.2 : 1.7}
-                  style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.5)" }}
-                />
-                <span className={`relative text-[9.5px] leading-none ${active ? "font-semibold text-white" : "font-medium text-white/45"}`}>{label}</span>
-                {key === "messages" && unread > 0 && <span className="absolute right-2.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[var(--brand)]" />}
-              </Link>
-            );
-          })}
-          <button onClick={() => setAppsOpen(true)} title="All apps" className="group relative flex flex-1 flex-col items-center gap-[3px] rounded-xl py-1.5">
-            <LayoutGrid className="relative h-[20px] w-[20px] text-white/50 transition-transform duration-150 group-active:scale-90" strokeWidth={1.7} />
-            <span className="relative text-[9.5px] font-medium leading-none text-white/45">Apps</span>
-          </button>
-          <button onClick={() => setAccountOpen((v) => !v)} aria-label="Account" className="ml-0.5 grid w-9 shrink-0 place-items-center">
-            <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-white/10">
-              {user?.avatar ? <img src={user.avatar} alt="" className="h-full w-full object-cover" /> : <User className="h-4 w-4 text-white/55" />}
-            </span>
-          </button>
-        </div>
       </div>
+      {accountOpen && <AccountMenu />}
 
       <AppsMenu open={appsOpen} onClose={() => setAppsOpen(false)} onTranslate={() => setTranslatorOpen(true)} />
       {translatorOpen && <TranslatorPanel onClose={() => setTranslatorOpen(false)} />}
