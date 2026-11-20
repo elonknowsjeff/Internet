@@ -13,7 +13,7 @@ const defaults = {
   dockOrder: [], // user-arranged nav order
   stripeLink: "https://buy.stripe.com/test_eVq14ndV84pJ5G6aC1bQY00",
   hideFloatingAssistant: false,
-  accent: "purple", // purple | blue | red | orange
+  accent: "ocean", // ocean (apple blue) | purple | blue | red | orange
   sounds: { notification: true, reminder: true, startup: true },
 };
 
@@ -23,7 +23,7 @@ export function SettingsProvider({ children }) {
       const raw = localStorage.getItem("zync_settings");
       if (!raw) return { ...defaults };
       const saved = { ...defaults, ...JSON.parse(raw) };
-      if (!saved.accent || saved.accent === "blue") saved.accent = "purple";
+      if (!saved.accent) saved.accent = "ocean";
       if (!saved.stripeLink) saved.stripeLink = defaults.stripeLink;
       if (!saved.density) saved.density = defaults.density;
       if (!saved.barVersion) { saved.navStyle = "dock"; saved.barVersion = 2; }
