@@ -4,7 +4,15 @@ const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 
 const escapeAttr = (v) =>
-  String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  String(v).replace(/&/g, '&').replace(/"/g, '"').replace(/</g, '<');
+
+const ENGINES = {
+  'ddg-lite': (q) => 'https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(q),
+  'ddg-html': (q) => 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q),
+  'bing': (q) => 'https://www.bing.com/search?q=' + encodeURIComponent(q),
+  'google': (q) => 'https://www.google.com/search?q=' + encodeURIComponent(q),
+  'wikipedia': (q) => 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(q),
+};
 
 const READER_CSS = `html{-webkit-text-size-adjust:100%;}
 body{margin:0 auto;max-width:820px;padding:18px 16px 40px;font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#16181d;background:#fff;-webkit-font-smoothing:antialiased;}
@@ -88,37 +96,49 @@ export default async function (req) {
   try {
     const body = await req.json().catch(() => ({}));
     const query = typeof body.query === 'string' ? body.query.trim() : '';
+    const engineKey = typeof body.engine === 'string' && ENGINES[body.engine] ? body.engine : 'ddg-lite';
     let target = typeof body.url === 'string' ? body.url.trim() : '';
 
     const isSearch = !target && !!query;
-    if (isSearch) target = 'https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(query);
-    if (!target) return Response.json({ error: 'Enter a web address or a search.' }, { status: 400 });
-    if (!/^https?:\/\//i.test(target)) target = 'https://' + target;
+    let parsed = null;
+    let res = null;
 
-    let parsed;
-    try {
-      parsed = new URL(target);
-    } catch (e) {
-      return Response.json({ error: 'That web address is not valid.' }, { status: 400 });
-    }
-    if (!/^https?:$/.test(parsed.protocol) || PRIVATE_HOST.test(parsed.hostname)) {
-      return Response.json({ error: 'That address cannot be opened here.' }, { status: 400 });
-    }
-
-    let res;
-    try {
-      res = await getPage(parsed.toString(), isSearch ? 9000 : 15000);
-    } catch (e) {
-      if (!isSearch) throw e;
-      const alt = new URL('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query));
-      try {
-        res = await getPage(alt.toString(), 12000);
-        parsed = alt;
-      } catch (e2) {
+    if (isSearch) {
+      // Try the chosen search engine, then fall back through the others so a
+      // blocked engine never leaves the user with "search doesn't work".
+      const order = [engineKey, ...Object.keys(ENGINES).filter((k) => k !== engineKey)];
+      for (const k of order) {
+        const candidate = ENGINES[k](query);
+        try {
+          const r = await getPage(candidate, 12000);
+          if (r.ok) { res = r; parsed = new URL(candidate); target = candidate; break; }
+        } catch (e) { /* try next engine */ }
+      }
+      if (!res) {
         return Response.json(
           { error: 'Search is unavailable right now. Try a full web address instead.', blocked: true },
           { status: 502 }
         );
+      }
+    } else {
+      if (!target) return Response.json({ error: 'Enter a web address or a search.' }, { status: 400 });
+      if (!/^https?:\/\//i.test(target)) target = 'https://' + target;
+      try {
+        parsed = new URL(target);
+      } catch (e) {
+        return Response.json({ error: 'That web address is not valid.' }, { status: 400 });
+      }
+      if (!/^https?:$/.test(parsed.protocol) || PRIVATE_HOST.test(parsed.hostname)) {
+        return Response.json({ error: 'That address cannot be opened here.' }, { status: 400 });
+      }
+      try {
+        res = await getPage(parsed.toString(), 15000);
+      } catch (e) {
+        const msg =
+          e && e.name === 'TimeoutError'
+            ? 'That site took too long to answer. Try again.'
+            : (e && e.message) || 'Could not reach that site. Check the address and try again.';
+        return Response.json({ error: msg }, { status: 502 });
       }
     }
 

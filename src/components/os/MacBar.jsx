@@ -23,8 +23,8 @@ export default function MacBar(props) {
   return (
     <>
       {/* Menu bar — docked to the bottom, XSI style */}
-      <div className="absolute inset-x-0 bottom-0 z-40 flex h-8 items-center gap-3 overflow-hidden gloss-strong px-2.5 text-[11px] rounded-t-xl border-x-0 border-b-0">
-        <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/12 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 z-40 flex h-8 items-center gap-3 overflow-hidden border-t border-white/[0.08] bg-[#0c0c11]/90 px-2.5 text-[11px] backdrop-blur-2xl">
+        <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.05] to-transparent" />
         <button onClick={() => setMenu(menu === "apple" ? null : "apple")} className="relative rounded px-1.5 hover:bg-white/15">
           <Apple className="h-3.5 w-3.5" />
         </button>
@@ -53,7 +53,7 @@ export default function MacBar(props) {
       {menu && (
         <>
           <div className="absolute inset-0 z-40" onClick={() => setMenu(null)} />
-          <div className={`absolute bottom-9 z-50 w-60 overflow-hidden rounded-xl gloss-strong p-1.5 animate-slide-up ${menu === "more" ? "right-2" : "left-2"}`}>
+          <div className={`absolute bottom-9 z-50 w-60 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c11]/95 p-1.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] backdrop-blur-2xl animate-slide-up ${menu === "more" ? "right-2" : "left-2"}`}>
             {menu === "apple" && (
               <>
                 <p className="px-3 py-1 text-[11px] text-white/45">Valo OS 2</p>

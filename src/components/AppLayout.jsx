@@ -11,6 +11,7 @@ import FloatingVideo from "@/components/FloatingVideo";
 import WelcomeOverlay from "@/components/WelcomeOverlay";
 import SideNav from "@/components/SideNav";
 import SystemSounds from "@/components/SystemSounds";
+import ToastPopups from "@/components/ToastPopups";
 
 export default function AppLayout() {
   return (
@@ -32,6 +33,7 @@ export default function AppLayout() {
             <FloatingAssistant />
             <WelcomeOverlay />
             <SystemSounds />
+            <ToastPopups />
           </div>
         </SpotifyProvider>
       </VideoPlayerProvider>

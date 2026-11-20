@@ -107,8 +107,9 @@ export default function BrowserPanel() {
     const target = tabsRef.current.find((t) => t.id === id) || {};
     const value = String(raw ?? target.input ?? "").trim();
     if (!value) return;
-    const engine = ENGINES[prefs.engine] || ENGINES["ddg-lite"];
-    const payload = looksLikeUrl(value) ? { url: /^https?:\/\//i.test(value) ? value : `https://${value}` } : { url: engine.q(value) };
+    const payload = looksLikeUrl(value)
+      ? { url: /^https?:\/\//i.test(value) ? value : `https://${value}` }
+      : { query: value, engine: prefs.engine };
 
     patch(id, { loading: true, error: "" });
     try {

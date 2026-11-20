@@ -11,7 +11,7 @@ export default function AppTabs({ windowApps = [], wins = [], onOpenApp }) {
 
   return (
     <div className="absolute left-24 right-3 top-2 z-30 lg:right-[252px]">
-      <div className="flex items-center gap-1 overflow-x-auto rounded-xl border border-white/[0.12] gloss-strong px-1.5 py-1 scrollbar-none">
+      <div className="flex items-center gap-1 overflow-x-auto rounded-xl border border-white/[0.08] bg-[#0c0c11]/90 px-1.5 py-1 scrollbar-none backdrop-blur-2xl shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]">
         {windowApps.map((app) => (
           <button
             key={app.id}

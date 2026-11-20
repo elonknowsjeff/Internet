@@ -61,7 +61,7 @@ export default function Win11Bar(props) {
         {more && (
           <>
             <div className="pointer-events-auto absolute inset-0 -top-2" onClick={() => setMore(false)} />
-            <div className="pointer-events-auto absolute bottom-[66px] right-2 z-50 w-60 overflow-hidden rounded-2xl gloss-strong p-1.5 animate-sheet-down">
+            <div className="pointer-events-auto absolute bottom-[66px] right-2 z-50 w-60 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c11]/95 p-1.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] backdrop-blur-2xl animate-sheet-down">
               <p className="px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white/35">More settings</p>
               <Row icon={SettingsIcon} label="Open Settings" onClick={() => { setMore(false); openApp("settings"); }} />
               <Row icon={Sparkles} label="Personalization" onClick={() => { setMore(false); onWall(); }} />
@@ -74,8 +74,8 @@ export default function Win11Bar(props) {
           </>
         )}
 
-        <div className="pointer-events-auto relative mx-auto flex max-w-[780px] items-center gap-0.5 overflow-hidden rounded-2xl border border-white/[0.14] gloss-strong px-1.5 py-1">
-          <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/10 to-transparent" />
+        <div className="pointer-events-auto relative mx-auto flex max-w-[780px] items-center gap-0.5 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c11]/90 px-1.5 py-1.5 shadow-[0_12px_34px_-14px_rgba(0,0,0,0.75)] backdrop-blur-2xl">
+          <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent" />
 
           <button
             onClick={() => setLauncher((v) => !v)}
