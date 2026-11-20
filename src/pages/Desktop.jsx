@@ -26,7 +26,7 @@ const WINDOW_APPS = [
 ];
 
 const SHORTCUTS = [
-  { name: "Feed", to: "/feed", Icon: Hash },
+  { name: "Feed", to: "/", Icon: Hash },
   { name: "Music", to: "/music", Icon: Music2 },
   { name: "Rides", to: "/rides", Icon: Car },
   { name: "Movies", to: "/movies", Icon: Clapperboard },

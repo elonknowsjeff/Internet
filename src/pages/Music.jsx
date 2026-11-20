@@ -47,8 +47,8 @@ export default function Music() {
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [searchErr, setSearchErr] = useState("");
-  const [billboard] = useState([]);
-  const [bbLoading] = useState(false);
+  const [billboard, setBillboard] = useState([]);
+  const [bbLoading, setBbLoading] = useState(false);
   const searchTimer = useRef(null);
   const [style, setStyle] = useState(() => localStorage.getItem("si_music_style") || "apple");
   const switchStyle = (s) => { setStyle(s); localStorage.setItem("si_music_style", s); };
@@ -70,6 +70,24 @@ export default function Music() {
     }
   };
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setBbLoading(true);
+      try {
+        const res = await base44.integrations.Core.InvokeLLM({
+          model: "gemini_3_flash",
+          prompt: "Return the current Billboard Hot 100 top 10 songs as JSON. Each item: rank (number 1-10), title, artist. Use the most recent official Billboard Hot 100 chart.",
+          add_context_from_internet: true,
+          response_json_schema: { type: "object", properties: { chart: { type: "array", items: { type: "object", properties: { rank: { type: "number" }, title: { type: "string" }, artist: { type: "string" } } } } } },
+        });
+        if (!cancelled) setBillboard((res?.chart || []).filter((e) => e && e.title).slice(0, 10));
+      } catch (e) {}
+      if (!cancelled) setBbLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const current = audio?.current || null;
   const playing = audio?.playing || false;
