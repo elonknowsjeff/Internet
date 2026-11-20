@@ -117,6 +117,9 @@ export default function AppsMenu({ open, onClose, onTranslate }) {
           <Link to="/terms" onClick={onClose} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white/55 hover:bg-white/[0.08] hover:text-white">
             <FileText className="h-3.5 w-3.5" /> Terms
           </Link>
+          <Link to="/apps" onClick={onClose} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-white/55 hover:bg-white/[0.08] hover:text-white">
+            <LayoutGrid className="h-3.5 w-3.5" /> Full directory
+          </Link>
           <Link to="/settings" onClick={onClose} className="ml-auto rounded-full px-3 py-1.5 text-[11px] font-semibold text-white/55 hover:bg-white/[0.08] hover:text-white">
             More settings
           </Link>

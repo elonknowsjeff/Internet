@@ -45,6 +45,7 @@ import Stories from '@/pages/Stories';
 import Eats from '@/pages/Eats';
 import Logistics from '@/pages/Logistics';
 import Productivity from '@/pages/Productivity';
+import Apps from '@/pages/Apps';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -110,6 +111,7 @@ const AuthenticatedApp = () => {
         <Route path="/eats" element={<Eats />} />
         <Route path="/logistics" element={<Logistics />} />
         <Route path="/productivity" element={<Productivity />} />
+        <Route path="/apps" element={<Apps />} />
         <Route path="/terms" element={<Terms />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
