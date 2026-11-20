@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Truck, Package, Search, Plus, X, Loader2, MapPin, Clock, Check, Weight, Boxes, PackageCheck, ArrowRight } from "lucide-react";
+import { Truck, Package, Search, Plus, X, Loader2, MapPin, Clock, Check, Weight, Boxes, PackageCheck } from "lucide-react";
 
 const SERVICES = [
   { key: "Standard", eta: "3-5 days", perKg: 4.5, icon: Boxes },
@@ -11,11 +11,11 @@ const SERVICES = [
 
 const STATUS_FLOW = ["label_created", "picked_up", "in_transit", "out_for_delivery", "delivered"];
 const STATUS_META = {
-  label_created: { label: "Label created", color: "text-neutral-300", bg: "bg-white/10" },
-  picked_up: { label: "Picked up", color: "text-sky-400", bg: "bg-sky-500/15" },
-  in_transit: { label: "In transit", color: "text-indigo-400", bg: "bg-indigo-500/15" },
-  out_for_delivery: { label: "Out for delivery", color: "text-amber-400", bg: "bg-amber-500/15" },
-  delivered: { label: "Delivered", color: "text-emerald-400", bg: "bg-emerald-500/15" },
+  label_created: { label: "Label created", dot: "bg-white/40" },
+  picked_up: { label: "Picked up", dot: "bg-sky-400" },
+  in_transit: { label: "In transit", dot: "bg-indigo-400" },
+  out_for_delivery: { label: "Out for delivery", dot: "bg-amber-400" },
+  delivered: { label: "Delivered", dot: "bg-emerald-400" },
 };
 
 const genTracking = () => "VAL" + Math.random().toString(36).slice(2, 8).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
@@ -58,7 +58,6 @@ export default function Logistics() {
   };
   useEffect(() => { load(); }, []);
 
-  // live status progression for active shipments
   useEffect(() => {
     const id = setInterval(async () => {
       const active = shipments.filter((s) => s.status && s.status !== "delivered");
@@ -107,85 +106,87 @@ export default function Logistics() {
     setCreating(false);
   };
 
+  const tabs = [
+    { k: "track", l: "Track", icon: Search },
+    { k: "create", l: "New shipment", icon: Plus },
+    { k: "all", l: "My shipments", icon: Package },
+  ];
+
   return (
-    <div className="px-4 py-5 pb-28">
-      <header className="mb-5">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-sky-300">Shipping & freight</p>
-        <h1 className="text-2xl sm:text-3xl font-black font-display flex items-center gap-2 mt-1">
-          <Truck className="w-6 h-6 text-sky-300" /> Logistics
-        </h1>
-        <p className="text-sm text-neutral-400 mt-1">Ship parcels, print labels and track every package in real time.</p>
+    <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 pb-28">
+      <header className="pt-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">Valo</p>
+        <div className="mt-1 flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl brand-grad text-black"><Truck className="h-5 w-5" /></span>
+          <div>
+            <h1 className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em]">Logistics</h1>
+            <p className="mt-1.5 text-[12px] text-white/40">Ship parcels, print labels and track every package in real time.</p>
+          </div>
+        </div>
       </header>
 
-      <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[.04] p-1 mb-4 w-full sm:w-auto sm:inline-flex">
-        {[
-          { k: "track", l: "Track", icon: Search },
-          { k: "create", l: "New shipment", icon: Plus },
-          { k: "all", l: "My shipments", icon: Package },
-        ].map(({ k, l, icon: Icon }) => (
+      <div className="mt-5 flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1">
+        {tabs.map(({ k, l, icon: Icon }) => (
           <button
             key={k}
             onClick={() => setView(k)}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition ${view === k ? "bg-white text-black" : "text-neutral-300 hover:bg-white/10"}`}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold transition ${view === k ? "brand-grad text-black" : "text-white/55 hover:text-white"}`}
           >
-            <Icon className="w-4 h-4" /> {l}
+            <Icon className="h-3.5 w-3.5" /> {l}
           </button>
         ))}
       </div>
 
       {view === "track" && (
-        <div className="max-w-xl">
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 mb-4">
-            <Search className="w-4 h-4 text-neutral-500" />
+        <div className="mt-5">
+          <div className="panel flex items-center gap-2 px-3.5 py-2.5">
+            <Search className="h-4 w-4 shrink-0 text-white/40" />
             <input
               value={trackingInput}
               onChange={(e) => setTrackingInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && trackingInput.trim() && trackByNumber(trackingInput)}
-              placeholder="Enter a tracking number (e.g. VALAB12CD3456)"
-              className="flex-1 bg-transparent outline-none text-sm"
+              placeholder="Enter a tracking number"
+              className="flex-1 bg-transparent text-[13px] outline-none placeholder-white/35"
             />
-            {trackingInput && <button onClick={() => { setTrackingInput(""); setFound(null); }} className="text-neutral-500 hover:text-white"><X className="w-4 h-4" /></button>}
-            <button onClick={() => trackingInput.trim() && trackByNumber(trackingInput)} disabled={!trackingInput.trim() || searching} className="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold disabled:opacity-40">
-              {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Track"}
+            {trackingInput && <button onClick={() => { setTrackingInput(""); setFound(null); }} className="text-white/40 hover:text-white"><X className="h-4 w-4" /></button>}
+            <button onClick={() => trackingInput.trim() && trackByNumber(trackingInput)} disabled={!trackingInput.trim() || searching} className="flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[12px] font-bold text-white disabled:opacity-40 hover:bg-white/15">
+              {searching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Track"}
             </button>
           </div>
 
-          {found === null && searching && (
-            <p className="text-center text-neutral-500 py-6 text-sm flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Searching…</p>
+          {searching && (
+            <p className="mt-6 text-center text-[13px] text-white/40 flex items-center justify-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Searching…</p>
           )}
-          {found === null && !searching && trackingInput && (
-            <p className="text-center text-neutral-500 py-6 text-sm">No shipment with that tracking number. Create one in the New shipment tab.</p>
+          {!searching && trackingInput && !found && (
+            <p className="mt-6 text-center text-[13px] text-white/40">No shipment with that tracking number. Create one in the New shipment tab.</p>
           )}
           {found && <ShipmentDetail s={found} />}
         </div>
       )}
 
       {view === "create" && (
-        <div className="max-w-xl">
+        <div className="mt-5">
           {created && (
-            <div className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-4 flex items-start gap-3">
-              <Check className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
+            <div className="mb-4 flex items-start gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+              <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
               <div className="flex-1">
-                <p className="font-bold text-sm">Shipment created!</p>
-                <p className="text-xs text-neutral-300 mt-0.5">Tracking number: <span className="font-mono font-bold text-emerald-300">{created.tracking_number}</span></p>
-                <button onClick={() => { setView("track"); setTrackingInput(created.tracking_number); trackByNumber(created.tracking_number); setCreated(null); }} className="mt-2 text-xs font-semibold text-emerald-300 hover:underline">Track it now →</button>
+                <p className="text-[13px] font-bold">Shipment created</p>
+                <p className="mt-0.5 text-[12px] text-white/60">Tracking number: <span className="font-mono font-bold text-emerald-300">{created.tracking_number}</span></p>
+                <button onClick={() => { setView("track"); setTrackingInput(created.tracking_number); trackByNumber(created.tracking_number); setCreated(null); }} className="mt-2 text-[12px] font-semibold text-emerald-300 hover:underline">Track it now →</button>
               </div>
-              <button onClick={() => setCreated(null)} className="text-neutral-400 hover:text-white"><X className="w-4 h-4" /></button>
+              <button onClick={() => setCreated(null)} className="text-white/40 hover:text-white"><X className="h-4 w-4" /></button>
             </div>
           )}
-          <div className="rounded-2xl border border-white/10 bg-white/[.03] p-4 space-y-3">
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-neutral-400 mb-2 font-semibold">From</p>
-              <input value={form.sender_name} onChange={(e) => setForm({ ...form, sender_name: e.target.value })} placeholder="Sender name" className="w-full rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm outline-none focus:border-sky-400/50 mb-2" />
-              <input value={form.sender_address} onChange={(e) => setForm({ ...form, sender_address: e.target.value })} placeholder="Pickup address" className="w-full rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm outline-none focus:border-sky-400/50" />
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-neutral-400 mb-2 font-semibold">To</p>
-              <input value={form.recipient_name} onChange={(e) => setForm({ ...form, recipient_name: e.target.value })} placeholder="Recipient name" className="w-full rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm outline-none focus:border-sky-400/50 mb-2" />
-              <input value={form.recipient_address} onChange={(e) => setForm({ ...form, recipient_address: e.target.value })} placeholder="Delivery address" className="w-full rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm outline-none focus:border-sky-400/50" />
-            </div>
-            <div>
-              <p className="text-[11px] uppercase tracking-wider text-neutral-400 mb-2 font-semibold">Service</p>
+          <div className="panel space-y-4 p-5">
+            <FormSection label="From">
+              <input value={form.sender_name} onChange={(e) => setForm({ ...form, sender_name: e.target.value })} placeholder="Sender name" className="field" />
+              <input value={form.sender_address} onChange={(e) => setForm({ ...form, sender_address: e.target.value })} placeholder="Pickup address" className="field" />
+            </FormSection>
+            <FormSection label="To">
+              <input value={form.recipient_name} onChange={(e) => setForm({ ...form, recipient_name: e.target.value })} placeholder="Recipient name" className="field" />
+              <input value={form.recipient_address} onChange={(e) => setForm({ ...form, recipient_address: e.target.value })} placeholder="Delivery address" className="field" />
+            </FormSection>
+            <FormSection label="Service">
               <div className="grid grid-cols-2 gap-2">
                 {SERVICES.map((s) => {
                   const Icon = s.icon;
@@ -194,48 +195,51 @@ export default function Logistics() {
                     <button
                       key={s.key}
                       onClick={() => setForm({ ...form, service: s.key })}
-                      className={`flex items-center gap-2 rounded-xl border p-2.5 text-left transition ${active ? "border-sky-400 bg-sky-500/15" : "border-white/10 bg-white/[.03] hover:bg-white/[.06]"}`}
+                      className={`flex items-center gap-2.5 rounded-xl border p-3 text-left transition ${active ? "border-[color:var(--brand)] bg-[color:var(--brand)]/10" : "border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06]"}`}
                     >
-                      <Icon className={`w-4 h-4 shrink-0 ${active ? "text-sky-300" : "text-neutral-400"}`} />
+                      <Icon className={`h-4 w-4 shrink-0 ${active ? "" : "text-white/45"}`} style={active ? { color: "var(--brand)" } : undefined} />
                       <div className="min-w-0">
-                        <p className="text-xs font-bold">{s.key}</p>
-                        <p className="text-[10px] text-neutral-400">{s.eta} · ${s.perKg}/kg</p>
+                        <p className="text-[12px] font-bold">{s.key}</p>
+                        <p className="text-[10px] text-white/40">{s.eta} · ${s.perKg}/kg</p>
                       </div>
                     </button>
                   );
                 })}
               </div>
-            </div>
+            </FormSection>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 flex-1">
-                <Weight className="w-4 h-4 text-neutral-500" />
-                <input type="number" min="0.1" step="0.1" value={form.weight_kg} onChange={(e) => setForm({ ...form, weight_kg: Number(e.target.value) })} className="flex-1 bg-transparent outline-none text-sm w-full" />
-                <span className="text-[11px] text-neutral-500">kg</span>
+              <div className="flex flex-1 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5">
+                <Weight className="h-4 w-4 text-white/40" />
+                <input type="number" min="0.1" step="0.1" value={form.weight_kg} onChange={(e) => setForm({ ...form, weight_kg: Number(e.target.value) })} className="flex-1 bg-transparent text-[13px] outline-none" />
+                <span className="text-[11px] text-white/35">kg</span>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm font-bold text-sky-300">
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-[13px] font-bold" style={{ color: "var(--brand)" }}>
                 ${(form.weight_kg * (SERVICES.find((s) => s.key === form.service)?.perKg || 0) + 3.5).toFixed(2)}
               </div>
             </div>
-            <input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Notes (optional)" className="w-full rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5 text-sm outline-none focus:border-sky-400/50" />
+            <input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Notes (optional)" className="field" />
             <button
               onClick={createShipment}
               disabled={creating || !form.recipient_name.trim() || !form.recipient_address.trim() || !form.sender_name.trim()}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-full brand-grad py-3 text-[13px] font-bold text-black disabled:opacity-50"
             >
-              {creating ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating label…</> : <><Plus className="w-4 h-4" /> Create shipment</>}
+              {creating ? <><Loader2 className="h-4 w-4 animate-spin" /> Creating label…</> : <><Plus className="h-4 w-4" /> Create shipment</>}
             </button>
           </div>
         </div>
       )}
 
       {view === "all" && (
-        <div>
+        <div className="mt-5">
           {loading ? (
-            <div className="py-16 text-center text-neutral-500 flex flex-col items-center gap-2"><Loader2 className="w-6 h-6 animate-spin" /> Loading shipments…</div>
+            <div className="flex flex-col items-center gap-2 py-16 text-white/40"><Loader2 className="h-6 w-6 animate-spin" /> <span className="text-[13px]">Loading shipments…</span></div>
           ) : shipments.length === 0 ? (
-            <p className="text-center text-neutral-500 py-12">No shipments yet. Create one in the New shipment tab.</p>
+            <div className="panel py-12 text-center">
+              <Package className="mx-auto mb-2 h-8 w-8 text-white/25" />
+              <p className="text-[13px] text-white/45">No shipments yet. Create one in the New shipment tab.</p>
+            </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {shipments.map((s) => (
                 <ShipmentRow key={s.id} s={s} onClick={() => { setView("track"); setTrackingInput(s.tracking_number); setFound(s); }} />
               ))}
@@ -243,6 +247,17 @@ export default function Logistics() {
           )}
         </div>
       )}
+
+      <style>{`.field{width:100%;border-radius:12px;border:1px solid hsl(var(--border));background:hsl(var(--card));padding:10px 14px;font-size:13px;outline:none}.field:focus{border-color:hsl(var(--primary))}`}</style>
+    </div>
+  );
+}
+
+function FormSection({ label, children }) {
+  return (
+    <div>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">{label}</p>
+      <div className="space-y-2">{children}</div>
     </div>
   );
 }
@@ -250,17 +265,19 @@ export default function Logistics() {
 function ShipmentRow({ s, onClick }) {
   const meta = STATUS_META[s.status] || STATUS_META.label_created;
   return (
-    <button onClick={onClick} className="w-full text-left rounded-2xl border border-white/10 bg-white/[.03] hover:border-sky-400/40 transition p-3.5 flex items-center gap-3">
-      <span className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 grid place-items-center shrink-0"><Package className="w-5 h-5 text-sky-300" /></span>
+    <button onClick={onClick} className="panel flex w-full items-center gap-3 p-3.5 text-left transition hover:border-white/20">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.08] bg-white/[0.03]"><Package className="h-5 w-5 text-sky-300" /></span>
       <div className="min-w-0 flex-1">
-        <p className="font-mono font-bold text-xs text-sky-300">{s.tracking_number}</p>
-        <p className="text-sm font-semibold truncate mt-0.5">{s.recipient_name}</p>
-        <p className="text-[11px] text-neutral-400 truncate flex items-center gap-1"><MapPin className="w-3 h-3" /> {s.recipient_address}</p>
+        <p className="font-mono text-[12px] font-bold" style={{ color: "var(--brand)" }}>{s.tracking_number}</p>
+        <p className="mt-0.5 truncate text-[13px] font-semibold">{s.recipient_name}</p>
+        <p className="flex items-center gap-1 truncate text-[11px] text-white/40"><MapPin className="h-3 w-3" /> {s.recipient_address}</p>
       </div>
-      <div className="text-right shrink-0">
-        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.color}`}>{meta.label}</span>
-        <p className="text-[11px] text-neutral-400 mt-1">{s.service} · {s.weight_kg}kg</p>
-        <p className="text-sm font-bold mt-0.5">${s.cost?.toFixed(2)}</p>
+      <div className="shrink-0 text-right">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-semibold text-white/70">
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} /> {meta.label}
+        </span>
+        <p className="mt-1.5 text-[11px] text-white/40">{s.service} · {s.weight_kg}kg</p>
+        <p className="mt-0.5 text-[13px] font-bold">${s.cost?.toFixed(2)}</p>
       </div>
     </button>
   );
@@ -270,50 +287,52 @@ function ShipmentDetail({ s }) {
   const meta = STATUS_META[s.status] || STATUS_META.label_created;
   const stepIdx = STATUS_FLOW.indexOf(s.status);
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-      <div className="flex items-center justify-between">
+    <div className="panel mt-4 p-5">
+      <div className="flex items-start justify-between">
         <div>
-          <p className="font-mono font-bold text-sky-300">{s.tracking_number}</p>
-          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${meta.bg} ${meta.color} mt-1 inline-block`}>{meta.label}</span>
+          <p className="font-mono text-[13px] font-bold" style={{ color: "var(--brand)" }}>{s.tracking_number}</p>
+          <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-semibold text-white/70">
+            <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} /> {meta.label}
+          </span>
         </div>
-        <p className="font-bold text-lg">${s.cost?.toFixed(2)}</p>
+        <p className="text-[18px] font-bold">${s.cost?.toFixed(2)}</p>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-5">
         <div className="flex items-center gap-1.5">
           {STATUS_FLOW.map((st, idx) => (
             <React.Fragment key={st}>
-              <span className={`w-3 h-3 rounded-full grid place-items-center ${idx <= stepIdx ? "bg-sky-500" : "bg-white/15"}`}>
-                {idx <= stepIdx && <Check className="w-2 h-2 text-white" />}
+              <span className={`grid h-3.5 w-3.5 place-items-center rounded-full transition ${idx <= stepIdx ? "brand-grad" : "bg-white/15"}`}>
+                {idx <= stepIdx && <Check className="h-2 w-2 text-black" />}
               </span>
-              {idx < STATUS_FLOW.length - 1 && <span className={`flex-1 h-0.5 rounded ${idx < stepIdx ? "bg-sky-500" : "bg-white/10"}`} />}
+              {idx < STATUS_FLOW.length - 1 && <span className={`h-0.5 flex-1 rounded-full ${idx < stepIdx ? "brand-grad" : "bg-white/10"}`} />}
             </React.Fragment>
           ))}
         </div>
-        <div className="flex justify-between mt-2 text-[9px] text-neutral-400">
+        <div className="mt-2.5 flex justify-between text-[9px] text-white/35">
           {STATUS_FLOW.map((st) => <span key={st} className="flex-1 text-center first:text-left last:text-right">{STATUS_META[st].label}</span>)}
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-xl border border-white/10 bg-white/[.02] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-1">From</p>
-          <p className="font-semibold">{s.sender_name}</p>
-          <p className="text-[11px] text-neutral-400">{s.sender_address || "—"}</p>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">From</p>
+          <p className="text-[13px] font-semibold">{s.sender_name}</p>
+          <p className="text-[11px] text-white/40">{s.sender_address || "—"}</p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/[.02] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-1">To</p>
-          <p className="font-semibold">{s.recipient_name}</p>
-          <p className="text-[11px] text-neutral-400">{s.recipient_address}</p>
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">To</p>
+          <p className="text-[13px] font-semibold">{s.recipient_name}</p>
+          <p className="text-[11px] text-white/40">{s.recipient_address}</p>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center gap-4 text-[12px] text-neutral-400">
-        <span className="flex items-center gap-1"><Boxes className="w-3.5 h-3.5" /> {s.service}</span>
-        <span className="flex items-center gap-1"><Weight className="w-3.5 h-3.5" /> {s.weight_kg} kg</span>
-        <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> ETA {s.estimated_delivery}</span>
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-[12px] text-white/45">
+        <span className="flex items-center gap-1.5"><Boxes className="h-3.5 w-3.5" /> {s.service}</span>
+        <span className="flex items-center gap-1.5"><Weight className="h-3.5 w-3.5" /> {s.weight_kg} kg</span>
+        <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> ETA {s.estimated_delivery}</span>
       </div>
-      {s.notes && <p className="mt-3 text-[12px] text-neutral-300 rounded-xl bg-white/[.03] border border-white/10 p-2.5">{s.notes}</p>}
+      {s.notes && <p className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 text-[12px] text-white/60">{s.notes}</p>}
     </div>
   );
 }
