@@ -12,7 +12,7 @@ export default function HubBanner() {
         />
         <img
           src={ICON}
-          alt="XSI"
+          alt="Valo"
           className="relative w-full max-h-[340px] object-contain"
         />
       </div>

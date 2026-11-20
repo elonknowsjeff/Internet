@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Sparkles, Search, ImagePlus, Loader2, BarChart3, Wand2, Mail, Camera, X, Video as VideoIcon, Smile, Target } from "lucide-react";
+import { Sparkles, Search, ImagePlus, Loader2, BarChart3, Wand2, Camera, X, Video as VideoIcon, Smile, Target } from "lucide-react";
 import ComposerPoll from "@/components/social/ComposerPoll";
 import EmojiGifPicker from "@/components/social/EmojiGifPicker";
 import QuickComposeBar from "@/components/social/QuickComposeBar";
@@ -236,7 +236,7 @@ export default function Feed() {
   return (
     <div className="relative flex justify-center">
       <LikeAnimation />
-      <div className="flex w-full max-w-[1250px] items-start gap-5 px-2 sm:px-4">
+      <div className="flex w-full max-w-[1280px] items-start gap-5 px-3 sm:px-5">
 
         {/* Timeline column — the app's editorial voice */}
         <div className="relative min-w-0 max-w-[720px] flex-1 pb-28">
@@ -269,8 +269,6 @@ export default function Feed() {
                   <Target className="w-[19px] h-[19px]" />
                 </button>
                 <NotificationCenter user={user} />
-                <Link to="/studio" title="Creator Studio" className="hidden sm:flex w-9 h-9 rounded-full hover:bg-white/10 items-center justify-center text-white/85"><BarChart3 className="w-[20px] h-[20px]" /></Link>
-                <Link to="/messages" title="Messages" className="hidden sm:flex w-9 h-9 rounded-full hover:bg-white/10 items-center justify-center text-white/85"><Mail className="w-[20px] h-[20px]" /></Link>
               </div>
             </div>
             <div className="flex items-center gap-1 overflow-x-auto px-2 pb-2 scrollbar-none">
@@ -430,7 +428,7 @@ export default function Feed() {
         </div>
 
         {/* Right rail — only where there is room for it */}
-        <aside className="sticky top-3 hidden w-[318px] shrink-0 xl:block">
+        <aside className="sticky top-3 hidden w-[318px] shrink-0 lg:block">
           <WidgetsRail user={user} />
         </aside>
       </div>

@@ -58,20 +58,21 @@ export default function AtmosphereBackground({ mode = "trails" }) {
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden atmo-base">
-      <div className="absolute inset-0 atmo-strata" />
-      <div
-        className="absolute -top-[34vh] left-[-14vw] h-[92vh] w-[92vw] rounded-full blur-[130px] atmo-aurora-a"
-        style={{ background: a }}
-      />
-      <div
-        className="absolute -right-[16vw] top-[18vh] h-[80vh] w-[76vw] rounded-full blur-[140px] atmo-aurora-b"
-        style={{ background: b }}
-      />
-      <div
-        className="absolute bottom-[-26vh] left-[16vw] h-[70vh] w-[82vw] rounded-full blur-[150px] atmo-aurora-c"
-        style={{ background: c }}
-      />
-      <div className="absolute inset-0 atmo-grain opacity-[0.05]" />
+      <div className="absolute inset-0 atmo-strata opacity-60" />
+      <div className="absolute inset-0 opacity-50">
+        <div
+          className="absolute -top-[34vh] left-[-14vw] h-[92vh] w-[92vw] rounded-full blur-[150px] atmo-aurora-a"
+          style={{ background: a }}
+        />
+        <div
+          className="absolute -right-[16vw] top-[18vh] h-[80vh] w-[76vw] rounded-full blur-[160px] atmo-aurora-b"
+          style={{ background: b }}
+        />
+        <div
+          className="absolute bottom-[-26vh] left-[16vw] h-[70vh] w-[82vw] rounded-full blur-[170px] atmo-aurora-c"
+          style={{ background: c }}
+        />
+      </div>
       <div className="absolute inset-0 atmo-vignette" />
     </div>
   );

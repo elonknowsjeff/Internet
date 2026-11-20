@@ -102,7 +102,7 @@ export default function SideNav() {
         <div className="xsi-rail relative flex h-full w-[68px] flex-col overflow-hidden rounded-[26px] transition-[width] duration-300 ease-out group-hover:w-[236px]">
           <Link to="/" className="flex h-16 shrink-0 items-center gap-3 px-3.5">
             <BrandLogo size={26} />
-            <span className="hidden whitespace-nowrap font-display text-[16px] font-extrabold tracking-[0.06em] group-hover:block">XSI</span>
+            <span className="hidden whitespace-nowrap font-display text-[16px] font-extrabold tracking-[0.06em] group-hover:block">Valo</span>
           </Link>
 
           <nav className="flex-1 min-h-0 space-y-2 overflow-y-auto scrollbar-none px-3 pb-2">

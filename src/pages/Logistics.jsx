@@ -18,7 +18,7 @@ const STATUS_META = {
   delivered: { label: "Delivered", color: "text-emerald-400", bg: "bg-emerald-500/15" },
 };
 
-const genTracking = () => "XSI" + Math.random().toString(36).slice(2, 8).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
+const genTracking = () => "VAL" + Math.random().toString(36).slice(2, 8).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
 
 const addDays = (n) => {
   const d = new Date();
@@ -141,7 +141,7 @@ export default function Logistics() {
               value={trackingInput}
               onChange={(e) => setTrackingInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && trackingInput.trim() && trackByNumber(trackingInput)}
-              placeholder="Enter a tracking number (e.g. XSIAB12CD3456)"
+              placeholder="Enter a tracking number (e.g. VALAB12CD3456)"
               className="flex-1 bg-transparent outline-none text-sm"
             />
             {trackingInput && <button onClick={() => { setTrackingInput(""); setFound(null); }} className="text-neutral-500 hover:text-white"><X className="w-4 h-4" /></button>}
@@ -150,9 +150,6 @@ export default function Logistics() {
             </button>
           </div>
 
-          {found === null && !searching && trackingInput && (
-            <p className="text-center text-neutral-500 py-6 text-sm">Press Track to find your shipment.</p>
-          )}
           {found === null && searching && (
             <p className="text-center text-neutral-500 py-6 text-sm flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Searching…</p>
           )}

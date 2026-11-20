@@ -16,7 +16,7 @@ export default function MusicSidebar({
           <Music2 className="h-4 w-4" />
         </span>
         <span className="font-display text-[15px] font-semibold tracking-[-0.01em]">
-          XSI <span className="font-normal text-white/40">Music</span>
+          Valo <span className="font-normal text-white/40">Music</span>
         </span>
       </div>
 

@@ -17,7 +17,7 @@ export default function MessagesXNav({ unread = 0, onCompose }) {
 
   return (
     <nav className="hidden md:flex flex-col items-center w-[74px] shrink-0 h-full border-r border-fuchsia-300/15 bg-[#150b2b]/70 py-3">
-      <Link to="/" title="XSI" className="mb-3">
+      <Link to="/" title="Valo" className="mb-3">
         <BrandLogo size={30} />
       </Link>
 

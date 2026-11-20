@@ -161,7 +161,7 @@ export default function Movies() {
       {/* netflix-style nav */}
       <header className={`sticky top-0 z-30 transition-colors duration-300 ${scrolled || q.trim() ? "bg-[#0a0814]/97 backdrop-blur-xl border-b border-white/10" : "bg-gradient-to-b from-black/85 to-transparent"}`}>
         <div className="flex items-center gap-3 px-3 sm:px-10 py-3">
-          <span className="shrink-0 text-[14px] sm:text-[16px] font-black tracking-[0.3em] text-[#e50914]">XSI</span>
+          <span className="shrink-0 text-[14px] sm:text-[16px] font-black tracking-[0.3em] text-[#e50914]">Valo</span>
           <nav className="hidden md:flex items-center gap-4">
             {TABS.map((t) => (
               <button key={t} onClick={() => { setTab(t); setQ(""); }} className={`text-[13px] transition-colors ${tab === t ? "font-semibold text-white" : "text-neutral-400 hover:text-white"}`}>{t}</button>
@@ -204,7 +204,7 @@ export default function Movies() {
             {bollywood.length > 0 && <NetflixRow title="Bollywood spotlight" items={bollywood} onPlay={playTrailer} onAddList={toggleList} />}
             <NetflixRow title="Coming soon" items={upcoming} onPlay={playTrailer} onAddList={toggleList} />
             <NetflixRow title="Award-winning dramas" items={rest.filter((m) => /drama|romance/i.test(m.genre || ""))} onPlay={playTrailer} onAddList={toggleList} />
-            <NetflixRow title="AI movies · made with XSI" items={aiFilms} onPlay={playTrailer} onAddList={toggleList} />
+            <NetflixRow title="AI movies · made with Valo" items={aiFilms} onPlay={playTrailer} onAddList={toggleList} />
             <NetflixRow title="Community uploads · every genre" items={community} onPlay={playTrailer} onAddList={toggleList} />
 
             {loading && <div className="flex items-center gap-2 text-neutral-400 text-sm px-10 py-6"><Loader2 className="w-4 h-4 animate-spin" /> Loading your library…</div>}
@@ -236,7 +236,7 @@ export default function Movies() {
             {!loading && !aiFilms.length && (
               <button onClick={() => setAiOpen(true)} className="mt-6 mx-4 sm:mx-10 w-[calc(100%-2rem)] sm:w-[calc(100%-5rem)] rounded-xl border border-dashed border-cyan-400/40 bg-cyan-400/5 p-5 text-left hover:bg-cyan-400/10">
                 <p className="flex items-center gap-2 font-semibold text-sm"><Film className="w-4 h-4 text-cyan-300" /> No AI films yet</p>
-                <p className="text-xs text-neutral-400 mt-1">Describe a movie and XSI writes it and paints the poster. Your films show up in the AI movies row.</p>
+                <p className="text-xs text-neutral-400 mt-1">Describe a movie and Valo writes it and paints the poster. Your films show up in the AI movies row.</p>
               </button>
             )}
           </div>

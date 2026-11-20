@@ -99,7 +99,7 @@ export default function Eats() {
     try {
       const total = cart.reduce((s, i) => s + i.price * i.qty, 0) + 2.99;
       await base44.entities.Order.create({
-        restaurant_name: "XSI Eats Kitchen",
+        restaurant_name: "Valo Eats Kitchen",
         items: cart.map((i) => ({ name: i.name, price: i.price, quantity: i.qty })),
         total,
         status: "placed",

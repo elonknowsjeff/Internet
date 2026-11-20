@@ -191,7 +191,7 @@ export default function Video() {
           <button onClick={() => { setRail("home"); resetFilters(); }} className="grid h-10 w-10 shrink-0 place-items-center rounded-full hover:bg-white/[0.1]"><Menu className="h-5 w-5" /></button>
           <div className="hidden shrink-0 items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-[9px] brand-grad shadow-[0_10px_22px_-10px_rgba(168,85,247,0.95)]"><Play className="h-3 w-3 fill-black text-black" /></span>
-            <span className="text-[15.5px] font-bold tracking-[-0.01em]">XSI <span className="font-medium text-white/40">Video</span></span>
+            <span className="text-[15.5px] font-bold tracking-[-0.01em]">Valo <span className="font-medium text-white/40">Video</span></span>
           </div>
           <div className="mx-auto flex max-w-[640px] flex-1 items-center gap-2">
             <div className="flex flex-1 items-center rounded-full border border-white/[0.12] bg-white/[0.06] px-4 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-colors focus-within:border-white/35 focus-within:bg-white/[0.1]">

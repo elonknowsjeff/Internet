@@ -11,7 +11,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex justify-center mb-4"><BrandLogo size={64} /></div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.44em] text-white/45 mb-2">XSI</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.44em] text-white/45 mb-2">Valo</p>
           <h1 className="text-3xl font-bold tracking-tight text-white font-display flex items-center justify-center gap-2">
             {Icon && <Icon className="w-6 h-6 text-white/70" aria-hidden="true" />}
             {title}

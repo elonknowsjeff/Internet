@@ -18,7 +18,7 @@ export default function LiveSection({ streams, onOpen, onGoLive }) {
         <div className="py-16 flex flex-col items-center text-center">
           <span className="w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center mb-3"><Radio className="w-6 h-6 text-red-400" /></span>
           <h3 className="font-bold">Nobody is live yet</h3>
-          <p className="text-sm text-neutral-400 mt-1 max-w-xs">Start a stream and your channel goes live on XSI instantly.</p>
+          <p className="text-sm text-neutral-400 mt-1 max-w-xs">Start a stream and your channel goes live on Valo instantly.</p>
           <button onClick={onGoLive} className="mt-4 px-4 py-2 rounded-full bg-red-600 hover:bg-red-500 text-sm font-semibold">Start streaming</button>
         </div>
       ) : (
