@@ -8,6 +8,7 @@ import PacMan from "@/components/games/PacMan";
 import Breakout from "@/components/games/Breakout";
 import Shooter3D from "@/components/games/Shooter3D";
 import Racer3D from "@/components/games/Racer3D";
+import StreetFighter from "@/components/games/StreetFighter";
 
 const RECENT_KEY = "walza_recent_games";
 const HOURS_KEY = "walza_game_hours";
@@ -20,7 +21,8 @@ export function engineFor(game = {}) {
   if (/puzzle|zen|match|card|garden/.test(text)) return { label: "2D puzzle", Comp: MemoryGame };
   if (/strategy|conquest|empire|tactics|galaxy/.test(text)) return { label: "2D strategy", Comp: TicTacToe };
   if (/adventure|rpg|dungeon|quest|vale|wing|mystic|embers/.test(text)) return { label: "2D adventure", Comp: PacMan };
-  if (/action|brawl|fight|sport|goal|football|racing/.test(text)) return { label: "2D arcade action", Comp: Breakout };
+  if (/brawl|fight|street|action/.test(text)) return { label: "2D fighter", Comp: StreetFighter };
+  if (/sport|goal|football|racing/.test(text)) return { label: "2D arcade action", Comp: Breakout };
   if (game.ai_generated) return { label: "AI story mode", Comp: AIAdventure };
   if (game.dimension === "3D") return { label: "3D shooter", Comp: Shooter3D };
   return { label: "2D arcade", Comp: SnakeGame };

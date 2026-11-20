@@ -8,9 +8,11 @@ import AIAdventure from "@/components/games/AIAdventure";
 import PacMan from "@/components/games/PacMan";
 import Breakout from "@/components/games/Breakout";
 import Shooter3D from "@/components/games/Shooter3D";
+import StreetFighter from "@/components/games/StreetFighter";
 
 const GAMES = [
   { key: "shooter", title: "Nebula Strike 3D", desc: "3D first-person shooter", icon: Crosshair, color: "from-fuchsia-500 to-violet-700", Comp: Shooter3D, tag: "3D" },
+  { key: "fighter", title: "Street Brawl", desc: "2D arcade fighter", icon: Crosshair, color: "from-rose-500 to-amber-500", Comp: StreetFighter, tag: "2D" },
   { key: "pacman", title: "Pac-Man", desc: "Chomp the dots", icon: Gamepad2, color: "from-amber-400 to-yellow-600", Comp: PacMan, tag: "2D" },
   { key: "breakout", title: "Breakout", desc: "Break every brick", icon: Zap, color: "from-cyan-500 to-blue-600", Comp: Breakout, tag: "2D" },
   { key: "snake", title: "Snake", desc: "Classic arcade", icon: Gamepad2, color: "from-fuchsia-500 to-purple-600", Comp: SnakeGame, tag: "2D" },
