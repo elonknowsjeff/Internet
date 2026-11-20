@@ -62,6 +62,26 @@ export default function Sheets() {
   };
   useEffect(() => { load(); }, []);
 
+  // keyboard navigation: move the active cell with arrows / Tab / Enter (Enter opens edit)
+  useEffect(() => {
+    const onKey = (e) => {
+      if (editing || !active) return;
+      const rows = grid.length, cmax = (grid[0]?.length || 0) - 1;
+      if (cmax < 0) return;
+      let { r, c } = active;
+      let handled = true;
+      if (e.key === "ArrowUp") r = Math.max(0, r - 1);
+      else if (e.key === "ArrowDown") r = Math.min(rows - 1, r + 1);
+      else if (e.key === "ArrowLeft") c = Math.max(0, c - 1);
+      else if (e.key === "ArrowRight" || e.key === "Tab") c = Math.min(cmax, c + 1);
+      else if (e.key === "Enter") { startEdit(active.r, active.c); }
+      else handled = false;
+      if (handled) { e.preventDefault(); setActive({ r, c }); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active, editing, grid]);
+
   const cols = grid[0]?.length || 0;
 
   const setCell = (r, c, v) => setGrid((g) => { const n = g.map((row) => row.slice()); n[r][c] = v; return n; });
@@ -111,13 +131,30 @@ export default function Sheets() {
       ["", "", "Payroll total", "=SUM(D2:D4)"],
       ...Array.from({ length: ROWS_DEFAULT - 5 }, () => ["", "", "", ""]),
     ],
+    budget: [
+      ["Category", "Budgeted", "Spent", "Left"],
+      ["Rent", "1400", "1400", "=B2-C2"],
+      ["Food", "500", "380", "=B3-C3"],
+      ["Fun", "250", "190", "=B4-C4"],
+      ["Transit", "120", "96", "=B5-C5"],
+      ["", "", "Total left", "=SUM(D2:D5)"],
+      ...Array.from({ length: ROWS_DEFAULT - 6 }, () => ["", "", "", ""]),
+    ],
   };
 
   const applyTemplate = (key) => {
-    setName(key === "invoice" ? "Invoice" : "Payroll run");
+    const labels = { invoice: "Invoice", payroll: "Payroll run", budget: "Monthly budget" };
+    setName(labels[key] || "Untitled");
     setGrid(TEMPLATES[key]);
     setActive(null);
   };
+
+  const clearSheet = () => {
+    if (!confirm("Clear all cells in this sheet?")) return;
+    setGrid((g) => blank(g.length, g[0]?.length || COLS_DEFAULT));
+    setActive(null);
+  };
+  const filledCount = grid.flat().filter((v) => String(v ?? "").trim() !== "").length;
 
   const exportCsv = () => {
     const csv = grid
@@ -169,6 +206,7 @@ export default function Sheets() {
         </span>
         <button onClick={() => applyTemplate("invoice")} className="rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/65 hover:bg-white/[0.08] hover:text-white">Invoice</button>
         <button onClick={() => applyTemplate("payroll")} className="rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/65 hover:bg-white/[0.08] hover:text-white">Payroll</button>
+        <button onClick={() => applyTemplate("budget")} className="rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/65 hover:bg-white/[0.08] hover:text-white">Budget</button>
         <span className="mx-1 h-4 w-px bg-white/10" />
         <button onClick={addRow} className="flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/65 hover:bg-white/[0.08] hover:text-white">
           <Rows3 className="h-3 w-3" /> Row
@@ -176,7 +214,10 @@ export default function Sheets() {
         <button onClick={addCol} className="flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/65 hover:bg-white/[0.08] hover:text-white">
           <Columns3 className="h-3 w-3" /> Column
         </button>
-        <span className="ml-auto tabular-nums text-white/30">{grid.length} rows · {cols} cols</span>
+        <button onClick={clearSheet} className="flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 font-semibold text-white/55 hover:bg-rose-400/10 hover:text-rose-200">
+          <Trash2 className="h-3 w-3" /> Clear
+        </button>
+        <span className="ml-auto tabular-nums text-white/30">{filledCount} filled · {grid.length}r × {cols}c</span>
       </div>
 
       {/* formula bar */}
