@@ -8,7 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import AppLayout from '@/components/AppLayout';
 import { SettingsProvider } from '@/components/SettingsContext';
-import Feed from '@/pages/Feed';
+import Home from '@/pages/Home';
 import Rides from '@/pages/Rides';
 import Market from '@/pages/Market';
 import Music from '@/pages/Music';
@@ -82,7 +82,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/mfa" element={<Mfa />} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Feed />} />
+        <Route path="/" element={<Home />} />
         <Route path="/rides" element={<Rides />} />
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />

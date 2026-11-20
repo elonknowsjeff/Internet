@@ -5,7 +5,7 @@ import ThreadSidebar from "@/components/assistant/ThreadSidebar";
 
 const WELCOME = {
   role: "assistant",
-  content: "Hey, I'm Laxin Plus AI — ask me anything, or switch to Create image and describe a picture you want.",
+  content: "Hey, I'm Vazolex Plus AI — ask me anything, or switch to Create image and describe a picture you want.",
 };
 
 // Live web answers need the web-capable model; if that call is refused, fall back

@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
-  Home, MessageSquare, Newspaper, Music2, Youtube, Heart, Sparkles, LayoutGrid,
-  Settings as SettingsIcon, User, LogOut, LogIn, UserPlus, BarChart3, UtensilsCrossed,
+  Home, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles,
+  LayoutGrid, Settings as SettingsIcon, User, LogOut, LogIn, UserPlus,
 } from "lucide-react";
-import { ALL_APPS } from "@/lib/navApps";
 import AppsMenu from "@/components/os/AppsMenu";
 import TranslatorPanel from "@/components/TranslatorPanel";
 import BrandLogo from "@/components/BrandLogo";
 
-// Bottom dock navigation. The same bar serves every viewport.
-const PRIMARY = [
-  { key: "feed", to: "/", label: "Home", icon: Home, mobile: true },
-  { key: "messages", to: "/messages", label: "Messages", icon: MessageSquare, mobile: true },
-  { key: "news", to: "/news", label: "News", icon: Newspaper, mobile: true },
-  { key: "studio", to: "/studio", label: "Studio", icon: BarChart3, mobile: true },
-  { key: "music", to: "/music", label: "Music", icon: Music2, mobile: true },
-  { key: "video", to: "/video", label: "Video", icon: Youtube, mobile: false },
-  { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed, mobile: false },
-  { key: "dating", to: "/dating", label: "Dating", icon: Heart, mobile: false },
-  { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles, mobile: false },
+// Bottom dock = categories. The same bar serves every viewport.
+const CATS = [
+  { key: "social", to: "/", label: "Social", icon: Home, mobile: true },
+  { key: "entertainment", to: "/?cat=entertainment", label: "Entertainment", icon: Clapperboard, mobile: true },
+  { key: "tech", to: "/?cat=tech", label: "Tech", icon: Cpu, mobile: false },
+  { key: "news", to: "/?cat=news", label: "News", icon: Newspaper, mobile: true },
+  { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed, mobile: false },
+  { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2, mobile: true },
+  { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles, mobile: true },
 ];
-
-const isActive = (pathname, to) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
 export default function SideNav() {
   const location = useLocation();
+  const [params] = useSearchParams();
+  const cat = params.get("cat") || "social";
   const [appsOpen, setAppsOpen] = useState(false);
   const [translatorOpen, setTranslatorOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -46,11 +43,14 @@ export default function SideNav() {
     return () => { if (typeof unsub === "function") unsub(); };
   }, []);
 
-  useEffect(() => { setAccountOpen(false); setAppsOpen(false); }, [location.pathname]);
+  useEffect(() => { setAccountOpen(false); setAppsOpen(false); }, [location.pathname, location.search]);
 
   const logout = async () => {
     try { await base44.auth.logout(); } catch { window.location.href = "/"; }
   };
+
+  const onHome = location.pathname === "/";
+  const isActive = (item) => onHome && (item.key === "social" ? cat === "social" : cat === item.key);
 
   const AccountMenu = () => (
     <div className="fixed bottom-[88px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
@@ -76,7 +76,7 @@ export default function SideNav() {
   );
 
   const NavButton = ({ item }) => {
-    const active = isActive(location.pathname, item.to);
+    const active = isActive(item);
     return (
       <Link to={item.to} title={item.label} className="group relative grid h-11 w-11 place-items-center rounded-2xl transition-colors">
         {active && <span className="absolute inset-0 rounded-2xl bg-[var(--brand)]/15" />}
@@ -85,31 +85,30 @@ export default function SideNav() {
           strokeWidth={active ? 2.2 : 1.7}
           style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.55)" }}
         />
-        {item.key === "messages" && unread > 0 && (
+        {item.key === "social" && unread > 0 && (
           <span className="absolute right-1.5 top-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--brand)] text-[10px] font-bold text-white grid place-items-center">{unread > 9 ? "9+" : unread}</span>
         )}
-        <span className={`pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity ${active ? "text-white" : "text-white/70"}`}>{item.label}</span>
+        <span className="pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity text-white/70">{item.label}</span>
       </Link>
     );
   };
 
   return (
     <>
-      {/* ---------- unified bottom dock (all viewports) ---------- */}
       <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2.5 pb-[calc(8px+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-0.5 rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
-          <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Valo">
+          <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Vazolex Plus">
             <BrandLogo size={22} />
           </Link>
 
-          {PRIMARY.map((item) => (
+          {CATS.map((item) => (
             <div key={item.key} className={item.mobile ? "" : "hidden sm:block"}>
               <NavButton item={item} />
             </div>
           ))}
 
           <Link to="/settings" title="Settings" className="group relative hidden h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06] sm:grid">
-            <SettingsIcon className={`h-[21px] w-[21px] ${isActive(location.pathname, "/settings") ? "text-[var(--brand)]" : "text-white/55"}`} strokeWidth={1.7} />
+            <SettingsIcon className={`h-[21px] w-[21px] ${location.pathname === "/settings" ? "text-[var(--brand)]" : "text-white/55"}`} strokeWidth={1.7} />
           </Link>
 
           <button onClick={() => setAppsOpen(true)} title="All apps" className="group relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06]">
