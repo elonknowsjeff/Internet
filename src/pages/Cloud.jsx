@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useSettings } from "@/components/SettingsContext";
+import { startSubscription } from "@/lib/checkout";
 import { File as FileIcon, FileText, Image as ImageIcon, Video, Music, Archive, HardDrive, Upload, Check, Cloud as CloudIcon, Trash2, Play, Pause, X, Search } from "lucide-react";
 
 const FREE_GB = 5;
@@ -247,11 +248,7 @@ export default function Cloud() {
                   </li>
                 ))}
               </ul>
-              {settings.stripeLink ? (
-                <a href={settings.stripeLink} target="_blank" rel="noreferrer" className="mt-4 block rounded-full bg-white/[0.1] py-2 text-center text-[12px] font-bold hover:bg-white/[0.16]">Upgrade</a>
-              ) : (
-                <p className="mt-4 rounded-full border border-white/10 py-2 text-center text-[11px] text-white/35">Add Stripe link in Settings</p>
-              )}
+              <button onClick={() => startSubscription("plus").catch(() => {})} className="mt-4 block w-full rounded-full bg-white/[0.1] py-2 text-center text-[12px] font-bold hover:bg-white/[0.16]">Upgrade</button>
             </div>
           ))}
         </div>

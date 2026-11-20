@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Search, X, MoreHorizontal, Activity, Users, Music2, Car, UtensilsCrossed, Gamepad2 } from "lucide-react";
 import WhoToFollow from "@/components/WhoToFollow";
 import { useSettings } from "@/components/SettingsContext";
+import { startSubscription } from "@/lib/checkout";
 
 export default function TrendingSidebar({ posts = [], onTag, onOpenUser, query = "", onQuery }) {
   const { settings } = useSettings();
@@ -57,20 +58,16 @@ export default function TrendingSidebar({ posts = [], onTag, onOpenUser, query =
       )}
 
       {/* Premium */}
-      {settings.stripeLink && (
-        <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 via-violet-600/15 to-cyan-500/15 p-4">
-          <h3 className="text-[19px] font-extrabold leading-tight">Subscribe to Premium</h3>
-          <p className="text-sm text-white/75 mt-1 leading-snug">Unlock creator tools, music, gaming and every Valo service in one place.</p>
-          <a
-            href={settings.stripeLink}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-block px-4 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-white/90"
-          >
-            Subscribe
-          </a>
-        </section>
-      )}
+      <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 via-violet-600/15 to-cyan-500/15 p-4">
+        <h3 className="text-[19px] font-extrabold leading-tight">Subscribe to Premium</h3>
+        <p className="text-sm text-white/75 mt-1 leading-snug">Unlock creator tools, music, gaming and every Valo service in one place.</p>
+        <button
+          onClick={() => startSubscription("plus").catch(() => {})}
+          className="mt-3 inline-block px-4 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-white/90"
+        >
+          Subscribe
+        </button>
+      </section>
 
       {/* What's happening */}
       <section className="rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden">

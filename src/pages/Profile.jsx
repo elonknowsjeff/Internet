@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useSettings } from "@/components/SettingsContext";
+import { startSubscription } from "@/lib/checkout";
 import { ArrowLeft, CalendarDays, CreditCard, LogOut, Loader2, User, Gamepad2, Camera, Play, Link2 } from "lucide-react";
 import AccountSearch from "@/components/profile/AccountSearch";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
@@ -161,11 +162,9 @@ export default function Profile() {
             <p className="text-sm text-white/45">@{handle}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {settings.stripeLink && (
-              <a href={settings.stripeLink} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-bold">
-                <CreditCard className="w-3.5 h-3.5" /> Support
-              </a>
-            )}
+            <button onClick={() => startSubscription("plus").catch(() => {})} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-bold">
+              <CreditCard className="w-3.5 h-3.5" /> Premium
+            </button>
             <button onClick={logout} title="Log off" className="w-8 h-8 rounded-full border border-white/15 grid place-items-center text-white/60 hover:text-rose-400 hover:bg-white/10">
               <LogOut className="w-4 h-4" />
             </button>
