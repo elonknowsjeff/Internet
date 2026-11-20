@@ -1,0 +1,63 @@
+{
+  "name": "SpaceRoom",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string",
+      "default": "Just chatting"
+    },
+    "host_name": {
+      "type": "string"
+    },
+    "host_handle": {
+      "type": "string"
+    },
+    "host_avatar": {
+      "type": "string"
+    },
+    "is_live": {
+      "type": "boolean",
+      "default": true
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

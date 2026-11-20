@@ -11,6 +11,9 @@ export const LAYOUTS = {
   "/articles": "column",
   "/assistant": "column",
   "/messages": "workspace",
+  "/chats": "workspace",
+  "/browser": "wide",
+  "/spaces": "column",
 
   "/music": "immersive",
   "/movies": "immersive",

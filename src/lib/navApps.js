@@ -1,10 +1,12 @@
-import { MessageSquare, BookOpen } from "lucide-react";
-import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane, UtensilsCrossed, Truck, ListChecks } from "lucide-react";
+import { MessageSquare, BookOpen, Radio, Hash, Globe, AudioLines } from "lucide-react";
+import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio as RadioIcon, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane, UtensilsCrossed, Truck, ListChecks } from "lucide-react";
 
 export const NAV_SECTIONS = [
   {
     name: "Social", items: [
       { key: "feed", to: "/", label: "Feed", icon: Home },
+      { key: "spaces", to: "/spaces", label: "Spaces", icon: AudioLines },
+      { key: "chats", to: "/chats", label: "Chats", icon: Hash },
       { key: "messages", to: "/messages", label: "Messages", icon: MessageSquare },
       { key: "stories", to: "/stories", label: "Stories", icon: Sparkles },
       { key: "articles", to: "/articles", label: "Articles", icon: BookOpen },
@@ -16,6 +18,7 @@ export const NAV_SECTIONS = [
   {
     name: "Info", items: [
       { key: "desktop", to: "/desktop", label: "Desktop", icon: Monitor },
+      { key: "browser", to: "/browser", label: "Browser", icon: Globe },
       { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles },
     ],
   },
