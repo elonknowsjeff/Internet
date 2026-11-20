@@ -227,6 +227,10 @@ html[data-accent="graphite"] { --brand: #8e8e93; --brand-2: #8e8e93; }
   .thin-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 }
 
+/* Desktop OS window content: let page roots fill their window instead of forcing viewport height */
+.os-win-body { height: 100%; }
+.os-win-body, .os-win-body > * { min-height: 0 !important; }
+
 html, body, #root { width: 100%; max-width: 100%; }
 #root { min-height: 100dvh; }
 
