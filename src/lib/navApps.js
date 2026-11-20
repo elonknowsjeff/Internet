@@ -1,5 +1,5 @@
 import { MessageSquare, BookOpen } from "lucide-react";
-import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane, UtensilsCrossed, Truck, ListChecks } from "lucide-react";
+import { Home, Car, Music2, Film, Cloud as CloudIcon, User, Sparkles, Newspaper, Heart, Calculator as CalculatorIcon, CalendarDays, TrendingUp, ShoppingBag, Store, Youtube, Radio, Table, Tv, FileText, Presentation, Mail, Monitor, BedDouble, BarChart3, StickyNote, Plane, UtensilsCrossed, Truck, ListChecks, Globe } from "lucide-react";
 
 export const NAV_SECTIONS = [
   {
@@ -16,6 +16,7 @@ export const NAV_SECTIONS = [
   {
     name: "Info", items: [
       { key: "desktop", to: "/desktop", label: "Desktop", icon: Monitor },
+      { key: "browser", to: "/browser", label: "Browser", icon: Globe },
       { key: "assistant", to: "/assistant", label: "Assistant", icon: Sparkles },
     ],
   },
