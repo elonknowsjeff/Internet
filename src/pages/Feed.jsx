@@ -7,7 +7,6 @@ import EmojiGifPicker from "@/components/social/EmojiGifPicker";
 import QuickComposeBar from "@/components/social/QuickComposeBar";
 import ListsBar from "@/components/feed/ListsBar";
 import CameraCapture from "@/components/social/CameraCapture";
-import HubBanner from "@/components/feed/HubBanner";
 import AccountView from "@/components/social/AccountView";
 import DmsPanel from "@/components/DmsPanel";
 import LikeAnimation from "@/components/LikeAnimation";
@@ -18,12 +17,10 @@ import IncomingCallBanner from "@/components/messages/IncomingCallBanner";
 import StoriesBar from "@/components/StoriesBar";
 import XSearchPanel from "@/components/social/XSearchPanel";
 import PostCard from "@/components/social/PostCard";
-import CreatorCard from "@/components/social/CreatorCard";
 import ProfilePhotoDialog from "@/components/profile/ProfilePhotoDialog";
 import TrendingBar from "@/components/feed/TrendingBar";
-import ProductivityHub from "@/components/productivity/ProductivityHub";
-import WidgetsRail from "@/components/feed/WidgetsRail";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
+import WhoToFollow from "@/components/WhoToFollow";
 import { useSettings } from "@/components/SettingsContext";
 
 const avatars = [
@@ -236,10 +233,10 @@ export default function Feed() {
   return (
     <div className="relative flex justify-center">
       <LikeAnimation />
-      <div className="flex w-full max-w-[1280px] items-start gap-5 px-3 sm:px-5">
+      <div className="w-full max-w-[600px] px-3 sm:px-4 pb-28">
 
-        {/* Timeline column — the app's editorial voice */}
-        <div className="relative min-w-0 max-w-[720px] flex-1 pb-28">
+        {/* Timeline column — clean single column, X style */}
+        <div className="relative min-w-0">
           <header className="sticky top-3 z-30 mb-4 overflow-hidden rounded-[22px] atmo-glass">
             <div className="flex items-center gap-2.5 h-[56px] px-3 sm:px-4">
               <button onClick={() => setPhotoOpen(true)} title="Change profile photo" className="shrink-0">
@@ -286,10 +283,6 @@ export default function Feed() {
               ))}
             </div>
           </header>
-
-          <ProductivityHub />
-
-          {!focusMode && <HubBanner />}
 
           {authorFilter && (
             <div className="flex items-center justify-between px-4 py-2 border-b border-white/[0.08] bg-white/[0.03] text-[13px]">
@@ -384,10 +377,6 @@ export default function Feed() {
             </div>
           </div>
 
-          {!focusMode && (
-            <CreatorCard user={user} creator={creator} busy={creatorBusy} onEnable={enableCreator} />
-          )}
-
           {tab === "lists" && (
             <ListsBar lists={lists} activeId={activeList?.id} onSelect={setActiveList} onCreate={createList} />
           )}
@@ -425,12 +414,10 @@ export default function Feed() {
             ))
           )}
 
+          <div className="mt-3">
+            <WhoToFollow />
+          </div>
         </div>
-
-        {/* Right rail — only where there is room for it */}
-        <aside className="sticky top-3 hidden w-[318px] shrink-0 lg:block">
-          <WidgetsRail user={user} />
-        </aside>
       </div>
 
       <QuickComposeBar
