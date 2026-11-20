@@ -11,20 +11,15 @@ const SERVICES = [
 
 const STATUS_FLOW = ["label_created", "picked_up", "in_transit", "out_for_delivery", "delivered"];
 const STATUS_META = {
-  label_created: { label: "Label created", dot: "bg-white/40" },
-  picked_up: { label: "Picked up", dot: "bg-sky-400" },
-  in_transit: { label: "In transit", dot: "bg-indigo-400" },
-  out_for_delivery: { label: "Out for delivery", dot: "bg-amber-400" },
-  delivered: { label: "Delivered", dot: "bg-emerald-400" },
+  label_created: { label: "Label created", dot: "bg-white/40", tone: "text-white/55" },
+  picked_up: { label: "Picked up", dot: "bg-sky-400", tone: "text-sky-300" },
+  in_transit: { label: "In transit", dot: "bg-indigo-400", tone: "text-indigo-300" },
+  out_for_delivery: { label: "Out for delivery", dot: "bg-amber-400", tone: "text-amber-300" },
+  delivered: { label: "Delivered", dot: "bg-emerald-400", tone: "text-emerald-300" },
 };
 
 const genTracking = () => "VAL" + Math.random().toString(36).slice(2, 8).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-
-const addDays = (n) => {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
-};
+const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
 
 export default function Logistics() {
   const [view, setView] = useState("track");
@@ -34,15 +29,7 @@ export default function Logistics() {
   const [found, setFound] = useState(null);
   const [searching, setSearching] = useState(false);
 
-  const [form, setForm] = useState({
-    sender_name: "",
-    sender_address: "",
-    recipient_name: "",
-    recipient_address: "",
-    service: "Standard",
-    weight_kg: 1,
-    notes: "",
-  });
+  const [form, setForm] = useState({ sender_name: "", sender_address: "", recipient_name: "", recipient_address: "", service: "Standard", weight_kg: 1, notes: "" });
   const [creating, setCreating] = useState(false);
   const [created, setCreated] = useState(null);
 
@@ -51,9 +38,7 @@ export default function Logistics() {
     try {
       const data = await base44.entities.Shipment.list("-created_date", 50);
       setShipments(Array.isArray(data) ? data : data?.items || []);
-    } catch {
-      setShipments([]);
-    }
+    } catch { setShipments([]); }
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -72,15 +57,12 @@ export default function Logistics() {
   }, [shipments]);
 
   const trackByNumber = async (num) => {
-    setSearching(true);
-    setFound(null);
+    setSearching(true); setFound(null);
     try {
       const data = await base44.entities.Shipment.filter({ tracking_number: num.trim() }, { limit: 1 });
       const list = Array.isArray(data) ? data : data?.items || [];
       setFound(list[0] || null);
-    } catch {
-      setFound(null);
-    }
+    } catch { setFound(null); }
     setSearching(false);
   };
 
@@ -92,18 +74,18 @@ export default function Logistics() {
       const svc = SERVICES.find((s) => s.key === form.service);
       const cost = Number((form.weight_kg * svc.perKg + 3.5).toFixed(2));
       const etaDays = svc.key === "Same Day" ? 0 : svc.key === "Express" ? 2 : svc.key === "Standard" ? 4 : 6;
-      const rec = await base44.entities.Shipment.create({
-        ...form,
-        tracking_number: genTracking(),
-        cost,
-        status: "label_created",
-        estimated_delivery: addDays(etaDays),
-      });
+      const rec = await base44.entities.Shipment.create({ ...form, tracking_number: genTracking(), cost, status: "label_created", estimated_delivery: addDays(etaDays) });
       setCreated(rec);
       setForm({ sender_name: "", sender_address: "", recipient_name: "", recipient_address: "", service: "Standard", weight_kg: 1, notes: "" });
       load();
     } catch {}
     setCreating(false);
+  };
+
+  const stats = {
+    total: shipments.length,
+    active: shipments.filter((s) => s.status && s.status !== "delivered").length,
+    delivered: shipments.filter((s) => s.status === "delivered").length,
   };
 
   const tabs = [
@@ -115,13 +97,28 @@ export default function Logistics() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 pb-28">
       <header className="pt-5">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">Valo</p>
-        <div className="mt-1 flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl brand-grad text-black"><Truck className="h-5 w-5" /></span>
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl brand-grad text-black shadow-[0_10px_26px_-10px_var(--brand)]"><Truck className="h-5 w-5" /></span>
           <div>
             <h1 className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em]">Logistics</h1>
             <p className="mt-1.5 text-[12px] text-white/40">Ship parcels, print labels and track every package in real time.</p>
           </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-3 gap-2.5">
+          {[
+            { label: "Shipments", value: stats.total, icon: Package, tint: "text-white" },
+            { label: "In transit", value: stats.active, icon: Truck, tint: "text-amber-300" },
+            { label: "Delivered", value: stats.delivered, icon: PackageCheck, tint: "text-emerald-300" },
+          ].map((s) => (
+            <div key={s.label} className="panel flex items-center gap-2.5 p-3">
+              <s.icon className={`h-4 w-4 ${s.tint}`} />
+              <div className="min-w-0">
+                <p className="text-[18px] font-bold leading-none">{s.value}</p>
+                <p className="text-[10.5px] text-white/40 truncate">{s.label}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </header>
 
@@ -154,12 +151,8 @@ export default function Logistics() {
             </button>
           </div>
 
-          {searching && (
-            <p className="mt-6 text-center text-[13px] text-white/40 flex items-center justify-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Searching…</p>
-          )}
-          {!searching && trackingInput && !found && (
-            <p className="mt-6 text-center text-[13px] text-white/40">No shipment with that tracking number. Create one in the New shipment tab.</p>
-          )}
+          {searching && <p className="mt-6 text-center text-[13px] text-white/40 flex items-center justify-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Searching…</p>}
+          {!searching && trackingInput && !found && <p className="mt-6 text-center text-[13px] text-white/40">No shipment with that tracking number. Create one in the New shipment tab.</p>}
           {found && <ShipmentDetail s={found} />}
         </div>
       )}
@@ -172,7 +165,7 @@ export default function Logistics() {
               <div className="flex-1">
                 <p className="text-[13px] font-bold">Shipment created</p>
                 <p className="mt-0.5 text-[12px] text-white/60">Tracking number: <span className="font-mono font-bold text-emerald-300">{created.tracking_number}</span></p>
-                <button onClick={() => { setView("track"); setTrackingInput(created.tracking_number); trackByNumber(created.tracking_number); setCreated(null); }} className="mt-2 text-[12px] font-semibold text-emerald-300 hover:underline">Track it now →</button>
+                <button onClick={() => { setView("track"); setTrackingInput(created.tracking_number); setFound(created); setCreated(null); }} className="mt-2 text-[12px] font-semibold text-emerald-300 hover:underline">Track it now →</button>
               </div>
               <button onClick={() => setCreated(null)} className="text-white/40 hover:text-white"><X className="h-4 w-4" /></button>
             </div>
@@ -298,20 +291,22 @@ function ShipmentDetail({ s }) {
         <p className="text-[18px] font-bold">${s.cost?.toFixed(2)}</p>
       </div>
 
-      <div className="mt-5">
-        <div className="flex items-center gap-1.5">
-          {STATUS_FLOW.map((st, idx) => (
-            <React.Fragment key={st}>
-              <span className={`grid h-3.5 w-3.5 place-items-center rounded-full transition ${idx <= stepIdx ? "brand-grad" : "bg-white/15"}`}>
-                {idx <= stepIdx && <Check className="h-2 w-2 text-black" />}
+      <div className="mt-5 relative pl-6">
+        <span className="absolute left-[7px] top-1 bottom-1 w-px bg-white/10" />
+        {STATUS_FLOW.map((st, idx) => {
+          const done = idx <= stepIdx;
+          const current = idx === stepIdx;
+          const m = STATUS_META[st];
+          return (
+            <div key={st} className="relative pb-4 last:pb-0">
+              <span className={`absolute -left-6 top-0.5 grid h-4 w-4 place-items-center rounded-full ${done ? "brand-grad" : "bg-white/15"}`}>
+                {done && <Check className="h-2.5 w-2.5 text-black" />}
               </span>
-              {idx < STATUS_FLOW.length - 1 && <span className={`h-0.5 flex-1 rounded-full ${idx < stepIdx ? "brand-grad" : "bg-white/10"}`} />}
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="mt-2.5 flex justify-between text-[9px] text-white/35">
-          {STATUS_FLOW.map((st) => <span key={st} className="flex-1 text-center first:text-left last:text-right">{STATUS_META[st].label}</span>)}
-        </div>
+              <p className={`text-[12.5px] font-semibold ${current ? m.tone : done ? "text-white/80" : "text-white/40"}`}>{m.label}</p>
+              {current && <p className="text-[10.5px] text-white/40">Current status</p>}
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
