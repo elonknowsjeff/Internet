@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
-  Home, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles,
+  Home as HomeIcon, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles,
   LayoutGrid, Settings as SettingsIcon, User, LogOut, LogIn, UserPlus,
 } from "lucide-react";
 import AppsMenu from "@/components/os/AppsMenu";
 import TranslatorPanel from "@/components/TranslatorPanel";
 import BrandLogo from "@/components/BrandLogo";
 
-// Bottom dock = categories. The same bar serves every viewport.
+// Bottom dock = every section, icon-only, clean. Scrolls horizontally on small screens.
 const CATS = [
-  { key: "social", to: "/", label: "Social", icon: Home, mobile: true },
-  { key: "entertainment", to: "/?cat=entertainment", label: "Entertainment", icon: Clapperboard, mobile: true },
-  { key: "tech", to: "/?cat=tech", label: "Tech", icon: Cpu, mobile: false },
-  { key: "news", to: "/?cat=news", label: "News", icon: Newspaper, mobile: true },
-  { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed, mobile: false },
-  { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2, mobile: true },
-  { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles, mobile: true },
+  { key: "social", to: "/", label: "Social", icon: HomeIcon },
+  { key: "entertainment", to: "/?cat=entertainment", label: "Entertainment", icon: Clapperboard },
+  { key: "tech", to: "/?cat=tech", label: "Tech", icon: Cpu },
+  { key: "news", to: "/?cat=news", label: "News", icon: Newspaper },
+  { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed },
+  { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2 },
+  { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles },
 ];
 
 export default function SideNav() {
@@ -53,7 +53,7 @@ export default function SideNav() {
   const isActive = (item) => onHome && (item.key === "social" ? cat === "social" : cat === item.key);
 
   const AccountMenu = () => (
-    <div className="fixed bottom-[88px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
+    <div className="fixed bottom-[84px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
       <div className="px-3.5 py-3 border-b border-white/[0.08]">
         <p className="text-sm font-semibold truncate">{user ? user.display_name || user.full_name || "Member" : "Browsing as a guest"}</p>
         <p className="text-[11px] text-white/45 truncate">{user ? user.email : "Sign in to save your work"}</p>
@@ -78,12 +78,12 @@ export default function SideNav() {
   const NavButton = ({ item }) => {
     const active = isActive(item);
     return (
-      <Link to={item.to} title={item.label} className="group relative grid h-11 w-11 place-items-center rounded-2xl transition-colors">
-        {active && <span className="absolute inset-0 rounded-2xl bg-[var(--brand)]/15" />}
+      <Link to={item.to} title={item.label} className="group relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors">
+        {active && <span className="absolute inset-0 rounded-2xl" style={{ background: "color-mix(in srgb, var(--brand) 18%, transparent)" }} />}
         <item.icon
           className="relative h-[21px] w-[21px] transition-transform duration-150 group-active:scale-90"
-          strokeWidth={active ? 2.2 : 1.7}
-          style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.55)" }}
+          strokeWidth={active ? 2.3 : 1.7}
+          style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.6)" }}
         />
         {item.key === "social" && unread > 0 && (
           <span className="absolute right-1.5 top-1.5 min-w-4 h-4 px-1 rounded-full bg-[var(--brand)] text-[10px] font-bold text-white grid place-items-center">{unread > 9 ? "9+" : unread}</span>
@@ -95,24 +95,20 @@ export default function SideNav() {
 
   return (
     <>
-      <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2.5 pb-[calc(8px+env(safe-area-inset-bottom))]">
-        <div className="flex items-center gap-0.5 rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
+      <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2 pb-[calc(8px+env(safe-area-inset-bottom))]">
+        <div className="flex items-center gap-0.5 max-w-[calc(100vw-1rem)] overflow-x-auto scrollbar-none rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
           <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Vazolex Plus">
             <BrandLogo size={22} />
           </Link>
 
           {CATS.map((item) => (
-            <div key={item.key} className={item.mobile ? "" : "hidden sm:block"}>
-              <NavButton item={item} />
-            </div>
+            <NavButton key={item.key} item={item} />
           ))}
 
-          <Link to="/settings" title="Settings" className="group relative hidden h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06] sm:grid">
-            <SettingsIcon className={`h-[21px] w-[21px] ${location.pathname === "/settings" ? "text-[var(--brand)]" : "text-white/55"}`} strokeWidth={1.7} />
-          </Link>
+          <span className="mx-0.5 h-6 w-px shrink-0 bg-white/10" />
 
           <button onClick={() => setAppsOpen(true)} title="All apps" className="group relative grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-colors hover:bg-white/[0.06]">
-            <LayoutGrid className="h-[21px] w-[21px] text-white/55 transition-transform duration-150 group-active:scale-90" strokeWidth={1.7} />
+            <LayoutGrid className="h-[21px] w-[21px] text-white/60 transition-transform duration-150 group-active:scale-90" strokeWidth={1.7} />
             <span className="pointer-events-none absolute -top-7 px-1.5 py-0.5 rounded-md bg-black/80 text-[10px] whitespace-nowrap text-white/70 opacity-0 group-hover:opacity-100 transition-opacity">Apps</span>
           </button>
 

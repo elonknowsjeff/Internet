@@ -82,7 +82,7 @@ export default function Assistant() {
           ? { role: "assistant", content: `Here's your image for “${t}”.`, image_url: res.url }
           : { role: "assistant", content: "I couldn't create that image — try describing it differently." };
       } else {
-        const prompt = `You are Laxin Plus AI, a friendly, concise assistant built into the Laxin Plus super-app. Current date: November 16, 2026. Answer helpfully and concisely.\n\nUser: ${t}`;
+        const prompt = `You are Vazolex Plus AI, a friendly, concise assistant built into the Vazolex Plus super-app. Current date: November 20, 2026. Answer helpfully and concisely.\n\nUser: ${t}`;
         const res = await askModel(prompt);
         const text = typeof res === "string" ? res : res?.output || res?.text || JSON.stringify(res);
         out = { role: "assistant", content: text };
@@ -126,7 +126,7 @@ export default function Assistant() {
           <Sparkles className="w-5 h-5 text-black" />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-[17px] font-bold font-display leading-none">Laxin Plus AI</h1>
+          <h1 className="text-[17px] font-bold font-display leading-none">Vazolex Plus AI</h1>
           <p className="text-[11px] text-emerald-400 flex items-center gap-1 mt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Chat, search & image generation
           </p>
@@ -222,7 +222,7 @@ export default function Assistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder={mode === "image" ? "Describe the image you want…" : "Ask Walza Plus AI…"}
+                placeholder={mode === "image" ? "Describe the image you want…" : "Ask Vazolex Plus AI…"}
                 className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder-white/35"
               />
               <button
