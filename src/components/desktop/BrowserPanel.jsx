@@ -61,6 +61,14 @@ const makeTab = () => ({ id: `t${seq++}`, input: "", url: "", title: "New tab", 
 
 const looksLikeUrl = (v) => /^https?:\/\//i.test(v) || (/^[\w-]+(\.[\w-]+)+([/?#].*)?$/.test(v.trim()) && !/\s/.test(v.trim()));
 
+// Single-page apps / login-gated sites can't render inside a sandboxed proxy —
+// open them in a real tab so they actually load instead of showing a blank page.
+const SPA_HOSTS = ["youtube.com", "youtu.be", "x.com", "twitter.com", "instagram.com", "tiktok.com", "facebook.com", "fb.com", "reddit.com", "netflix.com", "spotify.com", "twitch.tv", "linkedin.com", "pinterest.com", "snapchat.com", "whatsapp.com"];
+const isSpaHost = (u) => {
+  const h = hostOf(u);
+  return SPA_HOSTS.some((d) => h === d || h.endsWith("." + d));
+};
+
 function Favicon({ url, loading, size = 15 }) {
   if (loading) return <Loader2 className="animate-spin shrink-0" style={{ width: size, height: size }} />;
   if (!url) return <Globe className="shrink-0 text-neutral-400" style={{ width: size, height: size }} />;
@@ -110,6 +118,12 @@ export default function BrowserPanel() {
     const payload = looksLikeUrl(value)
       ? { url: /^https?:\/\//i.test(value) ? value : `https://${value}` }
       : { query: value, engine: prefs.engine };
+
+    if (payload.url && isSpaHost(payload.url)) {
+      window.open(payload.url, "_blank", "noopener,noreferrer");
+      patch(id, { loading: false, error: `Opened ${hostOf(payload.url)} in a new tab.`, url: payload.url, title: hostOf(payload.url), html: "", input: payload.url });
+      return;
+    }
 
     patch(id, { loading: true, error: "" });
     try {
@@ -354,12 +368,13 @@ export default function BrowserPanel() {
               </div>
 
               <div className="mt-5">
-                <p className="text-[9px] uppercase tracking-[0.22em] opacity-50 text-center mb-2">Social</p>
+                <p className="text-[9px] uppercase tracking-[0.22em] opacity-50 text-center mb-2">Social · opens in a new tab</p>
                 <div className="flex items-center justify-center gap-1.5 flex-wrap">
                   {SOCIAL.map((s) => (
-                    <button key={s.name} onClick={() => navigate(s.url)} className="flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full border border-white/20 bg-white/5 hover:bg-white/15">
+                    <button key={s.name} onClick={() => window.open(s.url, "_blank", "noopener,noreferrer")} className="flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full border border-white/20 bg-white/5 hover:bg-white/15">
                       <span className="w-2 h-2 rounded-full" style={{ background: tint(s.url) }} />
                       {s.name}
+                      <ExternalLink className="w-2.5 h-2.5 opacity-60" />
                     </button>
                   ))}
                 </div>
