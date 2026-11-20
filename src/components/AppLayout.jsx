@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import PageCanvas from "@/components/shell/PageCanvas";
+import AppBackground from "@/components/shell/AppBackground";
 import FloatingAssistant from "@/components/FloatingAssistant";
 import AudioProvider from "@/components/AudioProvider";
 import PlayerBar from "@/components/PlayerBar";
@@ -17,6 +18,7 @@ export default function AppLayout() {
       <VideoPlayerProvider>
         <SpotifyProvider>
           <div className="relative min-h-[100dvh] w-full max-w-full text-white overflow-x-hidden bg-[#0b0b0d]">
+            <AppBackground />
             <main className="relative z-10 w-full max-w-full min-h-[100dvh] pb-[calc(88px+env(safe-area-inset-bottom))]">
               <PageCanvas>
                 <Outlet />
