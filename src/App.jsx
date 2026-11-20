@@ -44,6 +44,7 @@ import Messages from '@/pages/Messages';
 import Stories from '@/pages/Stories';
 import Eats from '@/pages/Eats';
 import Logistics from '@/pages/Logistics';
+import Productivity from '@/pages/Productivity';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -108,6 +109,7 @@ const AuthenticatedApp = () => {
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/eats" element={<Eats />} />
         <Route path="/logistics" element={<Logistics />} />
+        <Route path="/productivity" element={<Productivity />} />
         <Route path="/terms" element={<Terms />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
