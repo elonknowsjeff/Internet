@@ -17,6 +17,7 @@ import IncomingCallBanner from "@/components/messages/IncomingCallBanner";
 import StoriesBar from "@/components/StoriesBar";
 import XSearchPanel from "@/components/social/XSearchPanel";
 import PostCard from "@/components/social/PostCard";
+import ExploreGrid from "@/components/social/ExploreGrid";
 import ProfilePhotoDialog from "@/components/profile/ProfilePhotoDialog";
 import TrendingBar from "@/components/feed/TrendingBar";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
@@ -30,6 +31,7 @@ const avatars = [
 
 const TABS = [
   { key: "foryou", label: "For you" },
+  { key: "explore", label: "Explore" },
   { key: "following", label: "Following" },
   { key: "bookmarks", label: "Bookmarks" },
   { key: "lists", label: "Lists" },
@@ -382,6 +384,8 @@ export default function Feed() {
 
           {loading ? (
             <div className="p-10 text-center text-white/45">Loading feed…</div>
+          ) : tab === "explore" ? (
+            <ExploreGrid posts={visible} onOpenAuthor={setAuthorFilter} />
           ) : displayPosts.length === 0 ? (
             <div className="p-10 text-center text-white/45">
               {tab === "following" ? "No posts from people you follow yet."
