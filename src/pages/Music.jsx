@@ -11,6 +11,7 @@ import MusicMarketplace from "@/components/music/MusicMarketplace";
 import ChartsPanel from "@/components/music/ChartsPanel";
 import PlaylistsPanel from "@/components/music/PlaylistsPanel";
 import SpotifyImport from "@/components/music/SpotifyImport";
+import SpotifyTab from "@/components/music/SpotifyTab";
 import { useSpotify } from "@/components/SpotifyProvider";
 import AiSongStudio from "@/components/music/AiSongStudio";
 import MusicHome from "@/components/music/MusicHome";
@@ -25,7 +26,7 @@ const NAV = [
   { key: "discover", label: "Listen Now", icon: Home },
   { key: "catalog", label: "Browse", icon: Disc3 },
   { key: "charts", label: "Radio", icon: Radio },
-  { key: "spotify", label: "Spotify · Apple", icon: Link2 },
+  { key: "spotify", label: "Spotify", icon: Link2 },
   { key: "create", label: "Create", icon: Sparkles },
   { key: "playlists", label: "Library", icon: ListMusic },
   { key: "marketplace", label: "Market", icon: Store },
@@ -274,7 +275,7 @@ export default function Music() {
               {tab === "charts" && <ChartsPanel tracks={tracks} currentKey={current?.key} playing={playing} onPlay={play} billboard={billboard} bbLoading={bbLoading} onPlayBillboard={playBillboard} />}
               {tab === "create" && createView}
               {tab === "playlists" && <PlaylistsPanel playlists={playlists} tracks={tracks} onChanged={load} onPlay={play} currentKey={current?.key} playing={playing} />}
-              {tab === "spotify" && <SpotifyImport user={user} onImported={load} />}
+              {tab === "spotify" && <SpotifyTab user={user} />}
               {tab === "marketplace" && <div className="p-3"><MusicMarketplace user={user} audio={audio} current={current} playing={playing} /></div>}
               {tab === "studio" && <div className="p-3"><MidiStudio /></div>}
             </div>
