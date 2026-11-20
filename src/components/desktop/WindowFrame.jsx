@@ -48,7 +48,7 @@ export default function WindowFrame({
     : "0 24px 60px -30px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.09)";
 
   const geometry = maximized
-    ? { left: 8, right: 8, top: isMac ? 34 : 8, bottom: isMac ? 84 : 74 }
+    ? { left: 8, right: 8, top: 52, bottom: 12 }
     : {
         left: pos.x,
         top: pos.y,

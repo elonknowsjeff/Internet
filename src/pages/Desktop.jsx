@@ -1,57 +1,44 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Globe, FolderOpen, Calculator as CalcIcon, Settings as Gear, Trash2, Music2, UtensilsCrossed,
-  Car, Clapperboard, Film, Newspaper, Mail, StickyNote, CalendarDays, Cloud, Gamepad2, Plane,
-  BedDouble, Heart, ShoppingBag, Store, MessageSquare, Sparkles, ListChecks, Hash,
+  FolderOpen, Calculator as CalcIcon, Settings as Gear, Music2,
+  Car, Clapperboard, Film, Newspaper, MessageSquare, StickyNote, CalendarDays, Cloud, Plane,
+  BedDouble, Heart, Store, Sparkles, ListChecks, Hash, Apple, Monitor, Minimize2, LayoutGrid,
 } from "lucide-react";
 import WindowFrame from "@/components/desktop/WindowFrame";
 import CalculatorApp from "@/components/desktop/CalculatorApp";
 import FilesApp from "@/components/desktop/FilesApp";
-import TrashApp from "@/components/desktop/TrashApp";
 import SettingsApp from "@/components/desktop/SettingsApp";
 import TasksApp from "@/components/desktop/TasksApp";
 import NotesApp from "@/components/desktop/NotesApp";
-import Win11Bar from "@/components/os/Win11Bar";
-import MacBar from "@/components/os/MacBar";
-import DesktopIcons from "@/components/desktop/DesktopIcons";
-import AppTabs from "@/components/desktop/AppTabs";
 import AiChatsApp from "@/components/desktop/AiChatsApp";
+import Launchpad from "@/components/desktop/Launchpad";
 import WallpaperPicker, { WALLPAPER_IMAGES } from "@/components/desktop/WallpaperPicker";
+import BrandLogo from "@/components/BrandLogo";
 
 const WINDOW_APPS = [
-  { id: "aichats", name: "AI chats", Icon: Sparkles, width: 720, height: 520, tone: "from-fuchsia-300 to-purple-600" },
-  { id: "tasks", name: "To Do", Icon: ListChecks, width: 620, height: 540, tone: "from-fuchsia-300 to-purple-600" },
-  { id: "notes", name: "Notes", Icon: StickyNote, width: 720, height: 480, tone: "from-purple-200 to-violet-500" },
-  { id: "files", name: "Cloud files", Icon: FolderOpen, width: 720, height: 500, tone: "from-indigo-300 to-violet-600" },
-  { id: "calc", name: "Calculator", Icon: CalcIcon, width: 300, height: 460, tone: "from-violet-200 to-purple-500" },
-  { id: "settings", name: "Settings", Icon: Gear, width: 380, height: 520, tone: "from-fuchsia-200 to-violet-600" },
-  { id: "trash", name: "Recycle Bin", Icon: Trash2, width: 620, height: 440, tone: "from-indigo-200 to-purple-700" },
+  { id: "aichats", name: "AI chats", Icon: Sparkles, width: 720, height: 520 },
+  { id: "tasks", name: "To Do", Icon: ListChecks, width: 620, height: 540 },
+  { id: "notes", name: "Notes", Icon: StickyNote, width: 720, height: 480 },
+  { id: "files", name: "Cloud files", Icon: FolderOpen, width: 720, height: 500 },
+  { id: "calc", name: "Calculator", Icon: CalcIcon, width: 300, height: 460 },
+  { id: "settings", name: "Settings", Icon: Gear, width: 380, height: 520 },
 ];
 
 const SHORTCUTS = [
-  { name: "Feed", to: "/feed", Icon: Hash, tone: "from-fuchsia-300 to-purple-600" },
-  { name: "Music", to: "/music", Icon: Music2, tone: "from-fuchsia-300 to-purple-600" },
-  { name: "Rides", to: "/rides", Icon: Car, tone: "from-purple-300 to-indigo-600" },
-  { name: "Movies", to: "/movies", Icon: Clapperboard, tone: "from-indigo-300 to-fuchsia-700" },
-  { name: "Video", to: "/video", Icon: Film, tone: "from-fuchsia-300 to-violet-700" },
-  { name: "News", to: "/news", Icon: Newspaper, tone: "from-violet-300 to-purple-700" },
-  { name: "Messages", to: "/messages", Icon: MessageSquare, tone: "from-fuchsia-300 to-violet-600" },
-  { name: "Calendar", to: "/calendar", Icon: CalendarDays, tone: "from-indigo-300 to-purple-600" },
-  { name: "Cloud", to: "/cloud", Icon: Cloud, tone: "from-violet-200 to-indigo-600" },
-  { name: "Flights", to: "/flights", Icon: Plane, tone: "from-purple-300 to-violet-700" },
-  { name: "Hotels", to: "/hotels", Icon: BedDouble, tone: "from-violet-300 to-indigo-500" },
-  { name: "Dating", to: "/dating", Icon: Heart, tone: "from-fuchsia-300 to-purple-500" },
-  { name: "Market", to: "/market", Icon: Store, tone: "from-violet-300 to-purple-500" },
-];
-
-const byTo = (to) => SHORTCUTS.find((s) => s.to === to);
-// each OS keeps its own set of apps on the bar
-const WIN_SHORTCUTS = ["/music", "/messages", "/market"].map(byTo).filter(Boolean);
-const MAC_SHORTCUTS = ["/music", "/messages", "/news", "/movies", "/calendar"].map(byTo).filter(Boolean);
-const WIN_PINNED = [
-  ...WINDOW_APPS.filter((a) => ["files", "tasks", "notes", "calc"].includes(a.id)).map((a) => ({ key: a.id, name: a.name, Icon: a.Icon, appId: a.id })),
-  ...["/music", "/market"].map(byTo).filter(Boolean).map((s) => ({ key: s.to, name: s.name, Icon: s.Icon, to: s.to })),
+  { name: "Feed", to: "/feed", Icon: Hash },
+  { name: "Music", to: "/music", Icon: Music2 },
+  { name: "Rides", to: "/rides", Icon: Car },
+  { name: "Movies", to: "/movies", Icon: Clapperboard },
+  { name: "Video", to: "/video", Icon: Film },
+  { name: "News", to: "/news", Icon: Newspaper },
+  { name: "Messages", to: "/messages", Icon: MessageSquare },
+  { name: "Calendar", to: "/calendar", Icon: CalendarDays },
+  { name: "Cloud", to: "/cloud", Icon: Cloud },
+  { name: "Flights", to: "/flights", Icon: Plane },
+  { name: "Hotels", to: "/hotels", Icon: BedDouble },
+  { name: "Dating", to: "/dating", Icon: Heart },
+  { name: "Market", to: "/market", Icon: Store },
 ];
 
 const WALLS = {
@@ -85,23 +72,19 @@ const OS_KEY = "si_desktop_os";
 const WALL_KEY = "si_desktop_wall";
 const WALL_AUTO_KEY = "si_desktop_wall_auto";
 
-const ICON_ITEMS = [
-  ...WINDOW_APPS.map((a) => ({ key: `app:${a.id}`, name: a.name, Icon: a.Icon, tone: a.tone, appId: a.id })),
-  ...SHORTCUTS.map((s) => ({ key: `go:${s.to}`, name: s.name, Icon: s.Icon, tone: s.tone, to: s.to })),
-];
-
 const appMeta = (id) => WINDOW_APPS.find((a) => a.id === id);
 
 export default function Desktop() {
   const navigate = useNavigate();
   const [wins, setWins] = useState([]);
   const [now, setNow] = useState(new Date());
-  const [os, setOs] = useState(() => localStorage.getItem(OS_KEY) || "windows");
+  const [os, setOs] = useState(() => localStorage.getItem(OS_KEY) || "macos");
   const [wall, setWall] = useState(() => {
     const saved = localStorage.getItem(WALL_KEY);
     return ALL_WALLS[saved] ? saved : "nebula";
   });
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [launch, setLaunch] = useState(false);
   const [autoWall, setAutoWall] = useState(() => localStorage.getItem(WALL_AUTO_KEY) === "1");
   const zRef = useRef(20);
   const nextZ = () => ++zRef.current;
@@ -111,9 +94,7 @@ export default function Desktop() {
   useEffect(() => { localStorage.setItem(WALL_AUTO_KEY, autoWall ? "1" : "0"); }, [autoWall]);
   useEffect(() => {
     if (!autoWall) return;
-    const t = setInterval(() => {
-      setWall((w) => WALL_ORDER[(WALL_ORDER.indexOf(w) + 1) % WALL_ORDER.length]);
-    }, 30000);
+    const t = setInterval(() => setWall((w) => WALL_ORDER[(WALL_ORDER.indexOf(w) + 1) % WALL_ORDER.length]), 30000);
     return () => clearInterval(t);
   }, [autoWall]);
   useEffect(() => {
@@ -134,16 +115,22 @@ export default function Desktop() {
   const minimizeApp = (id) => setWins((prev) => prev.map((w) => (w.id === id ? { ...w, min: true } : w)));
   const toggleMax = (id) => setWins((prev) => prev.map((w) => (w.id === id ? { ...w, max: !w.max, z: nextZ() } : w)));
   const showDesktop = () => setWins((prev) => prev.map((w) => ({ ...w, min: true })));
-  const cycleWall = () => setPickerOpen(true);
 
   const visible = wins.filter((w) => !w.min).sort((a, b) => a.z - b.z);
   const topZ = visible.length ? visible[visible.length - 1].z : 0;
   const isMac = os === "macos";
   const clock = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-  const dateLine = now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  const dateLine = now.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+
+  const launchItems = [
+    ...WINDOW_APPS.map((a) => ({ key: a.id, name: a.name, Icon: a.Icon, appId: a.id })),
+    ...SHORTCUTS.map((s) => ({ key: s.to, name: s.name, Icon: s.Icon, to: s.to })),
+  ];
+  const onOpen = (item) => (item.appId ? openApp(item.appId) : navigate(item.to));
 
   return (
-    <div className={`relative w-full h-[calc(100dvh-112px)] min-h-[560px] overflow-hidden select-none ${isMac ? "rounded-b-2xl" : ""}`}>
+    <div className="relative w-full h-[calc(100dvh-112px)] min-h-[520px] overflow-hidden select-none">
+      {/* Wallpaper */}
       <div
         className="absolute inset-0 transition-all duration-700"
         style={{
@@ -152,54 +139,37 @@ export default function Desktop() {
             : ALL_WALLS[wall]?.css,
         }}
       />
-      <div className="pointer-events-none absolute -left-24 top-24 w-[420px] h-[420px] rounded-full blur-[110px] opacity-35" style={{ background: "var(--brand)" }} />
-      <div className="pointer-events-none absolute right-0 bottom-16 w-[380px] h-[380px] rounded-full blur-[120px] opacity-25" style={{ background: "var(--brand-2)" }} />
+      <div className="pointer-events-none absolute -left-24 top-24 w-[420px] h-[420px] rounded-full blur-[110px] opacity-30" style={{ background: "var(--brand)" }} />
+      <div className="pointer-events-none absolute right-0 bottom-10 w-[380px] h-[380px] rounded-full blur-[120px] opacity-20" style={{ background: "var(--brand-2)" }} />
 
-      {isMac && (
-        <MacBar apps={WINDOW_APPS} shortcuts={MAC_SHORTCUTS} os={os} openApp={openApp} wins={wins} focusApp={focusApp} now={now} setOs={setOs} onWall={cycleWall} onShowDesktop={showDesktop} />
-      )}
-
-      {/* All apps as tabs, Windows 11 style */}
-      <AppTabs windowApps={WINDOW_APPS} wins={wins} onOpenApp={openApp} />
-
-      {/* Desktop icons — drag any of them anywhere */}
-      <DesktopIcons
-        items={ICON_ITEMS}
-        topOffset={16}
-        onOpen={(item) => (item.appId ? openApp(item.appId) : navigate(item.to))}
-      />
-
-      {/* Clock widget (Windows) */}
-      {!isMac && (
-        <div className="hidden lg:block absolute right-4 top-4 z-10 w-[228px] gloss-strong rounded-2xl p-4">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">Windows 11 · Super Internet</p>
-          <p className="mt-1 text-4xl font-black tabular-nums leading-none tracking-tight">{clock}</p>
-          <p className="mt-1.5 text-[11px] text-white/55">{dateLine}</p>
-          <div className="mt-3 h-px bg-white/10" />
-          <p className="mt-2.5 text-[11px] text-white/55">{visible.length ? `${visible.length} window${visible.length > 1 ? "s" : ""} open` : "Drag icons to arrange your screen"}</p>
-          <div className="mt-2 flex flex-wrap gap-1">
-            <button
-              onClick={() => setOs("windows")}
-              className={`px-2.5 py-1 rounded-full border text-[10px] font-bold transition-colors ${!isMac ? "brand-grad text-black border-transparent" : "bg-white/10 border-white/15 text-white/70 hover:bg-white/15"}`}
-            >
-              Windows 11
-            </button>
-            <button
-              onClick={() => setOs("macos")}
-              className={`px-2.5 py-1 rounded-full border text-[10px] font-bold transition-colors ${isMac ? "brand-grad text-black border-transparent" : "bg-white/10 border-white/15 text-white/70 hover:bg-white/15"}`}
-            >
-              macOS
-            </button>
-            <button onClick={cycleWall} className="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-semibold flex items-center gap-1"><Sparkles className="w-2.5 h-2.5" /> Wallpaper</button>
-          </div>
+      {/* Top bar */}
+      <div className="absolute top-0 inset-x-0 z-40 flex items-center gap-3 h-11 px-3 sm:px-4 backdrop-blur-xl bg-black/35 border-b border-white/10">
+        <div className="flex items-center gap-2 shrink-0">
+          <BrandLogo size={18} />
+          <span className="text-[13px] font-semibold tracking-tight hidden sm:block">Vazola Plus</span>
         </div>
-      )}
+        <button
+          onClick={() => setLaunch(true)}
+          className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-[12px] font-medium shrink-0"
+        >
+          <LayoutGrid className="w-4 h-4" /> Apps
+        </button>
+        <div className="flex-1" />
+        <div className="hidden sm:flex items-center gap-2 text-[12px] text-white/70 tabular-nums shrink-0">
+          <span>{dateLine}</span><span className="opacity-40">·</span><span>{clock}</span>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button onClick={() => setPickerOpen(true)} title="Wallpaper" className="w-8 h-8 rounded-full grid place-items-center hover:bg-white/10 text-white/70"><Sparkles className="w-4 h-4" /></button>
+          <button onClick={showDesktop} title="Show desktop" className="w-8 h-8 rounded-full grid place-items-center hover:bg-white/10 text-white/70"><Minimize2 className="w-4 h-4" /></button>
+          <button onClick={() => setOs(isMac ? "windows" : "macos")} title={isMac ? "Switch to Windows" : "Switch to macOS"} className="w-8 h-8 rounded-full grid place-items-center hover:bg-white/10 text-white/70">{isMac ? <Apple className="w-4 h-4" /> : <Monitor className="w-4 h-4" />}</button>
+        </div>
+      </div>
 
       {/* Windows */}
       {visible.map((w) => {
         const m = appMeta(w.id);
         if (!m) return null;
-        const index = visible.filter((x) => !x.min).findIndex((x) => x.id === w.id);
+        const index = visible.findIndex((x) => x.id === w.id);
         return (
           <WindowFrame
             key={w.id}
@@ -211,7 +181,7 @@ export default function Desktop() {
             maximized={w.max}
             zIndex={w.z}
             active={w.z === topZ}
-            initial={isMac ? { x: 64 + index * 22, y: 46 + index * 20 } : { x: 40 + index * 26, y: 26 + index * 22 }}
+            initial={{ x: 90 + index * 24, y: 64 + index * 20 }}
             onFocus={() => focusApp(w.id)}
             onClose={() => closeApp(w.id)}
             onMinimize={() => minimizeApp(w.id)}
@@ -222,20 +192,19 @@ export default function Desktop() {
             {w.id === "notes" ? <NotesApp /> : null}
             {w.id === "calc" ? <CalculatorApp /> : null}
             {w.id === "files" ? <FilesApp /> : null}
-            {w.id === "trash" ? <TrashApp /> : null}
             {w.id === "settings" ? <SettingsApp /> : null}
           </WindowFrame>
         );
       })}
 
-      {/* Restore tray for minimized windows */}
+      {/* Minimized tray */}
       {wins.some((w) => w.min) && (
-        <div className={`absolute right-3 z-40 flex items-center gap-1.5 gloss-strong rounded-full px-2 py-1.5 ${isMac ? "bottom-24" : "bottom-[70px]"}`}>
+        <div className="absolute right-3 bottom-3 z-40 flex items-center gap-1.5 gloss-strong rounded-full px-2 py-1.5">
           {wins.filter((w) => w.min).map((w) => {
             const m = appMeta(w.id);
             if (!m) return null;
             return (
-              <button key={w.id} onClick={() => focusApp(w.id)} title={`Restore ${m.name}`} className="flex items-center gap-1.5 px-2 py-1 rounded-full hover:bg-white/10 text-[10px] font-semibold">
+              <button key={w.id} onClick={() => focusApp(w.id)} title={`Restore ${m.name}`} className="flex items-center gap-1.5 px-2 py-1 rounded-full hover:bg-white/10 text-[11px] font-semibold">
                 <m.Icon className="w-3.5 h-3.5" style={{ color: "var(--brand)" }} /> {m.name}
               </button>
             );
@@ -243,17 +212,7 @@ export default function Desktop() {
         </div>
       )}
 
-      {!isMac && (
-        <Win11Bar apps={WINDOW_APPS} shortcuts={WIN_SHORTCUTS} pinned={WIN_PINNED} os={os} openApp={openApp} wins={wins} focusApp={focusApp} now={now} setOs={setOs} onWall={cycleWall} onShowDesktop={showDesktop} />
-      )}
-
-      <button
-        onClick={() => setPickerOpen(true)}
-        className="absolute left-3 bottom-[76px] z-40 gloss-strong rounded-full px-3 py-1.5 text-[11px] font-semibold flex items-center gap-1.5 hover:brightness-125"
-        title="Change wallpaper"
-      >
-        <Sparkles className="w-3 h-3" style={{ color: "var(--brand)" }} /> Wallpaper
-      </button>
+      {launch && <Launchpad items={launchItems} onOpen={onOpen} onClose={() => setLaunch(false)} />}
 
       {pickerOpen && (
         <WallpaperPicker
