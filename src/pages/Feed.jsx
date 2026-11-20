@@ -237,7 +237,7 @@ export default function Feed() {
 
         {/* Timeline column — clean single column, X style */}
         <div className="relative min-w-0">
-          <header className="sticky top-3 z-30 mb-4 overflow-hidden rounded-[22px] atmo-glass">
+          <header className="sticky top-3 z-30 mb-4 overflow-hidden rounded-[22px] atmo-glass neon-edge-soft">
             <div className="flex items-center gap-2.5 h-[56px] px-3 sm:px-4">
               <button onClick={() => setPhotoOpen(true)} title="Change profile photo" className="shrink-0">
                 {authorAvatar ? (
@@ -274,10 +274,9 @@ export default function Feed() {
                   key={t.key}
                   onClick={() => setTab(t.key)}
                   className={`relative shrink-0 overflow-hidden rounded-full px-4 py-1.5 text-[13px] transition-colors ${
-                    tab === t.key ? "font-bold text-white" : "font-medium text-white/45 hover:bg-white/[0.06] hover:text-white"
+                    tab === t.key ? "font-bold text-white neon-chip" : "font-medium text-white/45 hover:bg-white/[0.06] hover:text-white"
                   }`}
                 >
-                  {tab === t.key && <span className="absolute inset-0 brand-grad opacity-25" />}
                   <span className="relative">{t.label}</span>
                 </button>
               ))}
@@ -295,7 +294,7 @@ export default function Feed() {
           {!focusMode && <StoriesBar posts={posts} user={user} />}
 
           {/* Composer */}
-          <div className="mb-3 rounded-[22px] atmo-stage px-4 pt-4 pb-2">
+          <div className="mb-3 rounded-[22px] atmo-stage neon-edge-soft px-4 pt-4 pb-2">
           <div className="flex gap-3">
             <button onClick={() => setPhotoOpen(true)} title="Change profile photo" className="shrink-0 group">
               {authorAvatar ? (
@@ -368,7 +367,7 @@ export default function Feed() {
                 <button
                   onClick={post}
                   disabled={!draft.trim() && !pendingMedia && pollReady.length < 2}
-                  className="px-5 h-9 rounded-full bg-white text-black font-bold text-[15px] disabled:opacity-40 hover:bg-white/90 transition-colors"
+                  className="px-5 h-9 rounded-full neon-btn font-bold text-[15px] disabled:opacity-40 disabled:shadow-none transition disabled:bg-white/20"
                 >
                   Post
                 </button>

@@ -39,14 +39,14 @@ export default function PostCard({
   const [menu, setMenu] = useState(false);
 
   return (
-    <article className={`animate-fade-in border-b border-white/[0.06] px-4 hover:bg-white/[0.035] transition-colors duration-200 ${compact ? "py-2.5" : "py-3.5"}`}>
+    <article className={`animate-fade-in border-b border-white/[0.06] px-4 hover:bg-white/[0.035] hover:shadow-[inset_3px_0_0_-1px_var(--brand)] transition-all duration-200 ${compact ? "py-2.5" : "py-3.5"}`}>
       <div className="flex gap-3">
         <button onClick={() => onOpenAuthor?.(post.author_handle)} className="shrink-0 self-start">
           <img
             src={post.author_avatar || FALLBACK}
             onError={(e) => { e.currentTarget.src = FALLBACK; }}
             alt={post.author_name}
-            className="w-10 h-10 rounded-full object-cover ring-1 ring-white/10"
+            className="w-10 h-10 rounded-full object-cover ring-1 ring-white/10 hover:ring-[color:var(--brand)] transition"
           />
         </button>
 
@@ -100,7 +100,7 @@ export default function PostCard({
           )}
 
           {post.media_url && (
-            <div className="mt-2 rounded-2xl overflow-hidden border border-white/10">
+            <div className="mt-2 rounded-2xl overflow-hidden border border-white/10 shadow-[0_10px_30px_-18px_var(--brand)]">
               {post.media_type === "video" ? (
                 <video src={post.media_url} controls className="w-full max-h-96 bg-black" />
               ) : (

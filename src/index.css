@@ -189,6 +189,32 @@ html[data-accent="graphite"] { --brand: #8e8e93; --brand-2: #8e8e93; }
     border-right: 1px solid transparent;
     box-shadow: none;
   }
+  .neon-edge {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 22%, transparent), 0 10px 34px -16px color-mix(in srgb, var(--brand) 38%, transparent);
+  }
+  .neon-edge-soft {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 14%, transparent), 0 8px 26px -18px color-mix(in srgb, var(--brand) 30%, transparent);
+  }
+  .neon-ring {
+    background: conic-gradient(from 210deg, var(--brand), transparent 45%, var(--brand-2) 85%, var(--brand));
+    box-shadow: 0 0 14px -3px color-mix(in srgb, var(--brand) 70%, transparent);
+  }
+  .neon-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--brand) 55%, transparent), transparent);
+  }
+  .neon-text {
+    text-shadow: 0 0 16px color-mix(in srgb, var(--brand) 55%, transparent);
+  }
+  .neon-btn {
+    background-color: var(--brand);
+    color: #000;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 30%, transparent), 0 8px 22px -8px color-mix(in srgb, var(--brand) 65%, transparent);
+  }
+  .neon-btn:hover { filter: brightness(1.08); }
+  .neon-chip {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 35%, transparent), 0 0 18px -8px color-mix(in srgb, var(--brand) 55%, transparent);
+  }
 }
 
 @layer utilities {

@@ -61,7 +61,7 @@ export default function TrendingBar({ query, setQuery, posts = [], onTag, onOpen
 
   return (
     <div ref={boxRef} className="relative flex-1 min-w-0">
-      <div className="flex items-center gap-2.5 bg-white/[0.07] border border-white/10 focus-within:border-[color:var(--brand)]/70 focus-within:bg-white/[0.1] rounded-full px-3.5 py-2 transition-all">
+      <div className="flex items-center gap-2.5 bg-white/[0.07] border border-white/10 focus-within:border-[color:var(--brand)] focus-within:bg-white/[0.1] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--brand)_22%,transparent)] rounded-full px-3.5 py-2 transition-all">
         <Search className="w-4 h-4 text-white/45 shrink-0" />
         <input
           value={query}
@@ -82,7 +82,7 @@ export default function TrendingBar({ query, setQuery, posts = [], onTag, onOpen
       </div>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-white/10 bg-[#140e2b]/95 backdrop-blur-2xl shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] overflow-hidden animate-pop-in">
+        <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border border-white/10 bg-[#140e2b]/95 backdrop-blur-2xl shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9),0_0_0_1px_color-mix(in_srgb,var(--brand)_22%,transparent)] overflow-hidden animate-pop-in">
           <p className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-[0.18em] text-white/40 flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5" style={{ color: "var(--brand)" }} /> Trending now
           </p>

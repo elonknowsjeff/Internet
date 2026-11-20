@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import StoryViewer from "@/components/StoryViewer";
 import StoryComposer from "@/components/stories/StoryComposer";
 
-const RING = "bg-gradient-to-tr from-amber-300 via-fuchsia-400 to-violet-400";
+const RING = "neon-ring";
 const initials = (name) => (name || "U")[0]?.toUpperCase();
 
 export default function StoriesBar({ user }) {
@@ -48,14 +48,14 @@ export default function StoriesBar({ user }) {
 
   return (
     <>
-      <div className="flex gap-4 px-4 py-3 overflow-x-auto scrollbar-none border-b border-white/[0.06]">
+      <div className="flex gap-4 px-4 py-3 overflow-x-auto scrollbar-none border-b border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent">
         <div className="flex flex-col items-center gap-1.5 shrink-0">
           <div className="relative">
             <button
               onClick={() => (mine ? setOpenGroup(mine) : setComposer(true))}
               className="block w-[62px] h-[62px] transition-transform duration-200 hover:scale-[1.04]"
             >
-              <div className={`w-[62px] h-[62px] rounded-full p-[2px] ${mine ? RING : "bg-white/15"}`}>
+              <div className={`w-[62px] h-[62px] rounded-full p-[2px] ${mine ? RING : "bg-white/15 neon-edge-soft"}`}>
                 <div className="w-full h-full rounded-full bg-[#2a2152] p-[2px]">
                   <div className="w-full h-full rounded-full bg-[#2a2152] overflow-hidden flex items-center justify-center">
                     {authorAvatar ? (
