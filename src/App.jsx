@@ -22,6 +22,8 @@ import News from '@/pages/News';
 import Assistant from '@/pages/Assistant';
 import Finance from '@/pages/Finance';
 import Profile from '@/pages/Profile';
+import Username from '@/pages/Username';
+import Follows from '@/pages/Follows';
 import Settings from '@/pages/Settings';
 import Calculator from '@/pages/Calculator';
 import Dating from '@/pages/Dating';
@@ -97,6 +99,8 @@ const AuthenticatedApp = () => {
         <Route path="/assistant" element={<Assistant />} />
         <Route path="/finance" element={<Finance />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/username" element={<Username />} />
+        <Route path="/follows" element={<Follows />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/calculator" element={<Calculator />} />
         <Route path="/dating" element={<Dating />} />

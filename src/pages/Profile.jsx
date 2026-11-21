@@ -159,7 +159,7 @@ export default function Profile() {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-xl font-black leading-tight truncate">{name}</h1>
-            <p className="text-sm text-white/45">@{handle}</p>
+            <p className="text-sm text-white/45">@{handle} · <Link to="/username" className="hover:underline" style={{ color: "var(--brand)" }}>change username</Link></p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <button onClick={() => startSubscription("plus").catch(() => {})} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-bold">
@@ -188,8 +188,8 @@ export default function Profile() {
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-white/45">
           {joined && <span className="flex items-center gap-1.5"><CalendarDays className="w-4 h-4" /> Joined {joined}</span>}
-          <span><b className="text-white">{following}</b> following</span>
-          <span><b className="text-white">{followers}</b> followers</span>
+          <Link to="/follows"><b className="text-white">{following}</b> following</Link>
+          <Link to="/follows"><b className="text-white">{followers}</b> followers</Link>
         </div>
       </div>
 
