@@ -13,11 +13,7 @@ const CATS = [
   { key: "social", to: "/", label: "Social", icon: HomeIcon },
   { key: "entertainment", to: "/?cat=entertainment", label: "Entertainment", icon: Clapperboard },
   { key: "tech", to: "/?cat=tech", label: "Tech", icon: Cpu },
-  { key: "news", to: "/?cat=news", label: "News", icon: Newspaper },
   { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed },
-  { key: "gaming", to: "/?cat=gaming", label: "Arcade", icon: Gamepad2 },
-  { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles },
-  { key: "web", to: "/browser", label: "Web Browser", icon: Globe },
 ];
 
 export default function SideNav() {

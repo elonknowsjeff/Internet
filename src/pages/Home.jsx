@@ -16,6 +16,7 @@ import Feed from "@/pages/Feed";
 import Gaming from "@/pages/Gaming";
 import Assistant from "@/pages/Assistant";
 import TvHero from "@/components/home/TvHero";
+import EntertainmentHub from "@/components/home/EntertainmentHub";
 
 const SECTIONS = {
   entertainment: {
@@ -61,7 +62,7 @@ const SECTIONS = {
   },
 };
 
-const STACKED = [SECTIONS.entertainment, SECTIONS.tech, SECTIONS.news, SECTIONS.food];
+const STACKED = [SECTIONS.news];
 
 export default function Home() {
   const [params] = useSearchParams();
@@ -98,8 +99,9 @@ export default function Home() {
                   <SectionPanel key={s.title} {...s} />
                 ))}
                 <DatingPanel />
-                <GamingPanel />
               </>
+            ) : cat === "entertainment" ? (
+              <EntertainmentHub />
             ) : section ? (
               <SectionPanel {...section} />
             ) : null}
