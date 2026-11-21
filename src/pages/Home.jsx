@@ -10,7 +10,7 @@ import { base44 } from "@/api/base44Client";
 import FeedTopBar from "@/components/home/FeedTopBar";
 import SectionPanel from "@/components/home/SectionPanel";
 import UnifiedFeed from "@/components/home/UnifiedFeed";
-import Gaming from "@/pages/Gaming";
+import ArcadeHub from "@/components/home/ArcadeHub";
 import Assistant from "@/pages/Assistant";
 import EntertainmentHub from "@/components/home/EntertainmentHub";
 
@@ -64,7 +64,7 @@ export default function Home() {
 
       <main className={`mx-auto w-full px-3 sm:px-4 ${isSocial ? "max-w-[640px]" : "max-w-[1100px]"}`}>
         {isGaming ? (
-          <Gaming />
+          <ArcadeHub />
         ) : isAi ? (
           <Assistant />
         ) : isSocial ? (

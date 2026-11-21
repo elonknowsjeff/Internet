@@ -4,6 +4,9 @@ import { base44 } from "@/api/base44Client";
 import { Loader2, ImagePlus, Send, Newspaper, Music2, Film, Gamepad2, Tv, ExternalLink, Sparkles } from "lucide-react";
 import PostCard from "@/components/social/PostCard";
 import usePostReactions from "@/hooks/usePostReactions";
+import StoriesBar from "@/components/StoriesBar";
+import TrendingHashtags from "@/components/home/TrendingHashtags";
+import WhoToFollow from "@/components/WhoToFollow";
 
 const asItems = (res) => (Array.isArray(res) ? res : res?.items || []);
 const avatars = ["https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100"];
@@ -56,6 +59,7 @@ export default function UnifiedFeed() {
   const [uploading, setUploading] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
+  const [tag, setTag] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -169,12 +173,17 @@ export default function UnifiedFeed() {
   // Interleave the three streams into one timeline by recency.
   const stream = useMemo(() => {
     const items = [];
-    posts.forEach((p) => items.push({ type: "social", ts: new Date(p.created_date || 0).getTime() || Date.now(), data: p }));
-    news.forEach((n, i) => items.push({ type: "news", ts: Date.now() - i * 60000 - 30000, data: n }));
-    ent.forEach((e, i) => items.push({ type: "ent", ts: Date.now() - i * 90000 - 120000, data: e }));
+    posts.forEach((p) => {
+      if (tag && !new RegExp("#" + tag + "\\b", "i").test(p.content || "")) return;
+      items.push({ type: "social", ts: new Date(p.created_date || 0).getTime() || Date.now(), data: p });
+    });
+    if (!tag) {
+      news.forEach((n, i) => items.push({ type: "news", ts: Date.now() - i * 60000 - 30000, data: n }));
+      ent.forEach((e, i) => items.push({ type: "ent", ts: Date.now() - i * 90000 - 120000, data: e }));
+    }
     items.sort((a, b) => b.ts - a.ts);
     return items;
-  }, [posts, news, ent]);
+  }, [posts, news, ent, tag]);
 
   const filtered = chip === "all" ? stream : stream.filter((it) => it.type === chip);
   const counts = {
@@ -185,6 +194,11 @@ export default function UnifiedFeed() {
 
   return (
     <div className="mx-auto w-full max-w-[640px] px-3 sm:px-4 pb-28">
+      {/* Stories */}
+      <div className="mt-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl">
+        <StoriesBar user={user} />
+      </div>
+
       {/* Composer */}
       <div className="mt-3 rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-3.5 backdrop-blur-xl">
         <div className="flex gap-3">
@@ -223,6 +237,8 @@ export default function UnifiedFeed() {
         </div>
       </div>
 
+      <TrendingHashtags posts={posts} active={tag} onSelect={setTag} />
+
       {/* Filter chips */}
       <div className="sticky top-[52px] z-20 mt-3 flex gap-1.5 overflow-x-auto scrollbar-none">
         {CHIPS.map((c) => {
@@ -248,27 +264,30 @@ export default function UnifiedFeed() {
         <div className="py-16 text-center text-sm text-white/45">Nothing here yet. Be the first to post!</div>
       ) : (
         <div className="mt-3 space-y-3">
-          {filtered.map((it) => {
+          {filtered.map((it, idx) => {
             if (it.type === "social") {
               const p = it.data;
+              const lead = idx === 2 ? <WhoToFollow key="wtf-rail" /> : null;
               return (
-                <PostCard
-                  key={p.id}
-                  post={p}
-                  isOwn={isOwn(p)}
-                  liked={!!liked[p.id]}
-                  reposted={!!reposted[p.id]}
-                  bookmarked={!!bookmarked[p.id]}
-                  commentsOpen={expandedId === p.id}
-                  onOpenAuthor={() => {}}
-                  onDelete={() => { base44.entities.Post.delete(p.id); loadPosts(); }}
-                  onLike={toggleLike}
-                  onRepost={toggleRepost}
-                  onBookmark={toggleBookmark}
-                  onComment={(x) => setExpandedId(expandedId === x.id ? null : x.id)}
-                  onCommented={loadPosts}
-                  onDm={() => {}}
-                />
+                <React.Fragment key={p.id}>
+                  {lead}
+                  <PostCard
+                    post={p}
+                    isOwn={isOwn(p)}
+                    liked={!!liked[p.id]}
+                    reposted={!!reposted[p.id]}
+                    bookmarked={!!bookmarked[p.id]}
+                    commentsOpen={expandedId === p.id}
+                    onOpenAuthor={() => {}}
+                    onDelete={() => { base44.entities.Post.delete(p.id); loadPosts(); }}
+                    onLike={toggleLike}
+                    onRepost={toggleRepost}
+                    onBookmark={toggleBookmark}
+                    onComment={(x) => setExpandedId(expandedId === x.id ? null : x.id)}
+                    onCommented={loadPosts}
+                    onDm={() => {}}
+                  />
+                </React.Fragment>
               );
             }
             if (it.type === "news") {

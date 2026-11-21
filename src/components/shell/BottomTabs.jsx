@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
-  Home as HomeIcon, LayoutGrid, Gamepad2, Sparkles, User, Settings as SettingsIcon, LogOut, LogIn, UserPlus,
+  Home as HomeIcon, Film, Gamepad2, Sparkles, Monitor, User, Settings as SettingsIcon, LogOut, LogIn, UserPlus,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 
-// Every section in plain sight — nothing hidden in a drawer.
+// Apps grouped by category, all laid out in the dock.
 const TABS = [
-  { key: "home", to: "/", label: "Home", icon: HomeIcon, match: (p, cat) => p === "/" && cat !== "gaming" && cat !== "entertainment" },
-  { key: "apps", to: "/apps", label: "Apps", icon: LayoutGrid, match: (p) => p === "/apps" },
-  { key: "arcade", to: "/?cat=gaming", label: "Arcade", icon: Gamepad2, match: (p, cat) => p === "/" && cat === "gaming" },
-  { key: "ai", to: "/assistant", label: "AI", icon: Sparkles, match: (p) => p === "/assistant" },
+  { key: "social", to: "/?cat=social", label: "Social", icon: HomeIcon, match: (p, cat) => p === "/" && cat !== "gaming" && cat !== "entertainment" && cat !== "aichat" },
+  { key: "ent", to: "/?cat=entertainment", label: "Entertainment", icon: Film, match: (p, cat) => p === "/" && cat === "entertainment" },
+  { key: "games", to: "/?cat=gaming", label: "Games", icon: Gamepad2, match: (p, cat) => p === "/" && cat === "gaming" },
+  { key: "ai", to: "/assistant", label: "AI Chat", icon: Sparkles, match: (p, cat) => p === "/assistant" || (p === "/" && cat === "aichat") },
+  { key: "desktop", to: "/desktop", label: "Desktop", icon: Monitor, match: (p) => p === "/desktop" },
 ];
 
 export default function BottomTabs() {
@@ -53,7 +54,7 @@ export default function BottomTabs() {
             strokeWidth={active ? 2.3 : 1.7}
             style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.62)" }}
           />
-          {item.key === "home" && unread > 0 && (
+          {item.key === "social" && unread > 0 && (
             <span className="absolute right-0 top-0 grid h-4 min-w-4 place-items-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-bold text-white">
               {unread > 9 ? "9+" : unread}
             </span>
@@ -89,8 +90,8 @@ export default function BottomTabs() {
   return (
     <>
       <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2 pb-[calc(8px+env(safe-area-inset-bottom))]">
-        <div className="flex w-full max-w-[480px] items-center gap-1 rounded-[26px] border border-white/[0.08] bg-[#1c1c1e]/90 px-2 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
-          <Link to="/" className="mr-0.5 hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Internet X">
+        <div className="flex w-full max-w-[680px] items-center gap-0.5 rounded-[26px] border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
+          <Link to="/" className="mr-0.5 hidden h-11 w-11 shrink-0 place-items-center rounded-2xl hover:bg-white/10 sm:grid" title="Internet X">
             <BrandLogo size={22} />
           </Link>
           {TABS.map((item) => <Tab key={item.key} item={item} />)}
