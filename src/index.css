@@ -228,6 +228,10 @@ html[data-accent="graphite"] { --brand: #8e8e93; --brand-2: #8e8e93; }
   .thin-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 }
 
+/* Custom OS cursor on the desktop shell: hide native pointer, keep text caret for inputs */
+.os-shell, .os-shell * { cursor: none; }
+.os-shell input, .os-shell textarea, .os-shell [contenteditable="true"], .os-shell [contenteditable] { cursor: text; }
+
 /* Desktop OS window content: let page roots fill their window instead of forcing viewport height */
 .os-win-body { height: 100%; }
 .os-win-body, .os-win-body > * { min-height: 0 !important; }

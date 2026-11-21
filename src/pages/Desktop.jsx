@@ -14,6 +14,10 @@ import NotesApp from "@/components/desktop/NotesApp";
 import AiChatsApp from "@/components/desktop/AiChatsApp";
 import Launchpad from "@/components/desktop/Launchpad";
 import WallpaperPicker, { WALLPAPER_IMAGES } from "@/components/desktop/WallpaperPicker";
+import BrowserPanel from "@/components/desktop/BrowserPanel";
+import OsCursor from "@/components/desktop/OsCursor";
+import Taskbar from "@/components/desktop/Taskbar";
+import StartMenu from "@/components/desktop/StartMenu";
 import BrandLogo from "@/components/BrandLogo";
 
 const WINDOW_APPS = [
@@ -22,7 +26,8 @@ const WINDOW_APPS = [
   { id: "notes", name: "Notes", Icon: StickyNote, width: 720, height: 480 },
   { id: "files", name: "Cloud files", Icon: FolderOpen, width: 720, height: 500 },
   { id: "calc", name: "Calculator", Icon: CalcIcon, width: 300, height: 460 },
-  { id: "settings", name: "Settings", Icon: Gear, width: 380, height: 520 },
+  { id: "browser", name: "Browser", Icon: Globe, width: 1000, height: 660 },
+  { id: "settings", name: "Settings", Icon: Gear, width: 760, height: 560 },
 ];
 
 const SHORTCUTS = [
@@ -85,6 +90,7 @@ export default function Desktop() {
   });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [launch, setLaunch] = useState(false);
+  const [startOpen, setStartOpen] = useState(false);
   const [autoWall, setAutoWall] = useState(() => localStorage.getItem(WALL_AUTO_KEY) === "1");
   const zRef = useRef(20);
   const nextZ = () => ++zRef.current;
@@ -118,6 +124,8 @@ export default function Desktop() {
 
   const visible = wins.filter((w) => !w.min).sort((a, b) => a.z - b.z);
   const topZ = visible.length ? visible[visible.length - 1].z : 0;
+  const activeWinId = visible.length ? visible[visible.length - 1].id : null;
+  const wallList = WALL_ORDER.map((id) => ({ id, label: ALL_WALLS[id].label, url: ALL_WALLS[id].url }));
   const isMac = os === "macos";
   const clock = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
   const dateLine = now.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
@@ -129,7 +137,8 @@ export default function Desktop() {
   const onOpen = (item) => (item.appId ? openApp(item.appId) : navigate(item.to));
 
   return (
-    <div className="relative w-full h-[calc(100dvh-112px)] min-h-[520px] overflow-hidden select-none">
+    <div className="os-shell relative w-full h-[calc(100dvh-112px)] min-h-[520px] overflow-hidden select-none">
+      <OsCursor />
       {/* Wallpaper */}
       <div
         className="absolute inset-0 transition-all duration-700"
@@ -204,24 +213,37 @@ export default function Desktop() {
             {w.id === "notes" ? <NotesApp /> : null}
             {w.id === "calc" ? <CalculatorApp /> : null}
             {w.id === "files" ? <FilesApp /> : null}
-            {w.id === "settings" ? <SettingsApp /> : null}
+            {w.id === "browser" ? <BrowserPanel /> : null}
+            {w.id === "settings" ? <SettingsApp wall={wall} walls={wallList} onWall={setWall} os={os} onOs={() => setOs(isMac ? "windows" : "macos")} /> : null}
           </WindowFrame>
         );
       })}
 
-      {/* Minimized tray */}
-      {wins.some((w) => w.min) && (
-        <div className="absolute right-3 bottom-3 z-40 flex items-center gap-1.5 gloss-strong rounded-full px-2 py-1.5">
-          {wins.filter((w) => w.min).map((w) => {
-            const m = appMeta(w.id);
-            if (!m) return null;
-            return (
-              <button key={w.id} onClick={() => focusApp(w.id)} title={`Restore ${m.name}`} className="flex items-center gap-1.5 px-2 py-1 rounded-full hover:bg-white/10 text-[11px] font-semibold">
-                <m.Icon className="w-3.5 h-3.5" style={{ color: "var(--brand)" }} /> {m.name}
-              </button>
-            );
-          })}
-        </div>
+      {/* Bottom taskbar (Windows 11 / macOS) */}
+      <Taskbar
+        os={os}
+        apps={WINDOW_APPS}
+        running={wins}
+        activeId={activeWinId}
+        onOpen={openApp}
+        onFocus={focusApp}
+        onStart={() => setStartOpen(true)}
+        onWallpaper={() => setPickerOpen(true)}
+        onShowDesktop={showDesktop}
+        onToggleOs={() => setOs(isMac ? "windows" : "macos")}
+        clock={clock}
+        date={dateLine}
+      />
+
+      {startOpen && (
+        <StartMenu
+          apps={WINDOW_APPS}
+          shortcuts={SHORTCUTS}
+          onOpenApp={openApp}
+          onNavigate={navigate}
+          onClose={() => setStartOpen(false)}
+          onWallpaper={() => { setPickerOpen(true); setStartOpen(false); }}
+        />
       )}
 
       {launch && <Launchpad items={launchItems} onOpen={onOpen} onClose={() => setLaunch(false)} />}
