@@ -15,7 +15,7 @@ export default function GamingPanel() {
             <Gamepad2 className="w-6 h-6" />
           </span>
           <div className="flex-1 min-w-0">
-            <h3 className="text-[18px] font-extrabold tracking-tight">Gaming</h3>
+            <h3 className="text-[18px] font-extrabold tracking-tight">Arcade</h3>
             <p className="mt-0.5 text-[13px] text-white/55">Jump into the arcade — retro classics, puzzles and AI adventures.</p>
           </div>
           <button onClick={() => navigate("/?cat=gaming")} className="rounded-full neon-btn px-5 py-2.5 text-[13px] font-bold">

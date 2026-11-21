@@ -15,7 +15,7 @@ const CATS = [
   { key: "tech", to: "/?cat=tech", label: "Tech", icon: Cpu },
   { key: "news", to: "/?cat=news", label: "News", icon: Newspaper },
   { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed },
-  { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2 },
+  { key: "gaming", to: "/?cat=gaming", label: "Arcade", icon: Gamepad2 },
   { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles },
   { key: "web", to: "/browser", label: "Web Browser", icon: Globe },
 ];

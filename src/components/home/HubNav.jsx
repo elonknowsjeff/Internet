@@ -18,7 +18,7 @@ const GROUPS = [
     { to: "/?cat=tech", cat: "tech", label: "Tech", icon: Cpu },
     { to: "/?cat=news", cat: "news", label: "News", icon: Newspaper },
     { to: "/?cat=food", cat: "food", label: "Food & Services", icon: UtensilsCrossed },
-    { to: "/?cat=gaming", cat: "gaming", label: "Gaming", icon: Gamepad2 },
+    { to: "/?cat=gaming", cat: "gaming", label: "Arcade", icon: Gamepad2 },
     { to: "/?cat=aichat", cat: "aichat", label: "AI Chat", icon: Sparkles },
   ]},
   { label: "Social", items: [

@@ -146,7 +146,8 @@ export default function Profile() {
         <button
           onClick={() => setEditing(true)}
           title="Change profile photo"
-          className="absolute -bottom-12 left-4 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[#0a0512] bg-neutral-800 grid place-items-center group"
+          style={{ boxShadow: "0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent), 0 0 26px -6px var(--brand)" }}
+          className="absolute -bottom-12 left-4 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[var(--bg-base)] bg-neutral-800 grid place-items-center group"
         >
           {user.avatar ? <img src={user.avatar} alt="profile" className="w-full h-full object-cover" /> : <User className="w-9 h-9 text-neutral-400" />}
           <span className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity grid place-items-center">

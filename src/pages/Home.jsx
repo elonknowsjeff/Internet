@@ -15,6 +15,7 @@ import GamingPanel from "@/components/home/GamingPanel";
 import Feed from "@/pages/Feed";
 import Gaming from "@/pages/Gaming";
 import Assistant from "@/pages/Assistant";
+import TvHero from "@/components/home/TvHero";
 
 const SECTIONS = {
   entertainment: {
@@ -85,6 +86,7 @@ export default function Home() {
               <Assistant />
             ) : isSocial ? (
               <>
+                <TvHero />
                 <Feed />
                 <div className="mx-auto max-w-[600px] px-3 sm:px-4 pt-8">
                   <div className="flex items-center gap-2.5">

@@ -31,7 +31,7 @@ export const APPS = {
   eats:      { name: "Eats",       icon: UtensilsCrossed,  Comp: Eats,      w: 920,  h: 640 },
   rides:     { name: "Rides",      icon: Car,              Comp: Rides,     w: 900,  h: 620 },
   dating:    { name: "Dating",     icon: Heart,            Comp: Dating,    w: 980,  h: 660 },
-  gaming:    { name: "Gaming",     icon: Gamepad2,          Comp: Gaming,    w: 1040, h: 680 },
+  gaming:    { name: "Arcade",      icon: Gamepad2,          Comp: Gaming,    w: 1040, h: 680 },
   assistant: { name: "AI Chat",    icon: Sparkles,         Comp: Assistant, w: 880,  h: 640 },
   cloud:     { name: "Cloud",      icon: CloudIcon,        Comp: Cloud,     w: 960,  h: 620 },
   market:    { name: "Market",     icon: Store,             Comp: Market,    w: 940,  h: 640 },

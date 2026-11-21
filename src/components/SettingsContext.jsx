@@ -13,7 +13,7 @@ const defaults = {
   dockOrder: [], // user-arranged nav order
   stripeLink: "https://buy.stripe.com/test_eVq14ndV84pJ5G6aC1bQY00",
   hideFloatingAssistant: false,
-  theme: "midnight", // daylight | peach | mint | sky | lavender | citrus | midnight | cyber | borealis | sunset | ultraviolet | graphite
+  theme: "theater", // theater | daylight | peach | mint | sky | lavender | citrus | midnight | cyber | borealis | sunset | ultraviolet | graphite
   accent: "ocean", // ocean (apple blue) | purple | blue | red | orange | custom
   customColor: "#0a84ff", // hex used when accent === "custom"
   sounds: { notification: true, reminder: true, startup: true },
@@ -30,7 +30,8 @@ export function SettingsProvider({ children }) {
       if (!saved.density) saved.density = defaults.density;
       if (!saved.barVersion) { saved.navStyle = "dock"; saved.barVersion = 2; }
       if (!saved.bgVersion || saved.bgVersion < 2) { saved.background = "trails"; saved.bgVersion = 2; }
-      if (!saved.theme) saved.theme = "midnight";
+      if (!saved.theme) saved.theme = "theater";
+      if (!saved.themeVersion || saved.themeVersion < 2) { saved.theme = "theater"; saved.themeVersion = 2; }
       return saved;
     } catch { return { ...defaults }; }
   });

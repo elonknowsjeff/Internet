@@ -6,14 +6,14 @@ export default function BrandLogo({ size = 44, className = "" }) {
   return (
     <span className={`relative inline-flex shrink-0 ${className}`} style={{ width: size, height: size }}>
       <span
-        className="absolute inset-0 rounded-[28%] blur-lg opacity-70"
-        style={{ background: "radial-gradient(circle, rgba(34,211,238,0.7), rgba(138,43,226,0.4) 55%, transparent 72%)" }}
+        className="absolute inset-0 rounded-[28%] blur-lg opacity-80"
+        style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--brand) 75%, transparent), color-mix(in srgb, var(--brand-2) 50%, transparent) 55%, transparent 72%)" }}
       />
       <img
         src={LOGO_URL}
         alt="Valo"
         className="relative w-full h-full rounded-[28%] object-cover"
-        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.22), 0 10px 26px -10px rgba(138,43,226,0.8)" }}
+        style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.22), 0 10px 26px -10px color-mix(in srgb, var(--brand) 80%, transparent)" }}
       />
     </span>
   );
