@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Users, UserPlus, Check, Loader2, Search } from "lucide-react";
 import AccountView from "@/components/social/AccountView";
+import { DEFAULT_AVATAR } from "@/lib/defaults";
 
 const asItems = (res) => (Array.isArray(res) ? res : res?.items || []);
-const FALLBACK = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200";
+const FALLBACK = DEFAULT_AVATAR;
 const handleOf = (u) => u?.username || (u?.email ? u.email.split("@")[0] : "");
 const nameOf = (u) => u?.display_name || u?.full_name || handleOf(u) || "User";
 

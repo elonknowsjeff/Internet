@@ -23,11 +23,9 @@ import TrendingBar from "@/components/feed/TrendingBar";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 import WhoToFollow from "@/components/WhoToFollow";
 import { useSettings } from "@/components/SettingsContext";
+import { DEFAULT_AVATAR } from "@/lib/defaults";
 
-const avatars = [
-  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
-];
+const avatars = [DEFAULT_AVATAR];
 
 const TABS = [
   { key: "foryou", label: "For you" },

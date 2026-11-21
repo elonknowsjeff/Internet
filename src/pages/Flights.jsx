@@ -149,6 +149,13 @@ Times should be local to each airport. Return the cheapest useful spread of depa
           {dataListOpts.map((o) => <option key={o} value={o} />)}
         </datalist>
 
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[11px] text-white/40">Anywhere:</span>
+          {["Tokyo", "London", "Dubai", "Paris", "Los Angeles", "Sydney", "Bali", "Istanbul"].map((c) => (
+            <button key={c} type="button" onClick={() => setTo(c)} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[12px] text-white/70 hover:bg-white/10">{c}</button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
           <label className="block">
             <span className="text-[10px] uppercase tracking-wider text-white/45">Date</span>
