@@ -165,6 +165,18 @@ export default function Desktop() {
         </div>
       </div>
 
+      {/* Desktop icons — all apps in plain sight */}
+      <div className="absolute top-14 left-3 z-10 grid grid-flow-col grid-rows-6 gap-1.5 max-h-[calc(100%-80px)]">
+        {SHORTCUTS.map((s) => (
+          <button key={s.to} onClick={() => navigate(s.to)} title={s.name} className="group flex flex-col items-center gap-1 w-16 p-1.5 rounded-xl hover:bg-white/10 transition">
+            <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/[0.08] border border-white/10 backdrop-blur-md">
+              <s.Icon className="h-5 w-5" style={{ color: "var(--brand)" }} />
+            </span>
+            <span className="text-[10px] text-white/80 text-center leading-tight line-clamp-1" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>{s.name}</span>
+          </button>
+        ))}
+      </div>
+
       {/* Windows */}
       {visible.map((w) => {
         const m = appMeta(w.id);

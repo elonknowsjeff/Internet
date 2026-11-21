@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Send, Sparkles, MessageSquare, ImagePlus, Loader2, Menu } from "lucide-react";
+import { Send, Sparkles, MessageSquare, ImagePlus, Loader2, Menu, Plus } from "lucide-react";
 import ThreadSidebar from "@/components/assistant/ThreadSidebar";
 
 const WELCOME = {
@@ -8,8 +8,6 @@ const WELCOME = {
   content: "Hey, I'm Internet X AI — ask me anything, or switch to Create image and describe a picture you want.",
 };
 
-// Live web answers need the web-capable model; if that call is refused, fall back
-// to a plain completion instead of failing the whole reply.
 const askModel = async (prompt) => {
   try {
     return await base44.integrations.Core.InvokeLLM({ prompt, add_context_from_internet: true, model: "gemini_3_flash" });
@@ -118,28 +116,31 @@ export default function Assistant() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-4 pb-28 flex flex-col h-[calc(100dvh-1.5rem)]">
-      <header className="bg-white/[0.045] backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 mb-3 flex items-center gap-2.5">
-        <button onClick={() => setHistoryOpen((v) => !v)} className="md:hidden w-9 h-9 rounded-xl bg-white/[0.07] grid place-items-center">
+      <header className="flex items-center gap-2.5 px-1 pb-3">
+        <button onClick={() => setHistoryOpen((v) => !v)} className="md:hidden w-9 h-9 rounded-xl hover:bg-white/10 grid place-items-center">
           <Menu className="w-4 h-4" />
         </button>
-        <div className="w-9 h-9 rounded-xl brand-grad flex items-center justify-center">
-          <Sparkles className="w-5 h-5 text-black" />
+        <div className="flex items-center gap-2">
+          <span className="grid w-8 h-8 place-items-center rounded-lg" style={{ background: "color-mix(in srgb, var(--brand) 18%, transparent)" }}>
+            <Sparkles className="w-4 h-4" style={{ color: "var(--brand)" }} />
+          </span>
+          <div className="leading-none">
+            <h1 className="text-[16px] font-semibold tracking-tight">Internet X AI</h1>
+            <p className="text-[10.5px] text-white/40 mt-1 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Online
+            </p>
+          </div>
         </div>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-[17px] font-bold font-display leading-none">Internet X AI</h1>
-          <p className="text-[11px] text-emerald-400 flex items-center gap-1 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Chat, search & image generation
-          </p>
-        </div>
+        <div className="flex-1" />
         <button
           onClick={newChat}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.07] border border-white/10 text-[12px] font-semibold hover:bg-white/15"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-white/10 text-[12px] font-medium text-white/70"
         >
-          <MessageSquare className="w-3.5 h-3.5" /> New chat
+          <Plus className="w-3.5 h-3.5" /> New chat
         </button>
       </header>
 
-      <div className="flex-1 min-h-0 grid md:grid-cols-[240px_1fr] gap-3">
+      <div className="flex-1 min-h-0 grid md:grid-cols-[220px_1fr] gap-3">
         <div className="hidden md:block min-h-0">
           <ThreadSidebar
             threads={threads}
@@ -150,46 +151,46 @@ export default function Assistant() {
           />
         </div>
 
-        <div className="flex flex-col min-h-0 rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 sm:px-5 py-4 space-y-3 thin-scrollbar">
+        <div className="flex flex-col min-h-0 rounded-2xl bg-white/[0.025] border border-white/[0.07] overflow-hidden">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-5 thin-scrollbar">
             {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-fade-in`}>
-                <div
-                  className={`max-w-[88%] px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "brand-grad text-black font-medium rounded-br-md"
-                      : "bg-white/[0.06] border border-white/10 rounded-bl-md"
-                  }`}
-                >
-                  {m.content}
-                  {m.image_url && (
-                    <img
-                      src={m.image_url}
-                      alt="AI generated"
-                      className="mt-2 rounded-xl w-full max-w-[360px] border border-white/10"
-                    />
-                  )}
-                </div>
+              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                {m.role === "user" ? (
+                  <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-br-sm text-[14px] leading-relaxed whitespace-pre-wrap bg-white/[0.07] text-white/90">
+                    {m.content}
+                  </div>
+                ) : (
+                  <div className="max-w-[88%] text-[14px] leading-relaxed whitespace-pre-wrap text-white/85">
+                    {m.content}
+                    {m.image_url && (
+                      <img
+                        src={m.image_url}
+                        alt="AI generated"
+                        className="mt-3 rounded-xl w-full max-w-[380px] border border-white/10"
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {busy && (
               <div className="flex justify-start">
-                <div className="px-4 py-3 rounded-2xl bg-white/[0.06] border border-white/10 flex gap-1">
-                  <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--brand)" }} />
-                  <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--brand)", animationDelay: "0.1s" }} />
-                  <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--brand)", animationDelay: "0.2s" }} />
+                <div className="flex gap-1.5 py-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: "0.12s" }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: "0.24s" }} />
                 </div>
               </div>
             )}
           </div>
 
           {messages.length <= 1 && (
-            <div className="flex flex-wrap gap-2 px-3 sm:px-5 pb-2">
+            <div className="flex flex-wrap gap-2 px-4 sm:px-6 pb-3">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-[11.5px] px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 hover:border-[color:var(--brand)] transition-colors"
+                  className="text-[12px] px-3 py-1.5 rounded-full border border-white/10 hover:border-white/25 hover:bg-white/[0.04] text-white/70 transition-colors"
                 >
                   {s}
                 </button>
@@ -197,7 +198,7 @@ export default function Assistant() {
             </div>
           )}
 
-          <div className="border-t border-white/[0.08] px-3 sm:px-4 py-2.5">
+          <div className="border-t border-white/[0.06] px-3 sm:px-4 py-3">
             <div className="flex items-center gap-1 mb-2">
               {[
                 { key: "chat", label: "Chat", Icon: MessageSquare },
@@ -206,29 +207,32 @@ export default function Assistant() {
                 <button
                   key={m.key}
                   onClick={() => setMode(m.key)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-semibold transition-colors ${mode === m.key ? "bg-white text-black" : "text-white/55 hover:bg-white/10"}`}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-medium transition-colors ${mode === m.key ? "text-white" : "text-white/45 hover:text-white/70"}`}
+                  style={mode === m.key ? { background: "color-mix(in srgb, var(--brand) 16%, transparent)" } : {}}
                 >
                   <m.Icon className="w-3.5 h-3.5" /> {m.label}
                 </button>
               ))}
               {busy && (
-                <span className="ml-auto text-[11px] text-white/40 flex items-center gap-1">
+                <span className="ml-auto text-[11px] text-white/35 flex items-center gap-1">
                   <Loader2 className="w-3 h-3 animate-spin" /> {mode === "image" ? "Painting…" : "Thinking…"}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-full px-3.5 py-2 focus-within:border-[color:var(--brand)]/60">
-              <input
+            <div className="flex items-end gap-2 bg-white/[0.05] border border-white/10 rounded-2xl px-3 py-2 focus-within:border-white/25 transition-colors">
+              <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+                rows={1}
                 placeholder={mode === "image" ? "Describe the image you want…" : "Ask Internet X AI…"}
-                className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder-white/35"
+                className="flex-1 min-w-0 bg-transparent outline-none text-sm py-1.5 placeholder-white/35 resize-none max-h-32"
               />
               <button
                 onClick={() => send()}
                 disabled={busy || !input.trim()}
-                className="w-9 h-9 rounded-full brand-grad text-black flex items-center justify-center disabled:opacity-40"
+                className="shrink-0 w-9 h-9 rounded-xl grid place-items-center transition-colors disabled:opacity-30"
+                style={{ background: "var(--brand)", color: "#000" }}
               >
                 {mode === "image" ? <ImagePlus className="w-4 h-4" /> : <Send className="w-4 h-4" />}
               </button>
