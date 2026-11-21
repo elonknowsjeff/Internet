@@ -14,7 +14,6 @@ import NotesApp from "@/components/desktop/NotesApp";
 import AiChatsApp from "@/components/desktop/AiChatsApp";
 import Launchpad from "@/components/desktop/Launchpad";
 import WallpaperPicker, { WALLPAPER_IMAGES } from "@/components/desktop/WallpaperPicker";
-import BrowserPanel from "@/components/desktop/BrowserPanel";
 import OsCursor from "@/components/desktop/OsCursor";
 import Taskbar from "@/components/desktop/Taskbar";
 import StartMenu from "@/components/desktop/StartMenu";
@@ -26,7 +25,6 @@ const WINDOW_APPS = [
   { id: "notes", name: "Notes", Icon: StickyNote, width: 720, height: 480 },
   { id: "files", name: "Cloud files", Icon: FolderOpen, width: 720, height: 500 },
   { id: "calc", name: "Calculator", Icon: CalcIcon, width: 300, height: 460 },
-  { id: "browser", name: "Browser", Icon: Globe, width: 1000, height: 660 },
   { id: "settings", name: "Settings", Icon: Gear, width: 760, height: 560 },
 ];
 
@@ -83,7 +81,7 @@ export default function Desktop() {
   const navigate = useNavigate();
   const [wins, setWins] = useState([]);
   const [now, setNow] = useState(new Date());
-  const [os, setOs] = useState(() => localStorage.getItem(OS_KEY) || "macos");
+  const [os, setOs] = useState(() => localStorage.getItem(OS_KEY) || "windows");
   const [wall, setWall] = useState(() => {
     const saved = localStorage.getItem(WALL_KEY);
     return ALL_WALLS[saved] ? saved : "nebula";
@@ -213,7 +211,6 @@ export default function Desktop() {
             {w.id === "notes" ? <NotesApp /> : null}
             {w.id === "calc" ? <CalculatorApp /> : null}
             {w.id === "files" ? <FilesApp /> : null}
-            {w.id === "browser" ? <BrowserPanel /> : null}
             {w.id === "settings" ? <SettingsApp wall={wall} walls={wallList} onWall={setWall} os={os} onOs={() => setOs(isMac ? "windows" : "macos")} /> : null}
           </WindowFrame>
         );

@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { CheckCircle2, StickyNote, CalendarDays, ListChecks, Clock, Bell, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ListChecks, StickyNote, CalendarDays, Bell, Clock, Wrench, Calculator,
+  Table, FileText, Presentation, Cloud as CloudIcon, ArrowUpRight, Sparkles,
+} from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 import TasksColumn from "@/components/productivity/TasksColumn";
 import NotesColumn from "@/components/productivity/NotesColumn";
 import CalendarColumn from "@/components/productivity/CalendarColumn";
@@ -9,109 +14,82 @@ import TodayAgenda from "@/components/productivity/TodayAgenda";
 import QuickCapture from "@/components/productivity/QuickCapture";
 import ProductivityStats from "@/components/productivity/ProductivityStats";
 
-const TABS = [
-  { key: "tasks", label: "Tasks", icon: CheckCircle2 },
-  { key: "notes", label: "Notes", icon: StickyNote },
-  { key: "calendar", label: "Calendar", icon: CalendarDays },
+const TOOLS = [
+  { to: "/calculator", label: "Calculator", Icon: Calculator },
+  { to: "/sheets", label: "Sheets", Icon: Table },
+  { to: "/docs", label: "Docs", Icon: FileText },
+  { to: "/slides", label: "Slides", Icon: Presentation },
+  { to: "/cloud", label: "Cloud files", Icon: CloudIcon },
+  { to: "/notes", label: "Notes", Icon: StickyNote },
+  { to: "/calendar", label: "Calendar", Icon: CalendarDays },
 ];
 
+function Section({ title, icon: Icon, children, className = "" }) {
+  return (
+    <section className={`overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] ${className}`}>
+      <header className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/50">
+        <Icon className="h-3.5 w-3.5" style={{ color: "var(--brand)" }} /> {title}
+      </header>
+      <div className="p-3">{children}</div>
+    </section>
+  );
+}
+
 export default function Productivity() {
-  const [tab, setTab] = useState("tasks");
   const [reloadKey, setReloadKey] = useState(0);
-
-  const active = TABS.find((t) => t.key === tab);
-
-  const jump = (to) => {
-    if (to === "tasks") setTab("tasks");
-    else if (to === "notes") setTab("notes");
-    else if (to === "calendar") setTab("calendar");
-  };
-
-  const onCreated = (type) => {
-    setReloadKey((k) => k + 1);
-    if (type === "note") setTab("notes");
-    else if (type === "task" || type === "remind") setTab("tasks");
-  };
+  const onCreated = () => setReloadKey((k) => k + 1);
 
   return (
     <div className="mx-auto w-full max-w-[1100px] px-3 sm:px-4 pb-28">
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_320px]">
-
-        {/* ---------- left sidebar ---------- */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-3 space-y-3">
-            <div className="flex items-center gap-2 px-1">
-              <span className="grid h-8 w-8 place-items-center rounded-xl brand-grad text-black"><ListChecks className="h-4 w-4" /></span>
-              <h1 className="text-[20px] font-extrabold tracking-[-0.02em]">Productivity</h1>
-            </div>
-
-            <nav className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-              {TABS.map((t) => {
-                const Icon = t.icon;
-                const on = tab === t.key;
-                return (
-                  <button key={t.key} onClick={() => setTab(t.key)} className={`flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors ${on ? "bg-white/[0.08]" : "hover:bg-white/[0.05]"}`}>
-                    <Icon className={`h-4 w-4 ${on ? "text-[color:var(--brand)]" : "text-white/55"}`} />
-                    <span className={`text-[13px] font-semibold ${on ? "text-white" : "text-white/65"}`}>{t.label}</span>
-                    {on && <span className="ml-auto h-1.5 w-1.5 rounded-full" style={{ background: "var(--brand)" }} />}
-                  </button>
-                );
-              })}
-            </nav>
-
-            <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
-              <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-white/45"><Clock className="h-3.5 w-3.5" /> Focus</p>
-              <div className="mt-2"><FocusTimer /></div>
-            </div>
+      {/* Header */}
+      <header className="sticky top-0 z-30 -mx-3 sm:-mx-4 mb-4 border-b border-white/[0.08] bg-[#06060a]/85 px-3 sm:px-4 py-3 backdrop-blur-2xl">
+        <div className="flex items-center gap-2.5">
+          <BrandLogo size={30} />
+          <div className="leading-tight">
+            <h1 className="text-[18px] font-extrabold tracking-[-0.01em]">Productivity</h1>
+            <p className="text-[11px] text-white/45">Tasks, notes, calendar and tools in one scroll</p>
           </div>
-        </aside>
+          <span className="ml-auto hidden items-center gap-1 rounded-full border border-white/[0.12] bg-white/[0.05] px-2.5 py-1 text-[10px] font-semibold text-white/50 sm:flex">
+            <Sparkles className="h-3 w-3" style={{ color: "var(--brand)" }} /> Private to you
+          </span>
+        </div>
+      </header>
 
-        {/* ---------- center workspace ---------- */}
-        <div className="min-w-0">
-          <header className="sticky top-0 z-30 mb-3 border-b border-white/[0.08] bg-[#06060a]/85 backdrop-blur-2xl">
-            <div className="flex items-center gap-2 px-4 py-3">
-              <span className="grid h-7 w-7 place-items-center rounded-[9px] brand-grad text-black lg:hidden"><active.icon className="h-4 w-4" /></span>
-              <h1 className="text-[16px] font-bold tracking-[-0.01em]">{active.label}</h1>
-              <span className="ml-1 hidden items-center gap-1 rounded-full border border-white/[0.12] bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold text-white/50 sm:flex">
-                <Sparkles className="h-3 w-3" style={{ color: "var(--brand)" }} /> Private to you
-              </span>
-            </div>
-            <div className="flex gap-1 px-3 pb-2 lg:hidden">
-              {TABS.map((t) => (
-                <button key={t.key} onClick={() => setTab(t.key)} className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold ${tab === t.key ? "brand-grad text-black" : "border border-white/10 text-white/55"}`}>
-                  <t.icon className="h-3.5 w-3.5" /> {t.label}
-                </button>
-              ))}
-            </div>
-          </header>
+      {/* Quick capture + stats */}
+      <div className="mb-4"><QuickCapture onCreated={onCreated} /></div>
+      <div className="mb-4"><ProductivityStats onJump={() => {}} /></div>
 
-          <div className="mb-3"><QuickCapture onCreated={onCreated} /></div>
-          <div className="mb-3"><ProductivityStats onJump={jump} /></div>
-
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
-            {tab === "tasks" && <TasksColumn reloadKey={reloadKey} />}
-            {tab === "notes" && <NotesColumn key={`n-${reloadKey}`} />}
-            {tab === "calendar" && <CalendarColumn />}
-          </div>
+      {/* One scrollable stack: everything visible, no tabs */}
+      <div className="space-y-4">
+        <Section title="Tasks" icon={ListChecks}><TasksColumn reloadKey={reloadKey} /></Section>
+        <Section title="Notes" icon={StickyNote}><NotesColumn key={`n-${reloadKey}`} /></Section>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Section title="Calendar" icon={CalendarDays}><CalendarColumn /></Section>
+          <Section title="Today's agenda" icon={CalendarDays}><TodayAgenda /></Section>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Section title="Reminders" icon={Bell}><RemindersCard /></Section>
+          <Section title="Focus timer" icon={Clock}><FocusTimer /></Section>
         </div>
 
-        {/* ---------- right rail ---------- */}
-        <aside className="hidden xl:block">
-          <div className="sticky top-3 space-y-3">
-            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
-              <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-white/45"><CalendarDays className="h-3.5 w-3.5" /> Today's agenda</p>
-              <div className="mt-2"><TodayAgenda /></div>
-            </section>
-            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
-              <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-white/45"><Bell className="h-3.5 w-3.5" /> Reminders</p>
-              <div className="mt-2"><RemindersCard /></div>
-            </section>
-            <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
-              <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-white/45"><Clock className="h-3.5 w-3.5" /> Focus timer</p>
-              <div className="mt-2"><FocusTimer /></div>
-            </section>
+        {/* Tools — quick launch, same scroll */}
+        <Section title="Tools" icon={Wrench}>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+            {TOOLS.map((t) => (
+              <Link
+                key={t.to}
+                to={t.to}
+                className="group flex flex-col items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2 py-3 text-center transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+              >
+                <span className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: "color-mix(in srgb, var(--brand) 14%, transparent)" }}>
+                  <t.Icon className="h-4 w-4" style={{ color: "var(--brand)" }} />
+                </span>
+                <span className="text-[10.5px] font-medium text-white/70">{t.label}</span>
+                <ArrowUpRight className="h-3 w-3 text-white/25 opacity-0 transition-opacity group-hover:opacity-100" />
+              </Link>
+            ))}
           </div>
-        </aside>
+        </Section>
       </div>
     </div>
   );
