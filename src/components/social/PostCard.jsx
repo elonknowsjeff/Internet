@@ -103,6 +103,10 @@ export default function PostCard({
             <div className="mt-2 rounded-2xl overflow-hidden border border-white/10 shadow-[0_10px_30px_-18px_var(--brand)]">
               {post.media_type === "video" ? (
                 <video src={post.media_url} controls className="w-full max-h-96 bg-black" />
+              ) : post.media_type === "audio" ? (
+                <div className="p-3 bg-white/[0.04]">
+                  <audio src={post.media_url} controls className="w-full" />
+                </div>
               ) : (
                 <ContentImage src={post.media_url} alt="" className="w-full" fittingType="fit" />
               )}

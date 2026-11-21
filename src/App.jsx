@@ -43,6 +43,8 @@ import ArticlesPage from '@/pages/ArticlesPage';
 import Terms from '@/pages/Terms';
 import Messages from '@/pages/Messages';
 import Stories from '@/pages/Stories';
+import Upload from '@/pages/Upload';
+import Discover from '@/pages/Discover';
 
 import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
@@ -111,6 +113,8 @@ const AuthenticatedApp = () => {
         <Route path="/studio" element={<CreatorStudio />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/stories" element={<Stories />} />
+        <Route path="/upload" element={<Upload />} />
+        <Route path="/discover" element={<Discover />} />
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/eats" element={<Navigate to="/?cat=food" replace />} />
         <Route path="/productivity" element={<Productivity />} />

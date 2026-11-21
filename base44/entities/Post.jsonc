@@ -51,7 +51,8 @@
       "type": "string",
       "enum": [
         "image",
-        "video"
+        "video",
+        "audio"
       ],
       "default": "image"
     },

@@ -8,7 +8,7 @@ import {
   BookOpen, Camera, Heart, MessageSquare, User as UserIcon2, Music2, Youtube, Radio,
   StickyNote, CalendarDays, Table, FileText, Presentation, Cloud, Calculator, Store,
   BedDouble, Plane, TrendingUp, Settings, ListChecks, Monitor, LayoutGrid, Tv,
-  Twitter, Instagram, MessageCircle,
+  Twitter, Instagram, MessageCircle, UploadCloud, Users,
 } from "lucide-react";
 
 const GROUPS = [
@@ -30,6 +30,8 @@ const GROUPS = [
     { to: "/stories", label: "Stories", icon: Camera },
     { to: "/dating", label: "Dating", icon: Heart },
     { to: "/messages", label: "Messages", icon: MessageSquare },
+    { to: "/upload", label: "Upload", icon: UploadCloud },
+    { to: "/discover", label: "Discover People", icon: Users },
     { to: "/profile", label: "Profile", icon: UserIcon2 },
   ]},
   { label: "Entertainment", items: [
