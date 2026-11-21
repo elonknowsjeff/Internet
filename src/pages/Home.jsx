@@ -31,7 +31,6 @@ const SECTIONS = {
     title: "Tech", icon: Cpu, tint: "from-cyan-500 to-blue-600",
     apps: [
       { to: "/browser", label: "Browser", icon: Globe },
-      { to: "/web", label: "Web", icon: Compass },
       { to: "/productivity", label: "Productivity", icon: ListChecks },
       { to: "/notes", label: "Notes", icon: StickyNote },
       { to: "/calendar", label: "Calendar", icon: CalendarDays },

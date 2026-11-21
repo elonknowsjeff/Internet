@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -47,7 +47,6 @@ import Logistics from '@/pages/Logistics';
 import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
 import Browser from '@/pages/Browser';
-import Web from '@/pages/Web';
 import LiveTV from '@/pages/LiveTV';
 // Add page imports here
 
@@ -116,7 +115,7 @@ const AuthenticatedApp = () => {
         <Route path="/productivity" element={<Productivity />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/browser" element={<Browser />} />
-        <Route path="/web" element={<Web />} />
+        <Route path="/web" element={<Navigate to="/browser" replace />} />
         <Route path="/cable" element={<LiveTV />} />
         <Route path="/terms" element={<Terms />} />
       </Route>

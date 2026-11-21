@@ -17,7 +17,7 @@ const CATS = [
   { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed },
   { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2 },
   { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles },
-  { key: "web", to: "/web", label: "Web Browser", icon: Globe },
+  { key: "web", to: "/browser", label: "Web Browser", icon: Globe },
 ];
 
 export default function SideNav() {

@@ -13,6 +13,7 @@ const defaults = {
   dockOrder: [], // user-arranged nav order
   stripeLink: "https://buy.stripe.com/test_eVq14ndV84pJ5G6aC1bQY00",
   hideFloatingAssistant: false,
+  theme: "midnight", // daylight | peach | mint | sky | lavender | citrus | midnight | cyber | borealis | sunset | ultraviolet | graphite
   accent: "ocean", // ocean (apple blue) | purple | blue | red | orange | custom
   customColor: "#0a84ff", // hex used when accent === "custom"
   sounds: { notification: true, reminder: true, startup: true },
@@ -29,6 +30,7 @@ export function SettingsProvider({ children }) {
       if (!saved.density) saved.density = defaults.density;
       if (!saved.barVersion) { saved.navStyle = "dock"; saved.barVersion = 2; }
       if (!saved.bgVersion || saved.bgVersion < 2) { saved.background = "trails"; saved.bgVersion = 2; }
+      if (!saved.theme) saved.theme = "midnight";
       return saved;
     } catch { return { ...defaults }; }
   });
@@ -36,6 +38,7 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("zync_settings", JSON.stringify(settings));
     const accent = settings.accent || "blue";
+    document.documentElement.dataset.theme = settings.theme || "midnight";
     document.documentElement.dataset.accent = accent === "custom" ? "blue" : accent;
     if (accent === "custom" && settings.customColor) {
       document.documentElement.style.setProperty("--brand", settings.customColor);

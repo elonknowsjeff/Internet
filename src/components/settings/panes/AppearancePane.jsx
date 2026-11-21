@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useSettings } from "@/components/SettingsContext";
 import SettingsRow, { Group, Pill } from "@/components/settings/SettingsRow";
 import { ACCENTS } from "@/lib/themeColors";
+import { THEMES } from "@/lib/themes";
 
 const BACKGROUNDS = [
   { key: "trails", label: "Walza trails" },
@@ -33,7 +34,21 @@ export default function AppearancePane() {
 
   return (
     <div>
-      <Group title="Theme colour" desc="The accent used for buttons, rings and highlights">
+      <Group title="Theme" desc="Full color theme for the home shell and background">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 px-4 pb-4">
+          {THEMES.map((t) => (
+            <button key={t.id} onClick={() => update({ theme: t.id })} className="flex flex-col items-center gap-1.5">
+              <span
+                className={`h-14 w-full rounded-2xl overflow-hidden ring-2 transition ${settings.theme === t.id ? "ring-[var(--accent)]" : "ring-transparent"}`}
+                style={{ background: `linear-gradient(135deg, ${t.aurora[0]}, ${t.aurora[1]} 50%, ${t.aurora[2]})` }}
+              />
+              <span className={`text-[11px] font-semibold ${settings.theme === t.id ? "text-[var(--accent)]" : "text-white/55"}`}>{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </Group>
+
+      <Group title="Accent override" desc="Optional override of the theme accent for buttons and rings">
         <div className="flex flex-wrap gap-1.5 px-4 pb-4">
           {ACCENTS.map((c) => (
             <button

@@ -18,7 +18,7 @@ export default function AppLayout() {
     <AudioProvider>
       <VideoPlayerProvider>
         <SpotifyProvider>
-          <div className="relative min-h-[100dvh] w-full max-w-full text-white overflow-x-hidden bg-[#0b0b0d]">
+          <div className="relative min-h-[100dvh] w-full max-w-full text-[var(--text)] overflow-x-hidden bg-[var(--bg-base)]">
             <AppBackground />
             <main className="relative z-10 w-full max-w-full min-h-[100dvh] pb-[calc(88px+env(safe-area-inset-bottom))]">
               <PageCanvas>
