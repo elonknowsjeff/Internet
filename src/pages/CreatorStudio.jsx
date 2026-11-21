@@ -53,7 +53,6 @@ export default function CreatorStudio() {
     { to: "/video", label: "Upload a video", icon: Video },
     { to: "/music", label: "Upload a track", icon: Music2 },
     { to: "/notes", label: "Open notes", icon: StickyNote },
-    { to: "/movies", label: "Make an AI movie", icon: ImagePlus },
   ];
 
   return (

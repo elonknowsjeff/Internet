@@ -164,7 +164,7 @@ export default function Profile() {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <button onClick={() => startSubscription("plus").catch(() => {})} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-bold">
-              <CreditCard className="w-3.5 h-3.5" /> Premium
+              <CreditCard className="w-3.5 h-3.5" /> Vazolex
             </button>
             <button onClick={logout} title="Log off" className="w-8 h-8 rounded-full border border-white/15 grid place-items-center text-white/60 hover:text-rose-400 hover:bg-white/10">
               <LogOut className="w-4 h-4" />

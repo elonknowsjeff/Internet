@@ -30,7 +30,6 @@ const SHORTCUTS = [
   { name: "Music", to: "/music", Icon: Music2 },
   { name: "Cable TV", to: "/cable", Icon: Tv },
   { name: "Browser", to: "/browser", Icon: Globe },
-  { name: "Movies", to: "/movies", Icon: Clapperboard },
   { name: "Video", to: "/video", Icon: Film },
   { name: "News", to: "/news", Icon: Newspaper },
   { name: "Messages", to: "/messages", Icon: MessageSquare },

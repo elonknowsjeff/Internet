@@ -28,13 +28,11 @@ export const NAV_SECTIONS = [
       { key: "hotels", to: "/hotels", label: "Hotels", icon: BedDouble },
       { key: "flights", to: "/flights", label: "Flights", icon: Plane },
       { key: "eats", to: "/eats", label: "Eats", icon: UtensilsCrossed },
-      { key: "logistics", to: "/logistics", label: "Logistics", icon: Truck },
     ],
   },
   {
     name: "Entertainment", items: [
       { key: "music", to: "/music", label: "Music", icon: Music2 },
-      { key: "movies", to: "/movies", label: "Movies", icon: Film },
       { key: "video", to: "/video", label: "Video", icon: Youtube },
       { key: "radio", to: "/radio", label: "Radio", icon: Radio },
     ],

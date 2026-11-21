@@ -23,7 +23,6 @@ const SECTIONS = {
     title: "Entertainment", icon: Clapperboard, tint: "from-fuchsia-500 to-purple-600",
     apps: [
       { to: "/music", label: "Music", icon: Music2 },
-      { to: "/movies", label: "Movies", icon: Film },
       { to: "/video", label: "Video", icon: Youtube },
       { to: "/radio", label: "Radio", icon: Radio },
       { to: "/cable", label: "Cable TV", icon: Tv },
@@ -57,7 +56,6 @@ const SECTIONS = {
       { to: "/hotels", label: "Hotels", icon: BedDouble },
       { to: "/flights", label: "Flights", icon: Plane },
       { to: "/finance", label: "Finance", icon: TrendingUp },
-      { to: "/logistics", label: "Logistics", icon: Truck },
     ],
   },
 };

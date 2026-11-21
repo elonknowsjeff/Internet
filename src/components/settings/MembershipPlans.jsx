@@ -25,7 +25,7 @@ export default function MembershipPlans() {
   return (
     <section className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-4 mb-4">
       <h2 className="font-semibold mb-1 flex items-center gap-2">
-        <CreditCard className="w-4 h-4 text-cyan-400" /> Walza+ membership
+        <CreditCard className="w-4 h-4 text-cyan-400" /> Vazolex membership
       </h2>
       <p className="text-xs text-white/45 mb-3">One membership, six levels — pick the one that fits and pay once a month.</p>
 

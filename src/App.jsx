@@ -11,7 +11,6 @@ import { SettingsProvider } from '@/components/SettingsContext';
 import Home from '@/pages/Home';
 import Market from '@/pages/Market';
 import Music from '@/pages/Music';
-import Movies from '@/pages/Movies';
 import Video from '@/pages/Video';
 import Radio from '@/pages/Radio';
 import Sheets from '@/pages/Sheets';
@@ -44,7 +43,6 @@ import Terms from '@/pages/Terms';
 import Messages from '@/pages/Messages';
 import Stories from '@/pages/Stories';
 
-import Logistics from '@/pages/Logistics';
 import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
 import Browser from '@/pages/Browser';
@@ -88,7 +86,6 @@ const AuthenticatedApp = () => {
         <Route path="/rides" element={<Navigate to="/?cat=food" replace />} />
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />
-        <Route path="/movies" element={<Movies />} />
         <Route path="/video" element={<Video />} />
         <Route path="/radio" element={<Radio />} />
         <Route path="/sheets" element={<Sheets />} />
@@ -114,7 +111,6 @@ const AuthenticatedApp = () => {
         <Route path="/stories" element={<Stories />} />
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/eats" element={<Navigate to="/?cat=food" replace />} />
-        <Route path="/logistics" element={<Logistics />} />
         <Route path="/productivity" element={<Productivity />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/browser" element={<Browser />} />
