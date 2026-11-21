@@ -12,6 +12,7 @@ import Home from '@/pages/Home';
 import Market from '@/pages/Market';
 import Music from '@/pages/Music';
 import Video from '@/pages/Video';
+import Movies from '@/pages/Movies';
 import Radio from '@/pages/Radio';
 import Sheets from '@/pages/Sheets';
 import Docs from '@/pages/Docs';
@@ -87,6 +88,7 @@ const AuthenticatedApp = () => {
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />
         <Route path="/video" element={<Video />} />
+        <Route path="/movies" element={<Movies />} />
         <Route path="/radio" element={<Radio />} />
         <Route path="/sheets" element={<Sheets />} />
         <Route path="/docs" element={<Docs />} />
