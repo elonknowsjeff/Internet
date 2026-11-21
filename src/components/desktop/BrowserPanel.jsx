@@ -82,7 +82,7 @@ function Favicon({ url, loading, size = 15 }) {
   );
 }
 
-export default function BrowserPanel() {
+export default function BrowserPanel({ initialUrl }) {
   const [tabs, setTabs] = useState(() => [makeTab()]);
   const [activeId, setActiveId] = useState(tabs[0].id);
   const [pins, setPins] = useState(readPins);
@@ -148,6 +148,11 @@ export default function BrowserPanel() {
       patch(id, { loading: false, error: msg, input: value, title: "Not available" });
     }
   };
+
+  useEffect(() => {
+    if (initialUrl) navigate(initialUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const onMsg = (e) => {

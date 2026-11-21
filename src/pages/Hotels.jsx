@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
-import { BedDouble, Star, MapPin, Search, X, CalendarDays, Wifi, Waves, Utensils, Car } from "lucide-react";
+import { BedDouble, Star, MapPin, Search, X, CalendarDays, Wifi, Waves, Utensils, Car, Loader2 } from "lucide-react";
 import BookingDialog from "@/components/hotels/BookingDialog";
 
 const HOTELS = [
@@ -45,6 +45,8 @@ const HOTELS = [
 
 const trivagoUrl = (q) => `https://www.trivago.com/en-US/srl?query=${encodeURIComponent(q)}`;
 
+const inDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+
 const amenityIcon = (a) => {
   if (/wifi/i.test(a)) return Wifi;
   if (/pool|beach|onsen/i.test(a)) return Waves;
@@ -59,6 +61,13 @@ export default function Hotels() {
   const [sort, setSort] = useState("Recommended");
   const [booking, setBooking] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [cmpCity, setCmpCity] = useState("Toronto");
+  const [cmpIn, setCmpIn] = useState(inDays(7));
+  const [cmpOut, setCmpOut] = useState(inDays(10));
+  const [cmpGuests, setCmpGuests] = useState(2);
+  const [comparing, setComparing] = useState(false);
+  const [cmpResults, setCmpResults] = useState([]);
+  const [cmpError, setCmpError] = useState("");
 
   const loadBookings = async () => {
     try {
@@ -69,6 +78,38 @@ export default function Hotels() {
     }
   };
   useEffect(() => { loadBookings(); }, []);
+
+  const comparePrices = async (e) => {
+    e?.preventDefault();
+    setComparing(true); setCmpError(""); setCmpResults([]);
+    try {
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `Find 5 real hotels in ${cmpCity} for a stay from ${cmpIn} to ${cmpOut}, ${cmpGuests} guests. For each hotel return its name, star rating, guest rating, and the per-night price in USD from each of these providers: Booking.com, Expedia, Hotels.com, Trivago. Use live web context for real current prices. Sort by best (lowest) price.`,
+        add_context_from_internet: true,
+        model: "gemini_3_flash",
+        response_json_schema: {
+          type: "object",
+          properties: {
+            hotels: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  stars: { type: "number" },
+                  rating: { type: "number" },
+                  providers: { type: "array", items: { type: "object", properties: { name: { type: "string" }, price: { type: "number" } } } },
+                },
+              },
+            },
+          },
+        },
+      });
+      setCmpResults(res?.hotels || []);
+      if (!res?.hotels?.length) setCmpError("No comparisons came back — try another city or dates.");
+    } catch { setCmpError("Hotel comparison is unavailable right now. Try again in a moment."); }
+    setComparing(false);
+  };
 
   const cities = useMemo(() => ["All", ...new Set(HOTELS.map((h) => h.city.split(",").slice(-1)[0].trim()))], []);
 
@@ -94,6 +135,45 @@ export default function Hotels() {
           <Search className="w-3.5 h-3.5" /> Compare {city === "All" ? "this city" : city} on Trivago
         </a>
       </header>
+
+      <section className="mb-6 rounded-2xl border border-white/10 bg-white/[.04] p-4">
+        <h2 className="text-sm font-bold flex items-center gap-1.5 mb-3"><Search className="w-4 h-4 text-violet-300" /> Compare hotel prices</h2>
+        <form onSubmit={comparePrices} className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <input value={cmpCity} onChange={(e) => setCmpCity(e.target.value)} placeholder="City" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-violet-400" />
+          <input type="date" value={cmpIn} onChange={(e) => setCmpIn(e.target.value)} className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none" />
+          <input type="date" value={cmpOut} onChange={(e) => setCmpOut(e.target.value)} className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none" />
+          <button type="submit" disabled={comparing} className="rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-sm font-bold flex items-center justify-center gap-1.5 disabled:opacity-60">{comparing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Compare</button>
+        </form>
+        {cmpError && <p className="text-sm text-amber-300 mt-3">{cmpError}</p>}
+        {cmpResults.length > 0 && (
+          <div className="mt-4 space-y-2.5">
+            {cmpResults.map((h, i) => {
+              const best = [...(h.providers || [])].sort((a, b) => a.price - b.price)[0];
+              return (
+                <div key={i} className="rounded-xl border border-white/10 bg-white/[.03] p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold truncate">{h.name}</p>
+                      <p className="text-[11px] text-neutral-400">{"★".repeat(h.stars || 0)} · {h.rating} rating</p>
+                    </div>
+                    {best && (
+                      <a href={trivagoUrl(h.name + " " + cmpCity)} target="_blank" rel="noreferrer" className="shrink-0 text-right">
+                        <p className="text-[10px] text-neutral-400">Best price</p>
+                        <p className="text-base font-black text-emerald-300">${best.price}<span className="text-[10px] font-medium text-neutral-400"> /night · {best.name}</span></p>
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {(h.providers || []).map((p, j) => (
+                      <span key={j} className="text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10">{p.name}: <b>${p.price}</b></span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <div className="flex items-center gap-2 flex-1 rounded-xl border border-white/10 bg-white/[.04] px-3 py-2.5">

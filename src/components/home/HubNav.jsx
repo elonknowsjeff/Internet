@@ -9,6 +9,7 @@ import {
   BookOpen, Camera, Heart, MessageSquare, User as UserIcon, Music2, Film, Youtube, Radio,
   StickyNote, CalendarDays, Table, FileText, Presentation, Cloud, Calculator, Car, Store,
   BedDouble, Plane, TrendingUp, Truck, Settings, ListChecks, PenSquare, Monitor, LayoutGrid, Tv,
+  Twitter, Instagram, MessageCircle,
 } from "lucide-react";
 
 const GROUPS = [
@@ -22,6 +23,9 @@ const GROUPS = [
     { to: "/?cat=aichat", cat: "aichat", label: "AI Chat", icon: Sparkles },
   ]},
   { label: "Social", items: [
+    { to: "/browser?url=https://x.com", label: "X", icon: Twitter },
+    { to: "/browser?url=https://www.instagram.com", label: "Instagram", icon: Instagram },
+    { to: "/browser?url=https://web.whatsapp.com", label: "WhatsApp", icon: MessageCircle },
     { to: "/browser", label: "Web Browser", icon: Globe },
     { to: "/articles", label: "Articles", icon: BookOpen },
     { to: "/stories", label: "Stories", icon: Camera },
