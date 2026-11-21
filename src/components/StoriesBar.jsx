@@ -9,6 +9,7 @@ const initials = (name) => (name || "U")[0]?.toUpperCase();
 
 export default function StoriesBar({ user }) {
   const [stories, setStories] = useState([]);
+  const [following, setFollowing] = useState(null);
   const [composer, setComposer] = useState(false);
   const [openGroup, setOpenGroup] = useState(null);
 
@@ -16,6 +17,16 @@ export default function StoriesBar({ user }) {
     try { setStories(await base44.entities.Story.list("-created_date", 60)); } catch { setStories([]); }
   };
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    if (!user) { setFollowing(new Set()); return; }
+    base44.entities.Follow.filter({ follower_id: user.id })
+      .then((rows) => {
+        const list = Array.isArray(rows) ? rows : rows?.items || [];
+        setFollowing(new Set(list.map((r) => r.following_handle).filter(Boolean)));
+      })
+      .catch(() => setFollowing(new Set()));
+  }, [user]);
 
   const myHandle = user?.username || (user?.email ? user.email.split("@")[0] : null);
   const authorName = user?.display_name || user?.full_name || "You";
@@ -36,6 +47,7 @@ export default function StoriesBar({ user }) {
       name: s.author_name || key,
       avatar: s.author_avatar || "",
       image: s.image_url,
+      video: s.video_url,
       text: s.caption,
       music_url: s.music_url,
       music_title: s.music_title,
@@ -44,7 +56,7 @@ export default function StoriesBar({ user }) {
   }
 
   const mine = groups.find((g) => g.handle === myHandle) || null;
-  const others = groups.filter((g) => g.handle !== myHandle);
+  const others = groups.filter((g) => g.handle !== myHandle && (following == null || following.has(g.handle)));
 
   return (
     <>

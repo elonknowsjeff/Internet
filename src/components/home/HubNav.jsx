@@ -7,7 +7,7 @@ import {
   Home as HomeIcon, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles, Globe,
   BookOpen, Camera, Heart, MessageSquare, User as UserIcon, Music2, Film, Youtube, Radio,
   StickyNote, CalendarDays, Table, FileText, Presentation, Cloud, Calculator, Car, Store,
-  BedDouble, Plane, TrendingUp, Truck, Settings, ListChecks, PenSquare,
+  BedDouble, Plane, TrendingUp, Truck, Settings, ListChecks, PenSquare, Monitor, LayoutGrid,
 } from "lucide-react";
 
 const GROUPS = [
@@ -66,6 +66,13 @@ const GROUPS = [
       { to: "/flights", label: "Flights", icon: Plane },
       { to: "/finance", label: "Finance", icon: TrendingUp },
       { to: "/logistics", label: "Logistics", icon: Truck },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { to: "/desktop", label: "Desktop OS", icon: Monitor },
+      { to: "/apps", label: "All Apps", icon: LayoutGrid },
     ],
   },
   {

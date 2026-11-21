@@ -3,7 +3,7 @@ import { X, ChevronLeft, ChevronRight, Music2, Volume2, VolumeX } from "lucide-r
 
 const DUR = 6;
 
-function Bar({ active, done }) {
+function ImageBar({ active, done }) {
   const [w, setW] = useState(done ? 100 : 0);
   useEffect(() => {
     if (!active) { setW(done ? 100 : 0); return; }
@@ -17,23 +17,29 @@ function Bar({ active, done }) {
 export default function StoryViewer({ items, startIdx = 0, onClose }) {
   const [idx, setIdx] = useState(startIdx);
   const [muted, setMuted] = useState(false);
+  const [vidProg, setVidProg] = useState(0);
   const audioRef = useRef(null);
+  const videoRef = useRef(null);
   const item = items[Math.min(idx, items.length - 1)];
+  const isVideo = !!item?.video;
 
+  const advance = () => (idx + 1 >= items.length ? onClose() : setIdx((i) => i + 1));
+
+  // Image stories auto-advance on a timer
   useEffect(() => {
+    if (isVideo) return;
     const t = setTimeout(() => {
       if (idx + 1 >= items.length) onClose();
       else setIdx((i) => i + 1);
     }, DUR * 1000);
     return () => clearTimeout(t);
-  }, [idx, items.length, onClose]);
+  }, [idx, items.length, onClose, isVideo]);
 
-  const advance = () => (idx + 1 >= items.length ? onClose() : setIdx((i) => i + 1));
-
+  // Background music (image stories only — video stories play their own audio)
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
-    if (item?.music_url) {
+    if (!isVideo && item?.music_url) {
       a.src = item.music_url;
       a.volume = 0.7;
       a.muted = muted;
@@ -42,7 +48,21 @@ export default function StoryViewer({ items, startIdx = 0, onClose }) {
       a.pause();
       a.removeAttribute("src");
     }
-  }, [item, muted]);
+  }, [item, muted, isVideo]);
+
+  // Video stories: drive progress from the element and advance on end
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !isVideo) return;
+    setVidProg(0);
+    const onTime = () => { if (v.duration) setVidProg((v.currentTime / v.duration) * 100); };
+    const onEnded = () => advance();
+    v.addEventListener("timeupdate", onTime);
+    v.addEventListener("ended", onEnded);
+    v.muted = false;
+    v.play().catch(() => {});
+    return () => { v.removeEventListener("timeupdate", onTime); v.removeEventListener("ended", onEnded); };
+  }, [item, isVideo]);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -63,7 +83,11 @@ export default function StoryViewer({ items, startIdx = 0, onClose }) {
       <div className="flex gap-1 p-3">
         {items.map((_, i) => (
           <div key={i} className="flex-1 h-1 rounded-full bg-white/25 overflow-hidden">
-            <Bar active={i === idx} done={i < idx} />
+            {isVideo && i === idx ? (
+              <div className="h-full bg-white" style={{ width: `${vidProg}%` }} />
+            ) : (
+              <ImageBar active={i === idx} done={i < idx} />
+            )}
           </div>
         ))}
       </div>
@@ -76,7 +100,7 @@ export default function StoryViewer({ items, startIdx = 0, onClose }) {
           <p className="font-semibold text-sm leading-tight truncate">{item.name}</p>
           <p className="text-[11px] text-white/60">@{item.handle}</p>
         </div>
-        {item.music_url && (
+        {!isVideo && item.music_url && (
           <button onClick={() => setMuted((m) => !m)} className="ml-2 flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 border border-white/20 text-[11px]">
             <Music2 className="w-3 h-3" /> {muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
           </button>
@@ -88,7 +112,9 @@ export default function StoryViewer({ items, startIdx = 0, onClose }) {
         <button onClick={() => setIdx((i) => Math.max(0, i - 1))} className="absolute left-1 sm:left-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"><ChevronLeft className="w-5 h-5" /></button>
 
         <div onClick={advance} className="w-full max-w-sm h-full max-h-[74vh] overflow-y-auto rounded-3xl bg-gradient-to-br from-[#3a2c66] to-[#221a3f] border border-white/20 shadow-2xl cursor-pointer">
-          {item.image ? (
+          {isVideo ? (
+            <video ref={videoRef} src={item.video} autoPlay playsInline controls className="w-full max-h-[74vh] object-cover rounded-3xl" />
+          ) : item.image ? (
             <div className="relative">
               <img src={item.image} alt="" className="w-full max-h-[52vh] object-cover" />
               {item.music_url && <div className="absolute bottom-2 left-2 px-2 py-1 rounded-full bg-black/50 backdrop-blur-sm text-[11px] flex items-center gap-1"><Music2 className="w-3 h-3" /> {item.music_title}</div>}
@@ -97,7 +123,7 @@ export default function StoryViewer({ items, startIdx = 0, onClose }) {
             <div className="min-h-[36vh] flex items-center justify-center p-6 text-center text-lg">{item.text}</div>
           )}
           {item.image && item.text && <p className="p-4 text-[15px] leading-relaxed whitespace-pre-wrap">{item.text}</p>}
-          {item.music_url && item.image && <p className="px-4 pb-3 text-[11px] text-white/60">{item.music_artist} · {item.music_title}</p>}
+          {!isVideo && item.music_url && item.image && <p className="px-4 pb-3 text-[11px] text-white/60">{item.music_artist} · {item.music_title}</p>}
           <p className="px-4 pb-4 text-[10px] text-white/40">Story {idx + 1} of {items.length}</p>
         </div>
 

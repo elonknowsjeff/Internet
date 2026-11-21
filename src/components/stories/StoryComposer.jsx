@@ -9,7 +9,7 @@ const MUSIC = [
 ];
 
 export default function StoryComposer({ user, authorName, authorHandle, authorAvatar, onClose, onCreated }) {
-  const [image, setImage] = useState(null);
+  const [media, setMedia] = useState(null); // { url, type: 'image' | 'video' }
   const [caption, setCaption] = useState("");
   const [music, setMusic] = useState(null);
   const [customMusic, setCustomMusic] = useState("");
@@ -19,16 +19,17 @@ export default function StoryComposer({ user, authorName, authorHandle, authorAv
   const pickFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const type = file.type.startsWith("video") ? "video" : "image";
     setUploading(true);
     try {
       const res = await base44.integrations.Core.UploadPublicFile({ file });
-      if (res?.file_url) setImage(res.file_url);
+      if (res?.file_url) setMedia({ url: res.file_url, type });
     } catch (err) {}
     setUploading(false);
   };
 
   const share = async () => {
-    if (!image && !caption.trim() || saving) return;
+    if ((!media && !caption.trim()) || saving) return;
     setSaving(true);
     const chosen = music || (customMusic.trim() ? { title: "Custom track", artist: "Link", url: customMusic.trim() } : null);
     try {
@@ -36,7 +37,8 @@ export default function StoryComposer({ user, authorName, authorHandle, authorAv
         author_name: authorName,
         author_handle: authorHandle,
         author_avatar: authorAvatar || "",
-        image_url: image || "",
+        image_url: media?.type === "image" ? media.url : "",
+        video_url: media?.type === "video" ? media.url : "",
         caption: caption.trim(),
         ...(chosen ? { music_title: chosen.title, music_artist: chosen.artist, music_url: chosen.url } : {}),
       });
@@ -54,15 +56,27 @@ export default function StoryComposer({ user, authorName, authorHandle, authorAv
           <button onClick={onClose} className="text-white/70 hover:text-white"><X className="w-5 h-5" /></button>
         </div>
 
-        <label className="relative flex items-center justify-center h-36 rounded-xl border border-dashed border-white/25 bg-white/5 overflow-hidden cursor-pointer">
-          {image ? (
-            <img src={image} alt="story" className="w-full h-full object-cover" />
+        <label className="relative flex items-center justify-center h-44 rounded-xl border border-dashed border-white/25 bg-white/5 overflow-hidden cursor-pointer">
+          {media ? (
+            media.type === "video" ? (
+              <video src={media.url} className="w-full h-full object-cover" muted playsInline />
+            ) : (
+              <img src={media.url} alt="story" className="w-full h-full object-cover" />
+            )
           ) : uploading ? (
             <span className="text-sm text-white/60 flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Uploading…</span>
           ) : (
-            <span className="text-sm text-white/55 flex flex-col items-center gap-1"><ImagePlus className="w-6 h-6" /> Add a photo or video still</span>
+            <span className="text-sm text-white/55 flex flex-col items-center gap-1"><ImagePlus className="w-6 h-6" /> Add a photo or video</span>
           )}
-          <input type="file" accept="image/*" onChange={pickFile} className="hidden" />
+          {media && (
+            <button
+              onClick={(e) => { e.preventDefault(); setMedia(null); }}
+              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 grid place-items-center"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+          <input type="file" accept="image/*,video/*" onChange={pickFile} className="hidden" />
         </label>
 
         <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Add a caption…" className="w-full bg-white/10 border border-white/20 rounded-full px-3 py-2 text-sm outline-none placeholder-white/40" />
@@ -77,10 +91,10 @@ export default function StoryComposer({ user, authorName, authorHandle, authorAv
           <input value={customMusic} onChange={(e) => { setCustomMusic(e.target.value); setMusic(null); }} placeholder="…or paste an audio link (mp3)" className="mt-1.5 w-full bg-white/10 border border-white/20 rounded-full px-3 py-1.5 text-xs outline-none placeholder-white/40" />
         </div>
 
-        <button onClick={share} disabled={saving || (!image && !caption.trim())} className="w-full py-2.5 rounded-full brand-grad text-black font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
+        <button onClick={share} disabled={saving || (!media && !caption.trim())} className="w-full py-2.5 rounded-full brand-grad text-black font-semibold disabled:opacity-40 flex items-center justify-center gap-2">
           {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Sharing…</> : "Share story"}
         </button>
-        <p className="text-[10px] text-white/40 text-center">Photos are stored publicly — anyone with the link can open them.</p>
+        <p className="text-[10px] text-white/40 text-center">Photos and videos are stored publicly — anyone with the link can open them.</p>
       </div>
     </div>
   );
