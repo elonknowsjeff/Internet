@@ -13,7 +13,8 @@ export const THEMES = [
   { id: "sunset", label: "Sunset Drive", dark: true, base: "#140A12", aurora: ["#FF4D6D", "#FF9A3D", "#7A2DFF"], accent: "#FF5C7A", accent2: "#FFB23D" },
   { id: "ultraviolet", label: "Ultraviolet", dark: true, base: "#0E0718", aurora: ["#7A1FFF", "#FF2DAA", "#2B3BFF"], accent: "#B46CFF", accent2: "#FF4DC4" },
   { id: "graphite", label: "Graphite Mono", dark: true, base: "#0F1013", aurora: ["#2A2D38", "#3A3F52", "#22252E"], accent: "#E8E9F2", accent2: "#9AA0B8" },
+  { id: "galaxy", label: "Galaxy (Star Wars)", dark: true, base: "#04050a", aurora: ["#0a1a3a", "#3a2600", "#04263a"], accent: "#ffb74d", accent2: "#4dd2ff" },
 ];
 
-export const DEFAULT_THEME = "midnight";
+export const DEFAULT_THEME = "galaxy";
 export const getTheme = (id) => THEMES.find((t) => t.id === id) || THEMES.find((t) => t.id === DEFAULT_THEME);

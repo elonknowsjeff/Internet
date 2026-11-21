@@ -9,12 +9,10 @@ import {
 import { base44 } from "@/api/base44Client";
 import FeedTopBar from "@/components/home/FeedTopBar";
 import SectionPanel from "@/components/home/SectionPanel";
-import DatingPanel from "@/components/home/DatingPanel";
 import UnifiedFeed from "@/components/home/UnifiedFeed";
 import Gaming from "@/pages/Gaming";
 import Assistant from "@/pages/Assistant";
 import EntertainmentHub from "@/components/home/EntertainmentHub";
-import SocialLaunchers from "@/components/home/SocialLaunchers";
 
 const SECTIONS = {
   tech: {
@@ -70,16 +68,7 @@ export default function Home() {
         ) : isAi ? (
           <Assistant />
         ) : isSocial ? (
-          <>
-            <SocialLaunchers />
-            <UnifiedFeed />
-            <div className="flex items-center gap-2.5 pt-8">
-              <span className="h-5 w-1.5 rounded-full brand-grad" />
-              <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
-            </div>
-            <SectionPanel {...SECTIONS.news} />
-            <DatingPanel />
-          </>
+          <UnifiedFeed />
         ) : cat === "entertainment" ? (
           <EntertainmentHub />
         ) : section ? (
