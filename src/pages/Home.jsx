@@ -8,10 +8,9 @@ import {
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import FeedTopBar from "@/components/home/FeedTopBar";
-import FeedDrawer from "@/components/home/FeedDrawer";
 import SectionPanel from "@/components/home/SectionPanel";
 import DatingPanel from "@/components/home/DatingPanel";
-import Feed from "@/pages/Feed";
+import UnifiedFeed from "@/components/home/UnifiedFeed";
 import Gaming from "@/pages/Gaming";
 import Assistant from "@/pages/Assistant";
 import EntertainmentHub from "@/components/home/EntertainmentHub";
@@ -53,7 +52,6 @@ const SECTIONS = {
 export default function Home() {
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -64,8 +62,7 @@ export default function Home() {
 
   return (
     <div className="min-h-[100dvh]">
-      <FeedTopBar onMenu={() => setDrawerOpen(true)} />
-      <FeedDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <FeedTopBar />
 
       <main className={`mx-auto w-full px-3 sm:px-4 ${isSocial ? "max-w-[640px]" : "max-w-[1100px]"}`}>
         {isGaming ? (
@@ -75,7 +72,7 @@ export default function Home() {
         ) : isSocial ? (
           <>
             <SocialLaunchers />
-            <Feed />
+            <UnifiedFeed />
             <div className="flex items-center gap-2.5 pt-8">
               <span className="h-5 w-1.5 rounded-full brand-grad" />
               <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
