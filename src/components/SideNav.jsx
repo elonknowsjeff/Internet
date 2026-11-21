@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
-  Home as HomeIcon, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles,
+  Home as HomeIcon, Clapperboard, Cpu, Newspaper, UtensilsCrossed, Gamepad2, Sparkles, Globe,
   Settings as SettingsIcon, User, LogOut, LogIn, UserPlus,
 } from "lucide-react";
 import TranslatorPanel from "@/components/TranslatorPanel";
@@ -17,6 +17,7 @@ const CATS = [
   { key: "food", to: "/?cat=food", label: "Food", icon: UtensilsCrossed },
   { key: "gaming", to: "/?cat=gaming", label: "Gaming", icon: Gamepad2 },
   { key: "aichat", to: "/?cat=aichat", label: "AI Chat", icon: Sparkles },
+  { key: "web", to: "/web", label: "Web Browser", icon: Globe },
 ];
 
 export default function SideNav() {
@@ -48,7 +49,10 @@ export default function SideNav() {
   };
 
   const onHome = location.pathname === "/";
-  const isActive = (item) => onHome && (item.key === "social" ? cat === "social" : cat === item.key);
+  const isActive = (item) => {
+    if (item.to && item.to !== "/" && !item.to.includes("?")) return location.pathname === item.to;
+    return onHome && (item.key === "social" ? cat === "social" : cat === item.key);
+  };
 
   const AccountMenu = () => (
     <div className="fixed bottom-[84px] right-3 z-[70] w-60 rounded-2xl bg-[#1c1c1e] border border-white/10 overflow-hidden animate-slide-up shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)]">
