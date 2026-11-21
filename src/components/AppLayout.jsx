@@ -9,7 +9,7 @@ import VideoPlayerProvider from "@/components/VideoPlayerProvider";
 import { SpotifyProvider } from "@/components/SpotifyProvider";
 import FloatingVideo from "@/components/FloatingVideo";
 import WelcomeOverlay from "@/components/WelcomeOverlay";
-import SideNav from "@/components/SideNav";
+import BottomTabs from "@/components/shell/BottomTabs";
 import SystemSounds from "@/components/SystemSounds";
 import ToastPopups from "@/components/ToastPopups";
 
@@ -26,7 +26,7 @@ export default function AppLayout() {
               </PageCanvas>
             </main>
 
-            <SideNav />
+            <BottomTabs />
 
             <PlayerBar />
             <FloatingVideo />
