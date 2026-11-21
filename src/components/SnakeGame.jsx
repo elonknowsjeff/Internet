@@ -48,7 +48,6 @@ export default function SnakeGame({ onClose }) {
       s.snake.unshift(head);
       if (head.x === s.food.x && head.y === s.food.y) { setScore((v) => v + 1); placeFood(); }
       else s.snake.pop();
-      draw();
     };
 
     const onKey = (e) => {
@@ -58,9 +57,17 @@ export default function SnakeGame({ onClose }) {
       else if (e.key === "ArrowRight") setDir(1, 0);
     };
     window.addEventListener("keydown", onKey);
-    const interval = setInterval(step, 120);
+    let raf = 0, last = performance.now(), acc = 0;
+    const STEP_MS = 110;
+    const loop = (t) => {
+      raf = requestAnimationFrame(loop);
+      acc += Math.min(50, t - last); last = t;
+      while (acc >= STEP_MS) { step(); acc -= STEP_MS; if (!stateRef.current.running) { acc = 0; break; } }
+      draw();
+    };
+    raf = requestAnimationFrame(loop);
     draw();
-    return () => { clearInterval(interval); window.removeEventListener("keydown", onKey); };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); };
   }, []);
 
   const restart = () => {

@@ -4,7 +4,7 @@ import {
   Music2, Film, Youtube, Radio, Globe, Table, FileText, Presentation,
   Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen, Compass,
   UtensilsCrossed, Car, Store, BedDouble, Plane, TrendingUp, Truck,
-  ListChecks, StickyNote, CalendarDays, Clapperboard, Cpu,
+  ListChecks, StickyNote, CalendarDays, Clapperboard, Cpu, Tv,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import HubNav from "@/components/home/HubNav";
@@ -24,6 +24,7 @@ const SECTIONS = {
       { to: "/movies", label: "Movies", icon: Film },
       { to: "/video", label: "Video", icon: Youtube },
       { to: "/radio", label: "Radio", icon: Radio },
+      { to: "/cable", label: "Cable TV", icon: Tv },
     ],
   },
   tech: {

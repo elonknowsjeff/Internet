@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   FolderOpen, Calculator as CalcIcon, Settings as Gear, Music2,
   Car, Clapperboard, Film, Newspaper, MessageSquare, StickyNote, CalendarDays, Cloud, Plane,
-  BedDouble, Heart, Store, Sparkles, ListChecks, Hash, Apple, Monitor, Minimize2, LayoutGrid,
+  BedDouble, Heart, Store, Sparkles, ListChecks, Hash, Apple, Monitor, Minimize2, LayoutGrid, Tv, Globe,
 } from "lucide-react";
 import WindowFrame from "@/components/desktop/WindowFrame";
 import CalculatorApp from "@/components/desktop/CalculatorApp";
@@ -28,6 +28,8 @@ const WINDOW_APPS = [
 const SHORTCUTS = [
   { name: "Feed", to: "/", Icon: Hash },
   { name: "Music", to: "/music", Icon: Music2 },
+  { name: "Cable TV", to: "/cable", Icon: Tv },
+  { name: "Browser", to: "/web", Icon: Globe },
   { name: "Rides", to: "/rides", Icon: Car },
   { name: "Movies", to: "/movies", Icon: Clapperboard },
   { name: "Video", to: "/video", Icon: Film },
@@ -181,7 +183,7 @@ export default function Desktop() {
             maximized={w.max}
             zIndex={w.z}
             active={w.z === topZ}
-            initial={{ x: 90 + index * 24, y: 64 + index * 20 }}
+            initial={{ x: 100 + index * 34, y: 72 + index * 26 }}
             onFocus={() => focusApp(w.id)}
             onClose={() => closeApp(w.id)}
             onMinimize={() => minimizeApp(w.id)}

@@ -48,6 +48,7 @@ import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
 import Browser from '@/pages/Browser';
 import Web from '@/pages/Web';
+import LiveTV from '@/pages/LiveTV';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -116,6 +117,7 @@ const AuthenticatedApp = () => {
         <Route path="/apps" element={<Apps />} />
         <Route path="/browser" element={<Browser />} />
         <Route path="/web" element={<Web />} />
+        <Route path="/cable" element={<LiveTV />} />
         <Route path="/terms" element={<Terms />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

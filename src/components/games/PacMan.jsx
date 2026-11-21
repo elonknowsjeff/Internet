@@ -39,11 +39,11 @@ function initialState() {
   }
   return {
     dots, power,
-    pac: { r: 17, c: 9, dir: "left", next: "left" },
+    pac: { r: 17, c: 9, rr: 17, cc: 9, dir: "left", next: "left" },
     ghosts: [
-      { r: 3, c: 4, dir: "right", color: GHOST_COLORS[0] },
-      { r: 3, c: 9, dir: "down", color: GHOST_COLORS[1] },
-      { r: 3, c: 14, dir: "left", color: GHOST_COLORS[2] },
+      { r: 3, c: 4, rr: 3, cc: 4, dir: "right", color: GHOST_COLORS[0] },
+      { r: 3, c: 9, rr: 3, cc: 9, dir: "down", color: GHOST_COLORS[1] },
+      { r: 3, c: 14, rr: 3, cc: 14, dir: "left", color: GHOST_COLORS[2] },
     ],
     score: 0, lives: 3, powerTimer: 0, status: "ready", mouth: 0,
   };
@@ -68,7 +68,7 @@ export default function PacMan({ onClose }) {
       ctx.beginPath(); ctx.arc(c * CELL + CELL / 2, r * CELL + CELL / 2, isPow ? 5 : 2, 0, 7); ctx.fill();
     });
     // pacman
-    const p = g.pac; const px = p.c * CELL + CELL / 2, py = p.r * CELL + CELL / 2;
+    const p = g.pac; const px = p.cc * CELL + CELL / 2, py = p.rr * CELL + CELL / 2;
     const ang = { up: -Math.PI / 2, down: Math.PI / 2, left: Math.PI, right: 0 }[p.dir];
     const m = (Math.sin(g.mouth) + 1) / 2 * 0.5;
     ctx.fillStyle = "#ffe600";
@@ -76,7 +76,7 @@ export default function PacMan({ onClose }) {
     ctx.arc(px, py, CELL / 2 - 1, ang + m, ang - m + Math.PI * 2); ctx.closePath(); ctx.fill();
     // ghosts
     g.ghosts.forEach((gh) => {
-      const gx = gh.c * CELL + CELL / 2, gy = gh.r * CELL + CELL / 2;
+      const gx = gh.cc * CELL + CELL / 2, gy = gh.rr * CELL + CELL / 2;
       ctx.fillStyle = g.powerTimer > 0 ? "#4040ff" : gh.color;
       ctx.beginPath(); ctx.arc(gx, gy - 1, CELL / 2 - 1, Math.PI, 0); ctx.lineTo(gx + CELL / 2 - 1, gy + CELL / 2 - 1);
       ctx.lineTo(gx + CELL / 4, gy + CELL / 3); ctx.lineTo(gx, gy + CELL / 2 - 1); ctx.lineTo(gx - CELL / 4, gy + CELL / 3); ctx.lineTo(gx - CELL / 2 + 1, gy + CELL / 2 - 1); ctx.closePath(); ctx.fill();
@@ -88,7 +88,6 @@ export default function PacMan({ onClose }) {
   const step = useCallback(() => {
     const g = game.current;
     if (g.status !== "playing") return;
-    g.mouth += 0.4;
     const p = g.pac;
     if (p.next && !isWall(p.r + DIRS[p.next][0], p.c + DIRS[p.next][1])) p.dir = p.next;
     if (!isWall(p.r + DIRS[p.dir][0], p.c + DIRS[p.dir][1])) { p.r += DIRS[p.dir][0]; p.c += DIRS[p.dir][1]; }
@@ -120,8 +119,22 @@ export default function PacMan({ onClose }) {
   }, []);
 
   useEffect(() => {
-    draw();
-    const tick = setInterval(() => { step(); draw(); }, 130);
+    game.current.pac.rr = game.current.pac.r; game.current.pac.cc = game.current.pac.c;
+    game.current.ghosts.forEach((gh) => { gh.rr = gh.r; gh.cc = gh.c; });
+    const ease = (cur, target, k) => cur + (target - cur) * k;
+    let raf = 0, last = performance.now(), acc = 0;
+    const STEP_MS = 120;
+    const loop = (t) => {
+      raf = requestAnimationFrame(loop);
+      const dt = Math.min(50, t - last); last = t; acc += dt;
+      const g = game.current;
+      g.mouth += dt * 0.018;
+      g.pac.rr = ease(g.pac.rr, g.pac.r, 0.35); g.pac.cc = ease(g.pac.cc, g.pac.c, 0.35);
+      g.ghosts.forEach((gh) => { gh.rr = ease(gh.rr, gh.r, 0.3); gh.cc = ease(gh.cc, gh.c, 0.3); });
+      while (acc >= STEP_MS) { step(); acc -= STEP_MS; if (g.status !== "playing" && g.status !== "ready") break; }
+      draw();
+    };
+    raf = requestAnimationFrame(loop);
     const onKey = (e) => {
       const map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", w: "up", s: "down", a: "left", d: "right" };
       const d = map[e.key]; if (d) { e.preventDefault(); game.current.pac.next = d; if (game.current.status === "ready") game.current.status = "playing"; }
@@ -135,7 +148,7 @@ export default function PacMan({ onClose }) {
       if (game.current.status === "ready") game.current.status = "playing"; };
     canvas?.addEventListener("touchstart", onTouch, { passive: true });
     canvas?.addEventListener("touchend", onTouchEnd, { passive: true });
-    return () => { clearInterval(tick); window.removeEventListener("keydown", onKey); canvas?.removeEventListener("touchstart", onTouch); canvas?.removeEventListener("touchend", onTouchEnd); };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("keydown", onKey); canvas?.removeEventListener("touchstart", onTouch); canvas?.removeEventListener("touchend", onTouchEnd); };
   }, [step, draw]);
 
   const reset = () => { game.current = initialState(); setHud({ score: 0, lives: 3, status: "ready" }); draw(); };
