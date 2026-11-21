@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  Music2, Film, Youtube, Radio, Globe, LayoutGrid, Table, FileText, Presentation,
+  Music2, Film, Youtube, Radio, Globe, Table, FileText, Presentation,
   Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen, Compass,
   UtensilsCrossed, Car, Store, BedDouble, Plane, TrendingUp, Truck,
   ListChecks, StickyNote, CalendarDays, Clapperboard, Cpu,
 } from "lucide-react";
-import HubHeader from "@/components/home/HubHeader";
+import { base44 } from "@/api/base44Client";
+import HubNav from "@/components/home/HubNav";
+import WidgetsRail from "@/components/feed/WidgetsRail";
 import SectionPanel from "@/components/home/SectionPanel";
 import DatingPanel from "@/components/home/DatingPanel";
 import GamingPanel from "@/components/home/GamingPanel";
@@ -65,34 +67,46 @@ const STACKED = [SECTIONS.entertainment, SECTIONS.tech, SECTIONS.news, SECTIONS.
 export default function Home() {
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
+  const [user, setUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
-  if (cat === "gaming") return <Gaming />;
-  if (cat === "aichat") return <Assistant />;
-
+  const isGaming = cat === "gaming";
+  const isAi = cat === "aichat";
+  const isSocial = cat === "social";
   const section = SECTIONS[cat];
 
   return (
     <div className="min-h-[100dvh]">
-      <HubHeader />
-
-      {cat === "social" ? (
-        <>
-          <Feed />
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-8 pb-1">
-            <div className="flex items-center gap-2.5">
-              <span className="h-5 w-1.5 rounded-full brand-grad" />
-              <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
-            </div>
-          </div>
-          {STACKED.map((s) => (
-            <SectionPanel key={s.title} {...s} />
-          ))}
-          <DatingPanel />
-          <GamingPanel />
-        </>
-      ) : section ? (
-        <SectionPanel {...section} />
-      ) : null}
+      <div className="mx-auto w-full max-w-[1320px] lg:px-4">
+        <div className="lg:grid lg:grid-cols-[264px_minmax(0,1fr)] xl:grid-cols-[264px_minmax(0,1fr)_330px] lg:gap-5">
+          <HubNav />
+          <main className="min-w-0">
+            {isGaming ? (
+              <Gaming />
+            ) : isAi ? (
+              <Assistant />
+            ) : isSocial ? (
+              <>
+                <Feed />
+                <div className="mx-auto max-w-[600px] px-3 sm:px-4 pt-8">
+                  <div className="flex items-center gap-2.5">
+                    <span className="h-5 w-1.5 rounded-full brand-grad" />
+                    <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
+                  </div>
+                </div>
+                {STACKED.map((s) => (
+                  <SectionPanel key={s.title} {...s} />
+                ))}
+                <DatingPanel />
+                <GamingPanel />
+              </>
+            ) : section ? (
+              <SectionPanel {...section} />
+            ) : null}
+          </main>
+          <WidgetsRail user={user} />
+        </div>
+      </div>
     </div>
   );
 }
