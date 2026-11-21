@@ -14,6 +14,7 @@ const GROUPS = [
   {
     label: "Hubs",
     items: [
+      { to: "/assistant", label: "Super Internet", icon: Sparkles, top: true },
       { to: "/?cat=social", cat: "social", label: "Home", icon: HomeIcon },
       { to: "/?cat=entertainment", cat: "entertainment", label: "Entertainment", icon: Clapperboard },
       { to: "/?cat=tech", cat: "tech", label: "Tech", icon: Cpu },
@@ -84,6 +85,18 @@ const GROUPS = [
 
 function Item({ item, active }) {
   const Icon = item.icon;
+  if (item.top) {
+    return (
+      <Link
+        to={item.to}
+        className="group mb-1 flex items-center gap-3.5 rounded-2xl px-3.5 py-3 text-[15px] font-bold neon-btn transition-transform active:scale-[0.98]"
+      >
+        <Icon className="h-[22px] w-[22px] shrink-0" strokeWidth={2.4} />
+        <span className="truncate">{item.label}</span>
+        <span className="ml-auto rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">AI</span>
+      </Link>
+    );
+  }
   return (
     <Link
       to={item.to}
