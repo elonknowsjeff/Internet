@@ -9,7 +9,6 @@ import ScrollToTop from './components/ScrollToTop';
 import AppLayout from '@/components/AppLayout';
 import { SettingsProvider } from '@/components/SettingsContext';
 import Home from '@/pages/Home';
-import Rides from '@/pages/Rides';
 import Market from '@/pages/Market';
 import Music from '@/pages/Music';
 import Movies from '@/pages/Movies';
@@ -42,7 +41,7 @@ import ArticlesPage from '@/pages/ArticlesPage';
 import Terms from '@/pages/Terms';
 import Messages from '@/pages/Messages';
 import Stories from '@/pages/Stories';
-import Eats from '@/pages/Eats';
+
 import Logistics from '@/pages/Logistics';
 import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
@@ -84,7 +83,7 @@ const AuthenticatedApp = () => {
       <Route path="/mfa" element={<Mfa />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/rides" element={<Rides />} />
+        <Route path="/rides" element={<Navigate to="/?cat=food" replace />} />
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />
         <Route path="/movies" element={<Movies />} />
@@ -110,7 +109,7 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/stories" element={<Stories />} />
         <Route path="/articles" element={<ArticlesPage />} />
-        <Route path="/eats" element={<Eats />} />
+        <Route path="/eats" element={<Navigate to="/?cat=food" replace />} />
         <Route path="/logistics" element={<Logistics />} />
         <Route path="/productivity" element={<Productivity />} />
         <Route path="/apps" element={<Apps />} />

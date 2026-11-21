@@ -51,8 +51,6 @@ const SECTIONS = {
   food: {
     title: "Food & Services", icon: UtensilsCrossed, tint: "from-emerald-500 to-teal-600",
     apps: [
-      { to: "/eats", label: "Eats", icon: UtensilsCrossed },
-      { to: "/rides", label: "Rides", icon: Car },
       { to: "/market", label: "Market", icon: Store },
       { to: "/hotels", label: "Hotels", icon: BedDouble },
       { to: "/flights", label: "Flights", icon: Plane },

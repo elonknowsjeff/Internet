@@ -34,6 +34,55 @@ const RAIL = [
   { key: "studio", label: "Creator studio", icon: BarChart3 },
 ];
 
+function RecommendedRow({ videos, onOpen }) {
+  const recs = [...videos].filter((v) => !v.is_short).sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 12);
+  if (recs.length < 2) return null;
+  return (
+    <section className="mb-6">
+      <h3 className="mb-2 text-[13px] font-bold ig-text">Recommended</h3>
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+        {recs.map((v) => (
+          <button key={v.id} onClick={() => onOpen(v)} className="group w-[190px] shrink-0 text-left">
+            <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10">
+              <VideoThumb video={v} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <p className="mt-1.5 line-clamp-2 text-[12.5px] font-semibold leading-snug">{v.title}</p>
+            <p className="text-[11px] text-white/50">{v.channel_name} · {fmtViews(v.views)} views</p>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ChannelHeader({ user, myHandle, videos, onCreate, onGoLive }) {
+  const mine = myHandle ? videos.filter((v) => v.channel_handle === myHandle) : [];
+  const shorts = mine.filter((v) => v.is_short).length;
+  return (
+    <section className="mb-6 overflow-hidden rounded-2xl ig-panel">
+      <div className="h-28 w-full sm:h-36" style={{ background: "var(--accent-gradient)", opacity: 0.85 }} />
+      <div className="-mt-10 flex items-end gap-4 px-4 pb-4">
+        <div className="relative">
+          <span className="absolute -inset-1 rounded-full" style={{ background: "var(--accent-gradient)" }} />
+          {user?.avatar ? (
+            <img src={user.avatar} alt="" className="relative h-20 w-20 rounded-full object-cover ring-4 ring-[var(--bg-base)]" />
+          ) : (
+            <span className="relative grid h-20 w-20 place-items-center rounded-full bg-white/10 ring-4 ring-[var(--bg-base)]"><User className="h-8 w-8" /></span>
+          )}
+        </div>
+        <div className="min-w-0 flex-1 pb-1">
+          <h2 className="truncate text-lg font-bold ig-text">{user?.display_name || user?.full_name || myHandle || "Your channel"}</h2>
+          <p className="text-[12px] ig-muted">@{myHandle || "you"} · {mine.length} videos · {shorts} shorts</p>
+        </div>
+        <div className="flex gap-2 pb-1">
+          <button onClick={onCreate} className="hidden items-center gap-1.5 rounded-full ig-post px-3.5 py-2 text-[12.5px] font-bold sm:flex"><Upload className="h-4 w-4" /> Create</button>
+          <button onClick={onGoLive} className="flex items-center gap-1.5 rounded-full bg-red-600 px-3.5 py-2 text-[12.5px] font-bold text-white hover:bg-red-500"><Radio className="h-4 w-4" /> Go live</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Video() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -181,13 +230,12 @@ export default function Video() {
   );
 
   return (
-    <div className="relative min-h-screen w-full bg-[#07060f] pb-28 sm:pb-10">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[440px] bg-[radial-gradient(75%_100%_at_50%_0%,rgba(126,86,255,0.24),transparent_72%)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[200px] bg-gradient-to-b from-white/[0.07] to-transparent" />
+    <div className="relative min-h-screen w-full bg-[var(--bg-base)] pb-28 sm:pb-10">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[440px]" style={{ background: "radial-gradient(75% 100% at 50% 0%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 72%)" }} />
 
       <div className="relative">
         {/* top bar */}
-        <header className="sticky top-2 z-30 mx-2 mt-2 flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-[#0b0818]/72 px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_60px_-34px_rgba(0,0,0,0.95)] backdrop-blur-2xl sm:mx-4">
+        <header className="sticky top-2 z-30 mx-2 mt-2 flex items-center gap-2 rounded-2xl ig-panel px-2.5 py-2 sm:mx-4">
           <button onClick={() => { setRail("home"); resetFilters(); }} className="grid h-10 w-10 shrink-0 place-items-center rounded-full hover:bg-white/[0.1]"><Menu className="h-5 w-5" /></button>
           <div className="hidden shrink-0 items-center gap-1 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-[9px] brand-grad shadow-[0_10px_22px_-10px_rgba(168,85,247,0.95)]"><Play className="h-3 w-3 fill-black text-black" /></span>
@@ -210,7 +258,7 @@ export default function Video() {
 
         <div className="flex gap-4 px-2 sm:px-4 pt-3">
           {/* left rail */}
-          <aside className="sticky top-[86px] hidden h-[calc(100vh-110px)] w-[212px] shrink-0 flex-col gap-0.5 self-start overflow-y-auto rounded-2xl border border-white/[0.08] bg-white/[0.028] p-2 backdrop-blur-xl scrollbar-none lg:flex">
+          <aside className="sticky top-[86px] hidden h-[calc(100vh-110px)] w-[212px] shrink-0 flex-col gap-0.5 self-start overflow-y-auto rounded-2xl ig-panel p-2 scrollbar-none lg:flex">
             {RAIL.map((r) => (
               <button key={r.key} onClick={() => { setRail(r.key); setCategory("All"); setType("all"); setChannel(""); }} className={`flex items-center gap-3 rounded-xl px-3 py-2 text-[13.5px] transition-colors ${rail === r.key ? "border border-white/15 bg-white/[0.1] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]" : "font-medium text-white/65 hover:bg-white/[0.05] hover:text-white"}`}>
                 <r.icon className="w-4 h-4" /> {r.label}
@@ -243,6 +291,12 @@ export default function Video() {
                   <button key={c} onClick={() => { setCategory(c); setRail(c === "Shorts" ? "shorts" : "home"); }} className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12.5px] transition-colors ${category === c ? "border border-white/20 bg-white/[0.14] font-semibold text-white" : "border border-white/[0.08] bg-white/[0.04] font-medium text-white/65 hover:bg-white/[0.09] hover:text-white"}`}>{c}</button>
                 ))}
               </div>
+            )}
+            {rail === "home" && !searching && !shortsMode && longVideos.length > 1 && (
+              <RecommendedRow videos={videos} onOpen={openWatch} />
+            )}
+            {rail === "mine" && !searching && (
+              <ChannelHeader user={user} myHandle={myHandle} videos={videos} onCreate={() => setUploadOpen(true)} onGoLive={() => setLiveOpen(true)} />
             )}
 
             {rail === "studio" ? (

@@ -47,8 +47,6 @@ const GROUPS = [
     { to: "/calculator", label: "Calculator", icon: Calculator },
   ]},
   { label: "Food & Services", items: [
-    { to: "/eats", label: "Eats", icon: UtensilsCrossed },
-    { to: "/rides", label: "Rides", icon: Car },
     { to: "/market", label: "Market", icon: Store },
     { to: "/hotels", label: "Hotels", icon: BedDouble },
     { to: "/flights", label: "Flights", icon: Plane },
