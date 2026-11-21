@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import {
   Globe, Table, FileText, Presentation,
   Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen,
@@ -11,6 +12,7 @@ import FeedTopBar from "@/components/home/FeedTopBar";
 import SectionPanel from "@/components/home/SectionPanel";
 import UnifiedFeed from "@/components/home/UnifiedFeed";
 import ArcadeHub from "@/components/home/ArcadeHub";
+import WiiHome from "@/components/home/WiiHome";
 import Assistant from "@/pages/Assistant";
 import EntertainmentHub from "@/components/home/EntertainmentHub";
 
@@ -51,24 +53,39 @@ export default function Home() {
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
   const [user, setUser] = useState(null);
+  const [view, setView] = useState("grid");
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
   const isGaming = cat === "gaming";
   const isAi = cat === "aichat";
   const isSocial = cat === "social";
   const section = SECTIONS[cat];
+  const feedMode = isSocial && view === "feed";
 
   return (
     <div className="min-h-[100dvh]">
       <FeedTopBar />
-
-      <main className={`mx-auto w-full px-3 sm:px-4 ${isSocial ? "max-w-[640px]" : "max-w-[1100px]"}`}>
+      <main className={`mx-auto w-full px-3 sm:px-4 ${feedMode ? "max-w-[640px]" : "max-w-[1240px]"}`}>
         {isGaming ? (
           <ArcadeHub />
         ) : isAi ? (
           <Assistant />
         ) : isSocial ? (
-          <UnifiedFeed />
+          feedMode ? (
+            <>
+              <div className="sticky top-[52px] z-20 mt-2 flex items-center gap-2">
+                <button
+                  onClick={() => setView("grid")}
+                  className="flex items-center gap-1.5 rounded-full border border-white/12 bg-[#0b0b0f]/80 px-3 py-1.5 text-[12px] font-semibold text-white/70 backdrop-blur-xl hover:text-white"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" /> All apps
+                </button>
+              </div>
+              <UnifiedFeed />
+            </>
+          ) : (
+            <WiiHome onFeed={() => setView("feed")} />
+          )
         ) : cat === "entertainment" ? (
           <EntertainmentHub />
         ) : section ? (

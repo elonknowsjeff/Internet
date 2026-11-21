@@ -31,9 +31,9 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 0.75rem;
-    --font-heading: "Inter", -apple-system, "SF Pro Display", system-ui, sans-serif;
-    --font-body: "Inter", -apple-system, "SF Pro Text", system-ui, sans-serif;
-    --font-display: "Inter", -apple-system, "SF Pro Display", system-ui, sans-serif;
+    --font-heading: -apple-system, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    --font-body: -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif;
+    --font-display: -apple-system, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --sidebar-background: 240 6% 7%;
     --sidebar-foreground: 0 0% 85%;

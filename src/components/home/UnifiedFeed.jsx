@@ -7,6 +7,7 @@ import usePostReactions from "@/hooks/usePostReactions";
 import StoriesBar from "@/components/StoriesBar";
 import TrendingHashtags from "@/components/home/TrendingHashtags";
 import WhoToFollow from "@/components/WhoToFollow";
+import ProfileSheet from "@/components/social/ProfileSheet";
 
 const asItems = (res) => (Array.isArray(res) ? res : res?.items || []);
 const avatars = ["https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100"];
@@ -60,6 +61,7 @@ export default function UnifiedFeed() {
   const [expandedId, setExpandedId] = useState(null);
   const [bookmarked, setBookmarked] = useState({});
   const [tag, setTag] = useState(null);
+  const [profileHandle, setProfileHandle] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -278,7 +280,7 @@ export default function UnifiedFeed() {
                     reposted={!!reposted[p.id]}
                     bookmarked={!!bookmarked[p.id]}
                     commentsOpen={expandedId === p.id}
-                    onOpenAuthor={() => {}}
+                    onOpenAuthor={(h) => setProfileHandle(h)}
                     onDelete={() => { base44.entities.Post.delete(p.id); loadPosts(); }}
                     onLike={toggleLike}
                     onRepost={toggleRepost}
@@ -341,6 +343,8 @@ export default function UnifiedFeed() {
           })}
         </div>
       )}
+
+      {profileHandle && <ProfileSheet handle={profileHandle} onClose={() => setProfileHandle(null)} />}
     </div>
   );
 }
