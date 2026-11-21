@@ -12,6 +12,7 @@ export default function EditProfileDialog({ open, user, onClose, onSaved }) {
   const [link, setLink] = useState("");
   const [avatar, setAvatar] = useState("");
   const [banner, setBanner] = useState("");
+  const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState("");
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
@@ -24,6 +25,7 @@ export default function EditProfileDialog({ open, user, onClose, onSaved }) {
     setLink(user.bio_link || "");
     setAvatar(user.avatar || "");
     setBanner(user.banner || "");
+    setPhone(user.phone || "");
     setStatus("");
   }, [open, user]);
 
@@ -86,6 +88,7 @@ export default function EditProfileDialog({ open, user, onClose, onSaved }) {
       bio_link: link.trim(),
       avatar,
       banner,
+      phone: phone.trim(),
     };
     try {
       await base44.auth.updateMe(patch);
@@ -194,6 +197,17 @@ export default function EditProfileDialog({ open, user, onClose, onSaved }) {
               onChange={(e) => setLink(e.target.value)}
               maxLength={120}
               placeholder="https://your-site.com"
+              className="w-full bg-transparent outline-none text-sm"
+            />
+          </label>
+
+          <label className={`block ${field}`}>
+            <span className="block text-[11px] text-white/45">Phone number</span>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              maxLength={32}
+              placeholder="+1 555 123 4567"
               className="w-full bg-transparent outline-none text-sm"
             />
           </label>

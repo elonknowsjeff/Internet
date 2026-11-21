@@ -146,7 +146,7 @@ export default function Desktop() {
       <div className="absolute top-0 inset-x-0 z-40 flex items-center gap-3 h-11 px-3 sm:px-4 backdrop-blur-xl bg-black/35 border-b border-white/10">
         <div className="flex items-center gap-2 shrink-0">
           <BrandLogo size={18} />
-          <span className="text-[13px] font-semibold tracking-tight hidden sm:block">Vazolex Plus</span>
+          <span className="text-[13px] font-semibold tracking-tight hidden sm:block">Internet X</span>
         </div>
         <button
           onClick={() => setLaunch(true)}

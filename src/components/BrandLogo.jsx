@@ -1,6 +1,6 @@
 import React from "react";
 
-export const LOGO_URL = "https://base44.app/api/apps/6aff851241ee63818212a715/files/mp/public/6aff851241ee63818212a715/e9f870ff6_valo-logo.jpg";
+export const LOGO_URL = "https://base44.app/api/apps/6aff851241ee63818212a715/files/mp/public/6aff851241ee63818212a715/8e31fedbe_internet-x-logo.jpg";
 
 export default function BrandLogo({ size = 44, className = "" }) {
   return (

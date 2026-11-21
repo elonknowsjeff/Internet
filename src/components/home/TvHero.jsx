@@ -42,7 +42,7 @@ export default function TvHero() {
             <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest" style={{ color: "var(--brand)" }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--brand)" }} /> On Air
             </span>
-            <span className="text-[11px] text-white/40">Vazolex TV</span>
+            <span className="text-[11px] text-white/40">Internet X TV</span>
             <button onClick={() => setMuted((m) => !m)} className="ml-auto grid h-7 w-7 place-items-center rounded-full bg-white/10 text-white/70 hover:bg-white/20">
               {muted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </button>

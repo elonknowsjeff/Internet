@@ -95,7 +95,7 @@ export default function SideNav() {
     <>
       <div className="fixed inset-x-0 bottom-0 z-[52] flex justify-center px-2 pb-[calc(8px+env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-0.5 max-w-[calc(100vw-1rem)] overflow-x-auto scrollbar-none rounded-2xl border border-white/[0.08] bg-[#1c1c1e]/90 px-1.5 py-1.5 backdrop-blur-xl shadow-[0_18px_50px_-20px_rgba(0,0,0,0.9)]">
-          <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Vazolex Plus">
+          <Link to="/" className="hidden h-11 w-11 shrink-0 place-items-center rounded-2xl sm:grid" title="Internet X">
             <BrandLogo size={22} />
           </Link>
 

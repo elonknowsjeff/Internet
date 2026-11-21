@@ -103,7 +103,7 @@ export default function Username() {
         {current && <p className="mt-3 text-center text-[12px] ig-muted">Current: @{current.handle}</p>}
       </div>
 
-      <p className="mt-4 text-center text-[12px] ig-muted">Your username appears as your @handle across Vazolex Plus.</p>
+      <p className="mt-4 text-center text-[12px] ig-muted">Your username appears as your @handle across Internet X.</p>
     </div>
   );
 }

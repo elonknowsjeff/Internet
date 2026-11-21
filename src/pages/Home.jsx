@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  Music2, Film, Youtube, Radio, Globe, Table, FileText, Presentation,
-  Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen, Compass,
-  UtensilsCrossed, Car, Store, BedDouble, Plane, TrendingUp, Truck,
-  ListChecks, StickyNote, CalendarDays, Clapperboard, Cpu, Tv,
+  Globe, Table, FileText, Presentation,
+  Cloud as CloudIcon, Calculator as CalculatorIcon, Newspaper, BookOpen,
+  UtensilsCrossed, Store, BedDouble, Plane, TrendingUp,
+  ListChecks, StickyNote, CalendarDays, Cpu,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import HubNav from "@/components/home/HubNav";
-import WidgetsRail from "@/components/feed/WidgetsRail";
+import FeedTopBar from "@/components/home/FeedTopBar";
+import FeedDrawer from "@/components/home/FeedDrawer";
 import SectionPanel from "@/components/home/SectionPanel";
 import DatingPanel from "@/components/home/DatingPanel";
-import GamingPanel from "@/components/home/GamingPanel";
 import Feed from "@/pages/Feed";
 import Gaming from "@/pages/Gaming";
 import Assistant from "@/pages/Assistant";
@@ -19,15 +18,6 @@ import EntertainmentHub from "@/components/home/EntertainmentHub";
 import SocialLaunchers from "@/components/home/SocialLaunchers";
 
 const SECTIONS = {
-  entertainment: {
-    title: "Entertainment", icon: Clapperboard, tint: "from-fuchsia-500 to-purple-600",
-    apps: [
-      { to: "/music", label: "Music", icon: Music2 },
-      { to: "/video", label: "Video", icon: Youtube },
-      { to: "/radio", label: "Radio", icon: Radio },
-      { to: "/cable", label: "Cable TV", icon: Tv },
-    ],
-  },
   tech: {
     title: "Tech", icon: Cpu, tint: "from-cyan-500 to-blue-600",
     apps: [
@@ -60,11 +50,10 @@ const SECTIONS = {
   },
 };
 
-const STACKED = [SECTIONS.news];
-
 export default function Home() {
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -75,38 +64,31 @@ export default function Home() {
 
   return (
     <div className="min-h-[100dvh]">
-      <div className="mx-auto w-full max-w-[1320px] lg:px-4">
-        <div className="lg:grid lg:grid-cols-[264px_minmax(0,1fr)] xl:grid-cols-[264px_minmax(0,1fr)_330px] lg:gap-5">
-          <HubNav />
-          <main className="min-w-0">
-            {isGaming ? (
-              <Gaming />
-            ) : isAi ? (
-              <Assistant />
-            ) : isSocial ? (
-              <>
-                <SocialLaunchers />
-                <Feed />
-                <div className="mx-auto max-w-[600px] px-3 sm:px-4 pt-8">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-5 w-1.5 rounded-full brand-grad" />
-                    <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
-                  </div>
-                </div>
-                {STACKED.map((s) => (
-                  <SectionPanel key={s.title} {...s} />
-                ))}
-                <DatingPanel />
-              </>
-            ) : cat === "entertainment" ? (
-              <EntertainmentHub />
-            ) : section ? (
-              <SectionPanel {...section} />
-            ) : null}
-          </main>
-          <WidgetsRail user={user} />
-        </div>
-      </div>
+      <FeedTopBar onMenu={() => setDrawerOpen(true)} />
+      <FeedDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+      <main className={`mx-auto w-full px-3 sm:px-4 ${isSocial ? "max-w-[640px]" : "max-w-[1100px]"}`}>
+        {isGaming ? (
+          <Gaming />
+        ) : isAi ? (
+          <Assistant />
+        ) : isSocial ? (
+          <>
+            <SocialLaunchers />
+            <Feed />
+            <div className="flex items-center gap-2.5 pt-8">
+              <span className="h-5 w-1.5 rounded-full brand-grad" />
+              <h2 className="text-[14px] font-bold uppercase tracking-wide text-white/55">Explore more</h2>
+            </div>
+            <SectionPanel {...SECTIONS.news} />
+            <DatingPanel />
+          </>
+        ) : cat === "entertainment" ? (
+          <EntertainmentHub />
+        ) : section ? (
+          <SectionPanel {...section} />
+        ) : null}
+      </main>
     </div>
   );
 }

@@ -88,7 +88,7 @@ export default function HubNav() {
       <div className="flex items-center gap-2.5 px-4 pb-3 pt-4">
         <BrandLogo size={32} />
         <span className="font-display text-[19px] font-extrabold tracking-tight leading-none ig-text">
-          Vazolex <span style={{ color: "var(--accent)" }}>Plus</span>
+          Internet <span style={{ color: "var(--accent)" }}>X</span>
         </span>
       </div>
 

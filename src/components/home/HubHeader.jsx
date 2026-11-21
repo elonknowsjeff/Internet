@@ -7,10 +7,10 @@ import { Sparkles } from "lucide-react";
 export default function HubHeader() {
   return (
     <header className="flex items-center gap-3 px-4 py-3 sm:px-6">
-      <Link to="/" aria-label="Vazolex Plus home" className="flex items-center gap-2.5 shrink-0 group">
+      <Link to="/" aria-label="Internet X home" className="flex items-center gap-2.5 shrink-0 group">
         <span className="transition-transform duration-200 group-hover:scale-105"><BrandLogo size={42} /></span>
         <span className="hidden sm:block font-display text-[20px] font-extrabold tracking-tight leading-none">
-          Vazolex <span style={{ color: "var(--brand)" }}>Plus</span>
+          Internet <span style={{ color: "var(--brand)" }}>X</span>
         </span>
       </Link>
       <div className="flex-1 flex justify-center min-w-0">

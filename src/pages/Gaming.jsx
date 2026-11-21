@@ -145,7 +145,7 @@ export default function Gaming() {
       <header className="sticky top-0 z-30 bg-[#171a21] border-b border-black/60">
         <div className="flex items-center gap-2 px-3 sm:px-5 py-2.5">
           <Gamepad2 className="w-5 h-5 text-[#66c0f4] shrink-0" />
-          <span className="font-black tracking-tight text-sm hidden sm:block">Vazolex Plus</span>
+          <span className="font-black tracking-tight text-sm hidden sm:block">Internet X</span>
           <nav className="flex items-center gap-0.5 ml-2 overflow-x-auto scrollbar-none">
             {tabs.map((t) => (
               <button key={t.key} onClick={() => setTab(t.key)} className={`px-2.5 py-1.5 rounded text-xs font-semibold whitespace-nowrap flex items-center gap-1 ${tab === t.key ? "bg-[#2a475e] text-white" : "text-[#8f98a0] hover:text-white"}`}>

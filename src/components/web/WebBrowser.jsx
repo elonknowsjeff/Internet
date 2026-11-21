@@ -142,7 +142,7 @@ export default function WebBrowser() {
         {!tab || !tab.url ? (
           <div className="h-full overflow-y-auto bg-[#0b0b0d] text-white">
             <div className="max-w-2xl mx-auto px-5 py-10">
-              <h1 className="text-2xl font-bold font-display mb-1">Vazolex Web</h1>
+              <h1 className="text-2xl font-bold font-display mb-1">Internet X Web</h1>
               <p className="text-white/45 text-sm mb-6">A clean, private reader browser. Search the web or open a site below.</p>
               <form onSubmit={submit} className="flex items-center gap-2 bg-white/[0.06] border border-white/10 rounded-full px-4 py-3 mb-6">
                 <Search className="w-4 h-4 text-white/40" />
@@ -186,7 +186,7 @@ export default function WebBrowser() {
         ) : tab.loading && !tab.html ? (
           <div className="h-full grid place-items-center bg-[#0b0b0d] text-white"><Loader2 className="w-6 h-6 animate-spin text-white/50" /></div>
         ) : (
-          <iframe key={tab.id} title="Vazolex Web" srcDoc={tab.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" className="w-full h-full bg-white" />
+          <iframe key={tab.id} title="Internet X Web" srcDoc={tab.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" className="w-full h-full bg-white" />
         )}
       </div>
     </div>
