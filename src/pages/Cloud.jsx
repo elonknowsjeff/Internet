@@ -81,6 +81,7 @@ export default function Cloud() {
   const [busy, setBusy] = useState(false);
   const [query, setQuery] = useState("");
   const [view, setView] = useState("home");
+  const [thumbs, setThumbs] = useState({});
   const fileInput = useRef(null);
 
   const load = async () => {
@@ -90,6 +91,22 @@ export default function Cloud() {
       const data = await base44.entities.CloudFile.list("-created_date", 200);
       const mine = me ? data.filter((f) => f.created_by_id === me.id) : data;
       setFiles(mine);
+      // build real thumbnails for image files (private files need a signed URL)
+      const imgs = mine.filter((f) => f.kind === "image" && f.file_uri);
+      Promise.all(
+        imgs.map(async (f) => {
+          try {
+            const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: f.file_uri });
+            return [f.id, signed_url];
+          } catch { return [f.id, null]; }
+        })
+      )
+        .then((rows) => {
+          const map = {};
+          rows.forEach(([id, url]) => { if (url) map[id] = url; });
+          setThumbs(map);
+        })
+        .catch(() => {});
     } catch (e) { setFiles([]); }
     finally { setLoading(false); }
   };
@@ -213,8 +230,12 @@ export default function Cloud() {
                   const media = f.kind === "image" || f.kind === "video" || f.kind === "audio";
                   return (
                     <div key={f.id} className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3 transition-colors hover:bg-white/[0.06]">
-                      <button onClick={() => media && openMedia(f)} className="grid h-24 w-full place-items-center rounded-xl border border-white/[0.06] bg-white/[0.03]">
-                        <Icon className={`h-9 w-9 ${color}`} />
+                      <button onClick={() => media && openMedia(f)} className="grid h-24 w-full place-items-center overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03]">
+                        {f.kind === "image" && thumbs[f.id] ? (
+                          <img src={thumbs[f.id]} alt={f.name} loading="lazy" className="h-24 w-full object-cover" />
+                        ) : (
+                          <Icon className={`h-9 w-9 ${color}`} />
+                        )}
                       </button>
                       <p className="mt-2 truncate text-[12.5px] font-medium">{f.name}</p>
                       <p className="text-[11px] text-white/35">{fmtSize(f.size_mb)}</p>
