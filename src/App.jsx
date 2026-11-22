@@ -51,6 +51,7 @@ import Apps from '@/pages/Apps';
 import Browser from '@/pages/Browser';
 import LiveTV from '@/pages/LiveTV';
 import ZLayout from '@/components/z/ZLayout';
+import ZDesktop from '@/components/z/ZDesktop';
 import ZHome from '@/pages/z/ZHome';
 import ZExplore from '@/pages/z/ZExplore';
 import ZProfile from '@/pages/z/ZProfile';
@@ -139,6 +140,7 @@ const AuthenticatedApp = () => {
         <Route path="/z/messages" element={<Messages />} />
         <Route path="/z/notifications" element={<ZNotifications />} />
         <Route path="/z/wallet" element={<Finance />} />
+        <Route path="/z/apps" element={<ZDesktop />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
