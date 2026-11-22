@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { PenSquare, Palette } from "lucide-react";
-import BrandLogo from "@/components/BrandLogo";
+import ZIcon from "@/components/ZIcon";
 import UniversalSearch from "@/components/home/UniversalSearch";
 import ThemeSheet from "@/components/shell/ThemeSheet";
 
@@ -11,7 +11,7 @@ export default function FeedTopBar() {
     <>
       <header className="sticky top-2 z-40 mx-auto flex h-14 w-full max-w-[1180px] items-center gap-2 rounded-[18px] border border-white/[0.08] bg-[var(--bg-base)]/72 px-3 shadow-[0_10px_40px_-22px_rgba(0,0,0,0.8)] backdrop-blur-2xl sm:top-3">
         <Link to="/" className="flex shrink-0 items-center gap-2">
-          <BrandLogo size={28} />
+          <ZIcon size={28} />
           <span className="hidden font-display text-[17px] font-extrabold tracking-tight ig-text sm:inline">
             Internet <span style={{ color: "var(--accent)" }}>X</span>
           </span>

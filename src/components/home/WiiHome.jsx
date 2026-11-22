@@ -1,49 +1,89 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Home as HomeIcon, Compass, Clapperboard, MessageSquare, Film, Music2, Youtube,
+  Compass, Clapperboard, MessageSquare, Film, Music2, Youtube,
   Radio, Gamepad2, Sparkles, Monitor, ListChecks, StickyNote, CalendarDays,
   Calculator, Table, FileText, Presentation, Globe, Newspaper,
   BookOpen, Store, TrendingUp, BedDouble, Plane, Heart, User, Settings, Upload,
-  LayoutGrid, Hash,
+  LayoutGrid, Hash, Wrench,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import BrandLogo from "@/components/BrandLogo";
+import ZIcon from "@/components/ZIcon";
 import StoriesBar from "@/components/StoriesBar";
 import HomeSidebar from "@/components/home/HomeSidebar";
 
-// Every feature as a visible tile — nothing hidden in drawers.
-const TILES = [
-  { kind: "feed", label: "Social Feed", Icon: Hash, tint: "from-sky-500 to-blue-600" },
-  { to: "/discover", label: "Discover", Icon: Compass, tint: "from-violet-500 to-purple-600" },
-  { to: "/stories", label: "Stories", Icon: Clapperboard, tint: "from-fuchsia-500 to-pink-600" },
-  { to: "/messages", label: "Messages", Icon: MessageSquare, tint: "from-emerald-500 to-teal-600" },
-  { to: "/?cat=entertainment", label: "Entertainment", Icon: Film, tint: "from-rose-500 to-red-600" },
-  { to: "/music", label: "Music", Icon: Music2, tint: "from-orange-500 to-amber-600" },
-  { to: "/video", label: "Video", Icon: Youtube, tint: "from-red-500 to-rose-600" },
-  { to: "/radio", label: "Radio", Icon: Radio, tint: "from-lime-500 to-green-600" },
-  { to: "/?cat=gaming", label: "Arcade", Icon: Gamepad2, tint: "from-purple-500 to-fuchsia-600" },
-  { to: "/assistant", label: "AI Chat", Icon: Sparkles, tint: "from-blue-500 to-cyan-600" },
-  { to: "/desktop", label: "Desktop OS", Icon: Monitor, tint: "from-slate-500 to-zinc-700" },
-  { to: "/productivity", label: "Productivity", Icon: ListChecks, tint: "from-teal-500 to-emerald-600" },
-  { to: "/notes", label: "Notes", Icon: StickyNote, tint: "from-amber-500 to-yellow-600" },
-  { to: "/calendar", label: "Calendar", Icon: CalendarDays, tint: "from-red-500 to-orange-600" },
-  { to: "/calculator", label: "Calculator", Icon: Calculator, tint: "from-zinc-500 to-slate-700" },
-  { to: "/sheets", label: "Sheets", Icon: Table, tint: "from-green-500 to-emerald-600" },
-  { to: "/docs", label: "Docs", Icon: FileText, tint: "from-blue-500 to-indigo-600" },
-  { to: "/slides", label: "Slides", Icon: Presentation, tint: "from-orange-500 to-red-600" },
-  { to: "/browser", label: "Browser", Icon: Globe, tint: "from-cyan-500 to-blue-600" },
-  { to: "/news", label: "News", Icon: Newspaper, tint: "from-amber-500 to-orange-600" },
-  { to: "/articles", label: "Articles", Icon: BookOpen, tint: "from-stone-500 to-amber-700" },
-  { to: "/market", label: "Market", Icon: Store, tint: "from-emerald-500 to-green-600" },
-  { to: "/finance", label: "Finance", Icon: TrendingUp, tint: "from-green-500 to-teal-600" },
-  { to: "/hotels", label: "Hotels", Icon: BedDouble, tint: "from-rose-500 to-pink-600" },
-  { to: "/flights", label: "Flights", Icon: Plane, tint: "from-sky-500 to-indigo-600" },
-  { to: "/dating", label: "Dating", Icon: Heart, tint: "from-pink-500 to-rose-600" },
-  { to: "/profile", label: "Profile", Icon: User, tint: "from-violet-500 to-purple-600" },
-  { to: "/upload", label: "Upload", Icon: Upload, tint: "from-fuchsia-500 to-purple-600" },
-  { to: "/apps", label: "All apps", Icon: LayoutGrid, tint: "from-zinc-500 to-slate-700" },
-  { to: "/settings", label: "Settings", Icon: Settings, tint: "from-slate-500 to-zinc-700" },
+// Every feature as a visible tile — grouped and ordered by category, colorful.
+const GROUPS = [
+  {
+    key: "social",
+    title: "Social",
+    icon: Hash,
+    tint: "from-sky-500 to-blue-600",
+    apps: [
+      { kind: "feed", label: "Social Feed", Icon: Hash, tint: "from-sky-500 to-blue-600" },
+      { to: "/discover", label: "Discover", Icon: Compass, tint: "from-violet-500 to-purple-600" },
+      { to: "/stories", label: "Stories", Icon: Clapperboard, tint: "from-fuchsia-500 to-pink-600" },
+      { to: "/messages", label: "Messages", Icon: MessageSquare, tint: "from-emerald-500 to-teal-600" },
+      { to: "/dating", label: "Dating", Icon: Heart, tint: "from-pink-500 to-rose-600" },
+      { to: "/upload", label: "Upload", Icon: Upload, tint: "from-fuchsia-500 to-purple-600" },
+      { to: "/news", label: "News", Icon: Newspaper, tint: "from-amber-500 to-orange-600" },
+      { to: "/articles", label: "Articles", Icon: BookOpen, tint: "from-stone-500 to-amber-700" },
+    ],
+  },
+  {
+    key: "entertainment",
+    title: "Entertainment",
+    icon: Film,
+    tint: "from-rose-500 to-red-600",
+    apps: [
+      { to: "/?cat=entertainment", label: "Entertainment", Icon: Film, tint: "from-rose-500 to-red-600" },
+      { to: "/music", label: "Music", Icon: Music2, tint: "from-orange-500 to-amber-600" },
+      { to: "/video", label: "Video", Icon: Youtube, tint: "from-red-500 to-rose-600" },
+      { to: "/radio", label: "Radio", Icon: Radio, tint: "from-lime-500 to-green-600" },
+      { to: "/?cat=gaming", label: "Arcade", Icon: Gamepad2, tint: "from-purple-500 to-fuchsia-600" },
+      { to: "/assistant", label: "AI Chat", Icon: Sparkles, tint: "from-blue-500 to-cyan-600" },
+    ],
+  },
+  {
+    key: "productivity",
+    title: "Productivity",
+    icon: ListChecks,
+    tint: "from-teal-500 to-emerald-600",
+    apps: [
+      { to: "/productivity", label: "Productivity", Icon: ListChecks, tint: "from-teal-500 to-emerald-600" },
+      { to: "/notes", label: "Notes", Icon: StickyNote, tint: "from-amber-500 to-yellow-600" },
+      { to: "/calendar", label: "Calendar", Icon: CalendarDays, tint: "from-red-500 to-orange-600" },
+      { to: "/calculator", label: "Calculator", Icon: Calculator, tint: "from-zinc-500 to-slate-700" },
+      { to: "/sheets", label: "Sheets", Icon: Table, tint: "from-green-500 to-emerald-600" },
+      { to: "/docs", label: "Docs", Icon: FileText, tint: "from-blue-500 to-indigo-600" },
+      { to: "/slides", label: "Slides", Icon: Presentation, tint: "from-orange-500 to-red-600" },
+    ],
+  },
+  {
+    key: "tools",
+    title: "Tools",
+    icon: Wrench,
+    tint: "from-cyan-500 to-blue-600",
+    apps: [
+      { to: "/desktop", label: "Desktop OS", Icon: Monitor, tint: "from-slate-500 to-zinc-700" },
+      { to: "/browser", label: "Browser", Icon: Globe, tint: "from-cyan-500 to-blue-600" },
+      { to: "/market", label: "Market", Icon: Store, tint: "from-emerald-500 to-green-600" },
+      { to: "/finance", label: "Finance", Icon: TrendingUp, tint: "from-green-500 to-teal-600" },
+      { to: "/hotels", label: "Hotels", Icon: BedDouble, tint: "from-rose-500 to-pink-600" },
+      { to: "/flights", label: "Flights", Icon: Plane, tint: "from-sky-500 to-indigo-600" },
+    ],
+  },
+  {
+    key: "account",
+    title: "Account",
+    icon: User,
+    tint: "from-violet-500 to-purple-600",
+    apps: [
+      { to: "/profile", label: "Profile", Icon: User, tint: "from-violet-500 to-purple-600" },
+      { to: "/apps", label: "All apps", Icon: LayoutGrid, tint: "from-zinc-500 to-slate-700" },
+      { to: "/settings", label: "Settings", Icon: Settings, tint: "from-slate-500 to-zinc-700" },
+    ],
+  },
 ];
 
 function Tile({ tile, onFeed }) {
@@ -67,6 +107,20 @@ function Tile({ tile, onFeed }) {
   return <Link to={tile.to} className="block">{inner}</Link>;
 }
 
+function GroupHeader({ group }) {
+  const Icon = group.icon;
+  return (
+    <div className="mb-2.5 flex items-center gap-2.5">
+      <span className={`grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br ${group.tint} text-white shadow-md`}>
+        <Icon className="h-4 w-4" strokeWidth={2.2} />
+      </span>
+      <h3 className="text-[14px] font-extrabold tracking-tight text-white">{group.title}</h3>
+      <span className={`h-px flex-1 bg-gradient-to-r ${group.tint} opacity-30`} />
+      <span className="text-[11px] font-semibold text-white/40">{group.apps.length}</span>
+    </div>
+  );
+}
+
 export default function WiiHome({ onFeed }) {
   const [user, setUser] = useState(null);
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
@@ -75,7 +129,7 @@ export default function WiiHome({ onFeed }) {
     <div className="pb-28 pt-3">
       {/* Hero */}
       <header className="mb-3 flex items-center gap-3 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-4 backdrop-blur-xl">
-        <BrandLogo size={56} />
+        <ZIcon size={56} />
         <div className="leading-tight">
           <h1 className="text-[22px] font-extrabold tracking-[-0.02em]">Internet X</h1>
           <p className="text-[12.5px] text-white/50">Every feature, one home. Tap a tile to open it.</p>
@@ -86,18 +140,23 @@ export default function WiiHome({ onFeed }) {
       </header>
 
       {/* Stories on the dashboard */}
-      <div className="mb-3 rounded-3xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+      <div className="mb-4 rounded-3xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
         <StoriesBar user={user} />
       </div>
 
       <div className="flex gap-4">
-        {/* Tile grid — everything visible */}
-        <div className="flex-1 min-w-0">
-          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6">
-            {TILES.map((t) => (
-              <Tile key={t.label} tile={t} onFeed={onFeed} />
-            ))}
-          </div>
+        {/* Tile grid — grouped and ordered by category */}
+        <div className="flex-1 min-w-0 space-y-5">
+          {GROUPS.map((g) => (
+            <section key={g.key}>
+              <GroupHeader group={g} />
+              <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6">
+                {g.apps.map((t) => (
+                  <Tile key={t.label} tile={t} onFeed={onFeed} />
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
         <HomeSidebar user={user} />
       </div>
