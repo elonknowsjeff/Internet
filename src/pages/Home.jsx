@@ -76,7 +76,8 @@ export default function Home() {
               <div className="mt-2 flex items-center gap-2">
                 <button
                   onClick={() => setView("grid")}
-                  className="flex items-center gap-1.5 rounded-full border border-white/12 bg-[#0b0b0f]/80 px-3 py-1.5 text-[12px] font-semibold text-white/70 backdrop-blur-xl hover:text-white"
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold text-white transition-colors hover:bg-white/[0.06]"
+                  style={{ border: "1px solid #2F3336", background: "#000" }}
                 >
                   <ArrowLeft className="h-3.5 w-3.5" /> All apps
                 </button>

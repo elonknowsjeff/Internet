@@ -39,34 +39,38 @@ export default function PostCard({
   const [menu, setMenu] = useState(false);
 
   return (
-    <article className={`animate-fade-in border-b border-white/[0.06] px-4 hover:bg-white/[0.035] hover:shadow-[inset_3px_0_0_-1px_var(--brand)] transition-all duration-200 ${compact ? "py-2.5" : "py-3.5"}`}>
-      <div className="flex gap-3">
-        <button onClick={() => onOpenAuthor?.(post.author_handle)} className="shrink-0 self-start">
-          <img
-            src={post.author_avatar || FALLBACK}
-            onError={(e) => { e.currentTarget.src = FALLBACK; }}
-            alt={post.author_name}
-            className="w-10 h-10 rounded-full object-cover ring-1 ring-white/10 hover:ring-[color:var(--brand)] transition"
-          />
-        </button>
+    <article
+      className={`animate-fade-in px-4 transition-colors duration-200 hover:bg-white/[0.03] ${compact ? "py-2.5" : "py-3.5"}`}
+      style={{ borderBottom: "1px solid #2F3336", background: "#000" }}
+    >
+        <div className="flex gap-3">
+          <button onClick={() => onOpenAuthor?.(post.author_handle)} className="shrink-0 self-start">
+            <img
+              src={post.author_avatar || FALLBACK}
+              onError={(e) => { e.currentTarget.src = FALLBACK; }}
+              alt={post.author_name}
+              className="w-10 h-10 rounded-full object-cover transition"
+              style={{ boxShadow: "0 0 0 1px #2F3336" }}
+            />
+          </button>
 
         <div className="flex-1 min-w-0">
           {post.repost_of && (
-            <p className="text-[13px] font-semibold text-white/50 flex items-center gap-1.5 mb-0.5">
+            <p className="text-[13px] font-semibold flex items-center gap-1.5 mb-0.5" style={{ color: "#71767b" }}>
               <Repeat2 className="w-3.5 h-3.5" /> Reposted @{post.original_author_handle || "user"}
             </p>
           )}
 
           <div className="flex items-center gap-1.5 min-w-0">
-            <button onClick={() => onOpenAuthor?.(post.author_handle)} className="font-bold text-[15px] truncate hover:underline">
+            <button onClick={() => onOpenAuthor?.(post.author_handle)} className="font-bold text-[15px] truncate text-white hover:underline">
               {post.author_name}
             </button>
-            {post.is_creator && <BadgeCheck className="w-4 h-4 text-[var(--brand)] shrink-0 -ml-0.5" title="Creator" />}
-            <button onClick={() => onOpenAuthor?.(post.author_handle)} className="text-[15px] text-white/50 truncate hover:underline">
+            {post.is_creator && <BadgeCheck className="w-4 h-4 shrink-0 -ml-0.5" style={{ color: "#1d9bf0" }} title="Creator" />}
+            <button onClick={() => onOpenAuthor?.(post.author_handle)} className="text-[15px] truncate hover:underline" style={{ color: "#71767b" }}>
               @{post.author_handle}
             </button>
-            <span className="text-white/40 shrink-0">·</span>
-            <span className="text-[15px] text-white/50 shrink-0 hover:underline" title={post.created_date}>
+            <span className="shrink-0" style={{ color: "#3d4147" }}>·</span>
+            <span className="text-[15px] shrink-0 hover:underline" style={{ color: "#71767b" }} title={post.created_date}>
               {timeAgo(post.created_date)}
             </span>
 
@@ -75,15 +79,17 @@ export default function PostCard({
                 <button
                   onClick={() => setMenu((v) => !v)}
                   title="More"
-                  className="w-8 h-8 -mr-2 rounded-full grid place-items-center text-white/45 hover:text-fuchsia-300 hover:bg-fuchsia-400/10"
+                  className="w-8 h-8 -mr-2 rounded-full grid place-items-center hover:bg-white/[0.06]"
+                  style={{ color: "#71767b" }}
                 >
                   <MoreHorizontal className="w-[18px] h-[18px]" />
                 </button>
                 {menu && (
-                  <span className="absolute right-0 top-full mt-1 w-44 rounded-2xl border border-white/10 bg-[#140e2b] shadow-2xl overflow-hidden z-40 animate-pop-in">
+                  <span className="absolute right-0 top-full mt-1 w-44 rounded-2xl overflow-hidden z-40 animate-pop-in" style={{ background: "#000", border: "1px solid #2F3336", boxShadow: "0 12px 40px -12px rgba(0,0,0,0.9)" }}>
                     <button
                       onClick={() => { setMenu(false); onDelete?.(post); }}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 text-[13px] text-rose-300 hover:bg-white/10"
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-[13px] hover:bg-white/[0.06]"
+                      style={{ color: "#f4212e" }}
                     >
                       <Trash2 className="w-4 h-4" /> Delete post
                     </button>
@@ -94,17 +100,17 @@ export default function PostCard({
           </div>
 
           {post.content && (
-            <p className={`mt-1 whitespace-pre-wrap text-white/[0.94] ${compact ? "text-[14px] leading-[18px]" : "text-[15px] leading-[21px]"}`}>
+            <p className={`mt-1 whitespace-pre-wrap text-white ${compact ? "text-[14px] leading-[18px]" : "text-[15px] leading-[21px]"}`}>
               {post.content}
             </p>
           )}
 
           {post.media_url && (
-            <div className="mt-2 rounded-2xl overflow-hidden border border-white/10 shadow-[0_10px_30px_-18px_var(--brand)]">
+            <div className="mt-2 rounded-2xl overflow-hidden" style={{ border: "1px solid #2F3336" }}>
               {post.media_type === "video" ? (
                 <video src={post.media_url} controls className="w-full max-h-96 bg-black" />
               ) : post.media_type === "audio" ? (
-                <div className="p-3 bg-white/[0.04]">
+                <div className="p-3" style={{ background: "#16181c" }}>
                   <audio src={post.media_url} controls className="w-full" />
                 </div>
               ) : (
@@ -131,7 +137,7 @@ export default function PostCard({
           />
 
           {commentsOpen && (
-            <div className="mt-3 pt-3 border-t border-white/10 animate-slide-up">
+            <div className="mt-3 pt-3 animate-slide-up" style={{ borderTop: "1px solid #2F3336" }}>
               <CommentThread post={post} onCommented={onCommented} />
             </div>
           )}

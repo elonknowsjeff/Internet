@@ -208,12 +208,12 @@ export default function UnifiedFeed() {
   return (
     <div className="mx-auto w-full max-w-[640px] px-3 sm:px-4 pb-28">
       {/* Stories */}
-      <div className="mt-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl">
+      <div className="mt-3 overflow-hidden rounded-2xl" style={{ background: "#000", border: "1px solid #2F3336" }}>
         <StoriesBar user={user} />
       </div>
 
-      {/* For You / Following tabs */}
-      <div className="sticky top-[52px] z-20 mt-3 flex gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1 backdrop-blur-xl">
+      {/* For You / Following tabs (X-style) */}
+      <div className="sticky top-[52px] z-20 mt-3 flex rounded-2xl overflow-hidden" style={{ background: "#000", border: "1px solid #2F3336" }}>
         {[
           { key: "foryou", label: "For You" },
           { key: "following", label: "Following" },
@@ -223,45 +223,46 @@ export default function UnifiedFeed() {
             <button
               key={t.key}
               onClick={() => setFeedTab(t.key)}
-              className={`flex-1 rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${active ? "text-black" : "text-white/55 hover:text-white"}`}
-              style={active ? { background: "var(--brand)" } : undefined}
+              className="flex-1 relative px-4 py-3.5 text-[14px] font-bold transition-colors"
+              style={{ color: active ? "#fff" : "#71767b" }}
             >
               {t.label}
+              {active && <span className="absolute bottom-0 left-1/2 h-1 w-12 -translate-x-1/2 rounded-full" style={{ background: "#1d9bf0" }} />}
             </button>
           );
         })}
       </div>
 
       {/* Composer */}
-      <div className="mt-3 rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-3.5 backdrop-blur-xl">
+      <div className="mt-3 rounded-2xl p-3.5" style={{ background: "#000", border: "1px solid #2F3336" }}>
         <div className="flex gap-3">
           {authorAvatar
-            ? <img src={authorAvatar} alt="you" className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-white/15" />
-            : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full brand-grad text-[13px] font-bold text-black">{authorName[0]?.toUpperCase()}</span>}
+            ? <img src={authorAvatar} alt="you" className="h-10 w-10 shrink-0 rounded-full object-cover" style={{ boxShadow: "0 0 0 1px #2F3336" }} />
+            : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[13px] font-bold text-white" style={{ background: "#1d9bf0" }}>{authorName[0]?.toUpperCase()}</span>}
           <div className="min-w-0 flex-1">
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Share something with the feed…"
+              placeholder="What's happening?"
               rows={2}
-              className="w-full resize-none bg-transparent pt-1 text-[16px] leading-6 outline-none placeholder-white/40"
+              className="w-full resize-none bg-transparent pt-1 text-[16px] leading-6 text-white outline-none placeholder:text-[#536471]"
             />
             {pendingMedia && (
               <div className="relative mt-2 inline-block">
-                <img src={pendingMedia.url} alt="" className="max-h-56 rounded-2xl border border-white/10" />
-                <button onClick={() => setPendingMedia(null)} className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/75 text-white hover:bg-black">×</button>
+                <img src={pendingMedia.url} alt="" className="max-h-56 rounded-2xl" style={{ border: "1px solid #2F3336" }} />
+                <button onClick={() => setPendingMedia(null)} className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full text-white hover:opacity-80" style={{ background: "#000" }}>×</button>
               </div>
             )}
-            <div className="mt-2 flex items-center justify-between border-t border-white/[0.08] pt-2">
-              <label className="grid h-9 w-9 cursor-pointer place-items-center rounded-full text-fuchsia-400 hover:bg-fuchsia-400/10">
+            <div className="mt-2 flex items-center justify-between pt-2" style={{ borderTop: "1px solid #2F3336" }}>
+              <label className="grid h-9 w-9 cursor-pointer place-items-center rounded-full hover:bg-white/[0.06]" style={{ color: "#1d9bf0" }}>
                 {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImagePlus className="h-5 w-5" />}
                 <input type="file" accept="image/*" onChange={uploadImage} className="hidden" />
               </label>
               <button
                 onClick={post}
                 disabled={!draft.trim() && !pendingMedia}
-                className="flex h-9 items-center gap-1.5 rounded-full px-5 text-[14px] font-bold text-black disabled:opacity-40"
-                style={{ background: "var(--brand)" }}
+                className="flex h-9 items-center gap-1.5 rounded-full px-5 text-[14px] font-bold text-white disabled:opacity-40"
+                style={{ background: "#1d9bf0" }}
               >
                 <Send className="h-4 w-4" /> Post
               </button>
@@ -281,8 +282,10 @@ export default function UnifiedFeed() {
             <button
               key={c.key}
               onClick={() => setChip(c.key)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold transition-colors ${active ? "text-black" : "border border-white/10 bg-white/[0.04] text-white/60 hover:text-white"}`}
-              style={active ? { background: "var(--brand)" } : undefined}
+              className="shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold transition-colors"
+              style={active
+                ? { background: "#fff", color: "#000" }
+                : { background: "#000", color: "#71767b", border: "1px solid #2F3336" }}
             >
               {c.label}{count > 0 && <span className="ml-1 opacity-60">{count}</span>}
             </button>
@@ -292,9 +295,9 @@ export default function UnifiedFeed() {
 
       {/* Stream */}
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-white/50" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin" style={{ color: "#1d9bf0" }} /></div>
       ) : filtered.length === 0 ? (
-        <div className="py-16 text-center text-sm text-white/45">Nothing here yet. Be the first to post!</div>
+        <div className="py-16 text-center text-sm" style={{ color: "#71767b" }}>Nothing here yet. Be the first to post!</div>
       ) : (
         <div className="mt-3 space-y-3">
           {filtered.map((it, idx) => {
@@ -331,16 +334,17 @@ export default function UnifiedFeed() {
                   href={n.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="block overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
+                  className="block overflow-hidden rounded-2xl p-4 transition-colors hover:bg-white/[0.04]"
+                  style={{ background: "#000", border: "1px solid #2F3336" }}
                 >
-                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide" style={{ color: "var(--brand)" }}>
+                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide" style={{ color: "#1d9bf0" }}>
                     <Newspaper className="h-3.5 w-3.5" /> News
-                    <span className="ml-auto rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/55">{n.category}</span>
+                    <span className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: "#16181c", color: "#71767b" }}>{n.category}</span>
                   </div>
-                  <h3 className="mt-2 text-[16px] font-bold leading-snug">{n.headline}</h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-white/65">{n.summary}</p>
-                  <div className="mt-2.5 flex items-center gap-1 text-[11.5px] text-white/45">
-                    <span className="font-semibold text-white/70">{n.source}</span>
+                  <h3 className="mt-2 text-[16px] font-bold leading-snug text-white">{n.headline}</h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: "#a9a9a9" }}>{n.summary}</p>
+                  <div className="mt-2.5 flex items-center gap-1 text-[11.5px]" style={{ color: "#71767b" }}>
+                    <span className="font-semibold text-white">{n.source}</span>
                     <ExternalLink className="h-3 w-3" />
                   </div>
                 </a>
@@ -353,20 +357,21 @@ export default function UnifiedFeed() {
               <button
                 key={`ent-${e.kind}-${e.id}`}
                 onClick={() => navigate(k.to)}
-                className="group flex w-full items-center gap-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-3 text-left transition-colors hover:bg-white/[0.06]"
+                className="group flex w-full items-center gap-3 overflow-hidden rounded-2xl p-3 text-left transition-colors hover:bg-white/[0.04]"
+                style={{ background: "#000", border: "1px solid #2F3336" }}
               >
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-black/30">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl" style={{ background: "#16181c" }}>
                   {e.img
                     ? <img src={e.img} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     : <span className="grid h-full w-full place-items-center"><Icon className="h-6 w-6 text-white/30" /></span>}
-                  <span className="absolute left-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-black/55 backdrop-blur" style={{ color: k.color }}>
+                  <span className="absolute left-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full" style={{ background: "rgba(0,0,0,0.6)", color: k.color }}>
                     <Icon className="h-3.5 w-3.5" />
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide" style={{ color: k.color }}>{k.label}</p>
-                  <p className="mt-0.5 truncate text-[15px] font-bold">{e.title}</p>
-                  <p className="truncate text-[12px] text-white/55">{e.sub}</p>
+                  <p className="mt-0.5 truncate text-[15px] font-bold text-white">{e.title}</p>
+                  <p className="truncate text-[12px]" style={{ color: "#71767b" }}>{e.sub}</p>
                 </div>
                 <Sparkles className="h-4 w-4 shrink-0 text-white/30" />
               </button>
