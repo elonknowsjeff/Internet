@@ -34,17 +34,17 @@ const NEWS_SCHEMA = {
 const NEWS_PROMPT = `Return 6 real, current news headlines for today. For each: a specific headline, a 1-2 sentence summary, the source/publisher name, a single category (world, tech, ai, business, science, sports, entertainment, health, politics), and the real article url. Use live web context so stories are genuinely current.`;
 
 const KIND = {
-  music: { label: "Music", icon: Music2, to: "/music", color: "#a855f7" },
-  movie: { label: "Movie", icon: Film, to: "/movies", color: "#f43f5e" },
-  tv: { label: "TV", icon: Tv, to: "/cable", color: "#22d3ee" },
-  game: { label: "Game", icon: Gamepad2, to: "/?cat=gaming", color: "#34d399" },
+  music: { label: "Music", icon: Music2, to: "/music" },
+  movie: { label: "Movie", icon: Film, to: "/movies" },
+  tv: { label: "TV", icon: Tv, to: "/cable" },
+  game: { label: "Game", icon: Gamepad2, to: "/?cat=gaming" },
 };
 
 const CHIPS = [
   { key: "all", label: "All" },
   { key: "social", label: "Social" },
   { key: "news", label: "News" },
-  { key: "entertainment", label: "Entertainment" },
+  { key: "entertainment", label: "Media" },
 ];
 
 export default function UnifiedFeed() {
@@ -181,7 +181,6 @@ export default function UnifiedFeed() {
 
   const isOwn = (p) => !!user && p.author_handle === authorHandle;
 
-  // Interleave the three streams into one timeline by recency.
   const stream = useMemo(() => {
     const items = [];
     const isFollowing = feedTab === "following";
@@ -199,21 +198,17 @@ export default function UnifiedFeed() {
   }, [posts, news, ent, tag, feedTab, following]);
 
   const filtered = chip === "all" ? stream : stream.filter((it) => it.type === chip);
-  const counts = {
-    social: posts.length,
-    news: news.length,
-    entertainment: ent.length,
-  };
+  const counts = { social: posts.length, news: news.length, entertainment: ent.length };
 
   return (
-    <div className="mx-auto w-full max-w-[640px] px-3 sm:px-4 pb-28">
+    <div className="mx-auto w-full max-w-[640px] pb-28 xl:pb-6">
       {/* Stories */}
-      <div className="mt-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl">
+      <div className="border-b border-[#2F3336]">
         <StoriesBar user={user} />
       </div>
 
       {/* For You / Following tabs */}
-      <div className="sticky top-[52px] z-20 mt-3 flex gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1 backdrop-blur-xl">
+      <div className="sticky top-14 z-20 flex border-b border-[#2F3336] bg-black/90 backdrop-blur-xl">
         {[
           { key: "foryou", label: "For You" },
           { key: "following", label: "Following" },
@@ -223,47 +218,47 @@ export default function UnifiedFeed() {
             <button
               key={t.key}
               onClick={() => setFeedTab(t.key)}
-              className={`flex-1 rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${active ? "text-black" : "text-white/55 hover:text-white"}`}
-              style={active ? { background: "var(--brand)" } : undefined}
+              className="relative flex-1 px-4 py-3.5 text-[15px] transition-colors hover:bg-white/[0.04]"
+              style={{ fontWeight: active ? 700 : 400, color: active ? "#fff" : "rgba(255,255,255,0.5)" }}
             >
               {t.label}
+              {active && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-14 rounded-full bg-[#1d9bf0]" />}
             </button>
           );
         })}
       </div>
 
       {/* Composer */}
-      <div className="mt-3 rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-3.5 backdrop-blur-xl">
+      <div className="border-b border-[#2F3336] px-4 py-3">
         <div className="flex gap-3">
           {authorAvatar
-            ? <img src={authorAvatar} alt="you" className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-white/15" />
-            : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full brand-grad text-[13px] font-bold text-black">{authorName[0]?.toUpperCase()}</span>}
+            ? <img src={authorAvatar} alt="you" className="h-10 w-10 shrink-0 rounded-full object-cover" />
+            : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#1d9bf0] text-[13px] font-bold text-white">{authorName[0]?.toUpperCase()}</span>}
           <div className="min-w-0 flex-1">
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Share something with the feed…"
+              placeholder="What's happening?"
               rows={2}
-              className="w-full resize-none bg-transparent pt-1 text-[16px] leading-6 outline-none placeholder-white/40"
+              className="w-full resize-none bg-transparent pt-1 text-[18px] leading-7 outline-none placeholder-white/40"
             />
             {pendingMedia && (
               <div className="relative mt-2 inline-block">
-                <img src={pendingMedia.url} alt="" className="max-h-56 rounded-2xl border border-white/10" />
+                <img src={pendingMedia.url} alt="" className="max-h-56 rounded-2xl border border-[#2F3336]" />
                 <button onClick={() => setPendingMedia(null)} className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/75 text-white hover:bg-black">×</button>
               </div>
             )}
-            <div className="mt-2 flex items-center justify-between border-t border-white/[0.08] pt-2">
-              <label className="grid h-9 w-9 cursor-pointer place-items-center rounded-full text-fuchsia-400 hover:bg-fuchsia-400/10">
+            <div className="mt-2 flex items-center justify-between border-t border-[#2F3336] pt-2">
+              <label className="grid h-9 w-9 cursor-pointer place-items-center rounded-full text-[#1d9bf0] hover:bg-[#1d9bf0]/10">
                 {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImagePlus className="h-5 w-5" />}
                 <input type="file" accept="image/*" onChange={uploadImage} className="hidden" />
               </label>
               <button
                 onClick={post}
                 disabled={!draft.trim() && !pendingMedia}
-                className="flex h-9 items-center gap-1.5 rounded-full px-5 text-[14px] font-bold text-black disabled:opacity-40"
-                style={{ background: "var(--brand)" }}
+                className="flex h-9 items-center gap-1.5 rounded-full bg-white px-5 text-[14px] font-bold text-black disabled:opacity-40"
               >
-                <Send className="h-4 w-4" /> Post
+                Post
               </button>
             </div>
           </div>
@@ -273,7 +268,7 @@ export default function UnifiedFeed() {
       <TrendingHashtags posts={posts} active={tag} onSelect={setTag} />
 
       {/* Filter chips */}
-      <div className="sticky top-[104px] z-20 mt-3 flex gap-1.5 overflow-x-auto scrollbar-none">
+      <div className="flex gap-1.5 overflow-x-auto scrollbar-none border-b border-[#2F3336] px-4 py-2">
         {CHIPS.map((c) => {
           const active = chip === c.key;
           const count = c.key === "all" ? stream.length : counts[c.key];
@@ -281,8 +276,10 @@ export default function UnifiedFeed() {
             <button
               key={c.key}
               onClick={() => setChip(c.key)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12.5px] font-bold transition-colors ${active ? "text-black" : "border border-white/10 bg-white/[0.04] text-white/60 hover:text-white"}`}
-              style={active ? { background: "var(--brand)" } : undefined}
+              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors"
+              style={active
+                ? { background: "#fff", color: "#000" }
+                : { background: "transparent", color: "rgba(255,255,255,0.6)", border: "1px solid #2F3336" }}
             >
               {c.label}{count > 0 && <span className="ml-1 opacity-60">{count}</span>}
             </button>
@@ -292,11 +289,11 @@ export default function UnifiedFeed() {
 
       {/* Stream */}
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-white/50" /></div>
+        <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-white/30" /></div>
       ) : filtered.length === 0 ? (
-        <div className="py-16 text-center text-sm text-white/45">Nothing here yet. Be the first to post!</div>
+        <div className="py-16 text-center text-sm text-white/40">Nothing here yet. Be the first to post!</div>
       ) : (
-        <div className="mt-3 space-y-3">
+        <div>
           {filtered.map((it, idx) => {
             if (it.type === "social") {
               const p = it.data;
@@ -331,16 +328,16 @@ export default function UnifiedFeed() {
                   href={n.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="block overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
+                  className="block border-b border-[#2F3336] px-4 py-3 transition-colors hover:bg-white/[0.02]"
                 >
-                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide" style={{ color: "var(--brand)" }}>
+                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-[#1d9bf0]">
                     <Newspaper className="h-3.5 w-3.5" /> News
-                    <span className="ml-auto rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/55">{n.category}</span>
+                    <span className="ml-auto rounded-full border border-[#2F3336] px-2 py-0.5 text-[10px] font-medium text-white/50">{n.category}</span>
                   </div>
-                  <h3 className="mt-2 text-[16px] font-bold leading-snug">{n.headline}</h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-white/65">{n.summary}</p>
-                  <div className="mt-2.5 flex items-center gap-1 text-[11.5px] text-white/45">
-                    <span className="font-semibold text-white/70">{n.source}</span>
+                  <h3 className="mt-2 text-[16px] font-bold leading-snug text-white">{n.headline}</h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">{n.summary}</p>
+                  <div className="mt-2.5 flex items-center gap-1 text-[11.5px] text-white/40">
+                    <span className="font-semibold text-white/65">{n.source}</span>
                     <ExternalLink className="h-3 w-3" />
                   </div>
                 </a>
@@ -353,22 +350,19 @@ export default function UnifiedFeed() {
               <button
                 key={`ent-${e.kind}-${e.id}`}
                 onClick={() => navigate(k.to)}
-                className="group flex w-full items-center gap-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-3 text-left transition-colors hover:bg-white/[0.06]"
+                className="group flex w-full items-center gap-3 border-b border-[#2F3336] px-4 py-3 text-left transition-colors hover:bg-white/[0.02]"
               >
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-black/30">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[#16181c]">
                   {e.img
-                    ? <img src={e.img} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    ? <img src={e.img} alt="" className="h-full w-full object-cover" />
                     : <span className="grid h-full w-full place-items-center"><Icon className="h-6 w-6 text-white/30" /></span>}
-                  <span className="absolute left-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-black/55 backdrop-blur" style={{ color: k.color }}>
-                    <Icon className="h-3.5 w-3.5" />
-                  </span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10.5px] font-bold uppercase tracking-wide" style={{ color: k.color }}>{k.label}</p>
-                  <p className="mt-0.5 truncate text-[15px] font-bold">{e.title}</p>
-                  <p className="truncate text-[12px] text-white/55">{e.sub}</p>
+                  <p className="text-[10.5px] font-bold uppercase tracking-wide text-[#1d9bf0]">{k.label}</p>
+                  <p className="mt-0.5 truncate text-[15px] font-bold text-white">{e.title}</p>
+                  <p className="truncate text-[12px] text-white/50">{e.sub}</p>
                 </div>
-                <Sparkles className="h-4 w-4 shrink-0 text-white/30" />
+                <Sparkles className="h-4 w-4 shrink-0 text-white/25" />
               </button>
             );
           })}

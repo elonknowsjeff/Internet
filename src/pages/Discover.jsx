@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Users, UserPlus, Check, Loader2, Search } from "lucide-react";
+import { Users, UserPlus, Check, Loader2, Search, TrendingUp, BadgeCheck, Play } from "lucide-react";
 import AccountView from "@/components/social/AccountView";
 import { DEFAULT_AVATAR } from "@/lib/defaults";
 
@@ -15,11 +15,12 @@ export default function Discover() {
   const [params] = useSearchParams();
   const [me, setMe] = useState(null);
   const [users, setUsers] = useState([]);
-  const [latest, setLatest] = useState({});
+  const [posts, setPosts] = useState([]);
   const [following, setFollowing] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState(params.get("q") || "");
   const [view, setView] = useState(null);
+  const [focusSearch, setFocusSearch] = useState(false);
 
   useEffect(() => { setQ(params.get("q") || ""); }, [params]);
 
@@ -28,15 +29,12 @@ export default function Discover() {
       try {
         const u = await base44.auth.me().catch(() => null);
         setMe(u);
-        const [uList, posts] = await Promise.all([
+        const [uList, pList] = await Promise.all([
           base44.entities.User.list("-created_date", 100).catch(() => []),
           base44.entities.Post.list("-created_date", 80).catch(() => []),
         ]);
-        const uArr = asItems(uList);
-        const map = {};
-        asItems(posts).forEach((p) => { const h = p.author_handle; if (h && !map[h]) map[h] = p; });
-        setUsers(uArr);
-        setLatest(map);
+        setUsers(asItems(uList));
+        setPosts(asItems(pList));
         if (u) {
           const f = await base44.entities.Follow.filter({ follower_id: u.id }).catch(() => []);
           setFollowing(new Set(asItems(f).map((r) => r.following_id).filter(Boolean)));
@@ -63,78 +61,175 @@ export default function Discover() {
     } catch {}
   };
 
-  const filtered = users.filter((u) => {
-    const qq = q.trim().toLowerCase();
+  // Real-time search suggestions
+  const qq = q.trim().toLowerCase();
+  const suggestions = useMemo(() => {
+    if (qq.length < 1) return [];
+    return users
+      .filter((u) => handleOf(u).toLowerCase().includes(qq) || nameOf(u).toLowerCase().includes(qq))
+      .slice(0, 6);
+  }, [users, qq]);
+
+  const filteredUsers = users.filter((u) => {
     if (!qq) return true;
     return handleOf(u).toLowerCase().includes(qq) || nameOf(u).toLowerCase().includes(qq);
   });
 
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-6 pb-28">
-      <header className="flex items-center gap-2 mb-5">
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <Users className="w-5 h-5" style={{ color: "var(--accent)" }} /> Discover people
-        </h1>
-      </header>
+  // Media grid: posts with images/videos
+  const mediaPosts = posts.filter((p) => p.media_url);
+  // Trending hashtags from posts
+  const trendingTags = useMemo(() => {
+    const counts = {};
+    posts.forEach((p) => {
+      const matches = String(p.content || "").matchAll(/#([\p{L}\p{N}_]{2,28})/gu);
+      for (const m of matches) { const t = m[1].toLowerCase(); counts[t] = (counts[t] || 0) + 1; }
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([tag, n]) => ({ tag, n }));
+  }, [posts]);
 
-      <div className="ig-card mb-4 flex items-center gap-2 px-3 py-2">
-        <Search className="w-4 h-4 text-white/40" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search people by name or username"
-          className="flex-1 bg-transparent outline-none text-sm py-1.5"
-        />
+  return (
+    <div className="mx-auto max-w-[1100px] px-4 py-4 pb-28 xl:pb-6">
+      {/* Search header */}
+      <div className="relative sticky top-0 z-30 bg-black/90 backdrop-blur-xl pb-3">
+        <div className="flex items-center gap-3 border-b border-[#2F3336] pb-3">
+          <div className="relative flex-1">
+            <div className="flex items-center gap-2.5 rounded-full border border-[#2F3336] bg-[#16181c] px-4 py-2.5 focus-within:border-[#1d9bf0]/50">
+              <Search className="w-4 h-4 text-white/40 shrink-0" />
+              <input
+                value={q}
+                onChange={(e) => { setQ(e.target.value); setFocusSearch(true); }}
+                onFocus={() => setFocusSearch(true)}
+                onBlur={() => setTimeout(() => setFocusSearch(false), 200)}
+                placeholder="Search accounts, hashtags, keywords"
+                className="flex-1 min-w-0 bg-transparent text-[15px] outline-none placeholder-white/35 text-white"
+              />
+              {q && <button onClick={() => setQ("")} className="text-white/40 hover:text-white">×</button>}
+            </div>
+            {/* Real-time dropdown suggestions */}
+            {focusSearch && qq.length >= 1 && suggestions.length > 0 && (
+              <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-[#2F3336] bg-black shadow-2xl overflow-hidden z-50 max-h-[50vh] overflow-y-auto">
+                <p className="px-4 py-2 text-[10px] uppercase tracking-wide text-white/40">People</p>
+                {suggestions.map((u) => {
+                  const h = handleOf(u);
+                  const isMe = me && u.id === me.id;
+                  const isF = following.has(u.id);
+                  return (
+                    <div key={u.id} className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.04]">
+                      <button onClick={() => { setFocusSearch(false); isMe ? navigate("/profile") : setView(h); }} className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                        <img src={u.avatar || FALLBACK} onError={(e) => { e.currentTarget.src = FALLBACK; }} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold truncate text-white flex items-center gap-1">{nameOf(u)} {u.is_creator && <BadgeCheck className="w-3.5 h-3.5 text-[#1d9bf0]" />}</p>
+                          <p className="text-[12px] text-white/45 truncate">@{h}</p>
+                        </div>
+                      </button>
+                      {!isMe && (
+                        <button
+                          onClick={() => toggleFollow(u)}
+                          className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-bold ${isF ? "border border-[#2F3336] text-white hover:bg-white/[0.06]" : "bg-white text-black"}`}
+                        >
+                          {isF ? "Following" : "Follow"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {loading ? (
-        <div className="py-16 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-white/50" /></div>
-      ) : filtered.length === 0 ? (
-        <p className="text-sm text-white/45 py-10 text-center">No people found.</p>
-      ) : (
-        <div className="space-y-2.5">
-          {filtered.map((u) => {
-            const h = handleOf(u);
-            const isMe = me && u.id === me.id;
-            const isF = following.has(u.id);
-            const post = latest[h];
-            const open = () => (isMe ? navigate("/profile") : setView(h));
-            return (
-              <div key={u.id} className="ig-card p-3 flex items-start gap-3">
-                <button onClick={open} className="shrink-0">
-                  <img
-                    src={u.avatar || FALLBACK}
-                    onError={(e) => { e.currentTarget.src = FALLBACK; }}
-                    alt=""
-                    className="w-12 h-12 rounded-full object-cover ring-1 ring-white/10"
-                  />
-                </button>
-                <div className="flex-1 min-w-0">
-                  <button onClick={open} className="text-left">
-                    <p className="text-sm font-bold truncate">{nameOf(u)}</p>
-                    <p className="text-[12px] text-white/45 truncate">@{h}</p>
-                  </button>
-                  {post ? (
-                    <p className="mt-1 text-[13px] text-white/70 line-clamp-2">
-                      {post.content || (post.media_type === "video" ? "🎥 Video" : post.media_type === "audio" ? "🎵 Track" : "📷 Photo")}
-                    </p>
-                  ) : (
-                    <p className="mt-1 text-[12px] text-white/35">No posts yet</p>
-                  )}
-                </div>
-                {!isMe && (
-                  <button
-                    onClick={() => toggleFollow(u)}
-                    className={`shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-bold ${isF ? "ig-solid text-white" : "brand-grad text-black"}`}
-                  >
-                    {isF ? <><Check className="w-3.5 h-3.5" /> Following</> : <><UserPlus className="w-3.5 h-3.5" /> Follow</>}
-                  </button>
+      <div className="flex gap-6">
+        {/* Main content */}
+        <div className="min-w-0 flex-1">
+          {loading ? (
+            <div className="py-16 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-white/30" /></div>
+          ) : (
+            <>
+              {/* Explore Media Grid */}
+              <div className="mb-6">
+                <h2 className="mb-3 text-lg font-bold text-white flex items-center gap-2">
+                  <Users className="w-5 h-5 text-[#1d9bf0]" /> Explore
+                </h2>
+                {mediaPosts.length === 0 ? (
+                  <p className="text-sm text-white/40 py-8 text-center">No media to explore yet.</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-0.5 sm:gap-1">
+                    {mediaPosts.map((p) => (
+                      <a key={p.id} href={p.media_url} target="_blank" rel="noreferrer" className="aspect-square bg-[#16181c] overflow-hidden block relative group">
+                        {p.media_type === "video" ? (
+                          <>
+                            <video src={p.media_url} className="w-full h-full object-cover" muted />
+                            <span className="absolute top-2 right-2 text-white"><Play className="w-4 h-4 fill-white" /></span>
+                          </>
+                        ) : (
+                          <img src={p.media_url} alt="" className="w-full h-full object-cover" />
+                        )}
+                      </a>
+                    ))}
+                  </div>
                 )}
               </div>
-            );
-          })}
+
+              {/* People to follow */}
+              <div>
+                <h2 className="mb-3 text-lg font-bold text-white">People</h2>
+                {filteredUsers.length === 0 ? (
+                  <p className="text-sm text-white/40 py-8 text-center">No people found.</p>
+                ) : (
+                  <div className="space-y-px">
+                    {filteredUsers.slice(0, 20).map((u) => {
+                      const h = handleOf(u);
+                      const isMe = me && u.id === me.id;
+                      const isF = following.has(u.id);
+                      return (
+                        <div key={u.id} className="flex items-center gap-3 py-3 hover:bg-white/[0.02] rounded-lg px-2">
+                          <button onClick={() => (isMe ? navigate("/profile") : setView(h))} className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                            <img src={u.avatar || FALLBACK} onError={(e) => { e.currentTarget.src = FALLBACK; }} alt="" className="w-11 h-11 rounded-full object-cover shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm font-bold truncate text-white flex items-center gap-1">{nameOf(u)} {u.is_creator && <BadgeCheck className="w-3.5 h-3.5 text-[#1d9bf0]" />}</p>
+                              <p className="text-[12px] text-white/45 truncate">@{h}</p>
+                            </div>
+                          </button>
+                          {!isMe && (
+                            <button
+                              onClick={() => toggleFollow(u)}
+                              className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-bold ${isF ? "border border-[#2F3336] text-white hover:bg-white/[0.06]" : "bg-white text-black"}`}
+                            >
+                              {isF ? <><Check className="w-3.5 h-3.5 inline mr-1" />Following</> : <><UserPlus className="w-3.5 h-3.5 inline mr-1" />Follow</>}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
-      )}
+
+        {/* Trending Now sidebar (desktop) */}
+        <aside className="hidden w-72 shrink-0 lg:block">
+          <div className="sticky top-20 rounded-2xl border border-[#2F3336] bg-[#16181c] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-base font-black text-white">
+              <TrendingUp className="w-4 h-4 text-[#1d9bf0]" /> Trending Now
+            </h3>
+            {trendingTags.length === 0 ? (
+              <p className="text-sm text-white/40">No trends yet.</p>
+            ) : (
+              <div className="space-y-1">
+                {trendingTags.map(({ tag, n }) => (
+                  <button key={tag} onClick={() => navigate(`/?cat=social`)} className="block w-full rounded-lg px-2 py-2 text-left hover:bg-white/[0.04]">
+                    <p className="text-sm font-bold text-white">#{tag}</p>
+                    <p className="text-xs text-white/40">{n > 0 ? `${n} posts` : "Trending"}</p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
 
       {view && (
         <AccountView

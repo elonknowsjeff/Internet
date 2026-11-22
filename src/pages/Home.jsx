@@ -15,6 +15,7 @@ import ArcadeHub from "@/components/home/ArcadeHub";
 import WiiHome from "@/components/home/WiiHome";
 import Assistant from "@/pages/Assistant";
 import EntertainmentHub from "@/components/home/EntertainmentHub";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
 
 const SECTIONS = {
   tech: {
@@ -59,24 +60,29 @@ export default function Home() {
   const isGaming = cat === "gaming";
   const isAi = cat === "aichat";
   const isSocial = cat === "social";
+  const isNotifications = cat === "notifications";
   const section = SECTIONS[cat];
   const feedMode = isSocial && view === "feed";
 
   return (
-    <div className="min-h-[100dvh]">
+    <div className="min-h-[100dvh] bg-black">
       <FeedTopBar />
-      <main className={`mx-auto w-full px-3 sm:px-4 ${feedMode ? "max-w-[640px]" : "max-w-[1240px]"}`}>
+      <main className={`mx-auto w-full px-3 sm:px-4 ${feedMode ? "max-w-[640px]" : "max-w-[1240px]"} xl:px-6`}>
         {isGaming ? (
           <ArcadeHub />
         ) : isAi ? (
           <Assistant />
+        ) : isNotifications ? (
+          <div className="mx-auto max-w-[640px] pb-28 xl:pb-6">
+            <NotificationCenter user={user} />
+          </div>
         ) : isSocial ? (
           feedMode ? (
             <>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex items-center gap-2 xl:hidden">
                 <button
                   onClick={() => setView("grid")}
-                  className="flex items-center gap-1.5 rounded-full border border-white/12 bg-[#0b0b0f]/80 px-3 py-1.5 text-[12px] font-semibold text-white/70 backdrop-blur-xl hover:text-white"
+                  className="flex items-center gap-1.5 rounded-full border border-[#2F3336] px-3 py-1.5 text-[12px] font-semibold text-white/60 hover:text-white"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" /> All apps
                 </button>

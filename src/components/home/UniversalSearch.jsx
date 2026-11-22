@@ -51,20 +51,20 @@ export default function UniversalSearch() {
 
   return (
     <div ref={ref} className="relative w-full max-w-[460px]">
-      <form onSubmit={(e) => { e.preventDefault(); goResults(); }} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 focus-within:border-[color:var(--brand)]/60 transition-colors">
+      <form onSubmit={(e) => { e.preventDefault(); goResults(); }} className="flex items-center gap-2 rounded-full border border-[#2F3336] bg-[#16181c] px-4 py-2.5 focus-within:border-[#1d9bf0]/50 transition-colors">
         <Search className="w-4 h-4 text-white/40 shrink-0" />
         <input
           value={q}
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           placeholder="Search people and accounts"
-          className="flex-1 min-w-0 bg-transparent text-[13.5px] outline-none placeholder-white/35"
+          className="flex-1 min-w-0 bg-transparent text-[13.5px] outline-none placeholder-white/35 text-white"
         />
         {loading ? <Loader2 className="w-4 h-4 animate-spin text-white/40 shrink-0" />
           : q ? <button type="button" onClick={() => { setQ(""); setPeople([]); setPosts([]); }} className="shrink-0"><X className="w-4 h-4 text-white/40" /></button> : null}
       </form>
       {open && q.trim().length >= 2 && (
-        <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-white/10 bg-[#131316] shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)] overflow-hidden z-50 max-h-[60vh] overflow-y-auto thin-scrollbar">
+        <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-[#2F3336] bg-black shadow-2xl overflow-hidden z-50 max-h-[60vh] overflow-y-auto thin-scrollbar">
           {!has && !loading ? (
             <p className="px-4 py-7 text-center text-[12.5px] text-white/40">No results for "{q}"</p>
           ) : (
@@ -96,7 +96,7 @@ export default function UniversalSearch() {
                  ))}
                </div>
               )}
-              <button onClick={goResults} className="w-full border-t border-white/[0.06] px-4 py-2.5 text-left text-[12.5px] font-semibold hover:bg-white/[0.04]" style={{ color: "var(--brand)" }}>
+              <button onClick={goResults} className="w-full border-t border-[#2F3336] px-4 py-2.5 text-left text-[12.5px] font-semibold hover:bg-white/[0.04] text-[#1d9bf0]">
                Search accounts for "{q.trim()}" →
               </button>
             </>

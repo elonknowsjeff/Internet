@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import StoryViewer from "@/components/StoryViewer";
 import StoryComposer from "@/components/stories/StoryComposer";
 
-const RING = "neon-ring";
 const initials = (name) => (name || "U")[0]?.toUpperCase();
 
 export default function StoriesBar({ user }) {
@@ -42,16 +41,9 @@ export default function StoriesBar({ user }) {
       groups.push(g);
     }
     seen.get(key).items.push({
-      id: s.id,
-      handle: key,
-      name: s.author_name || key,
-      avatar: s.author_avatar || "",
-      image: s.image_url,
-      video: s.video_url,
-      text: s.caption,
-      music_url: s.music_url,
-      music_title: s.music_title,
-      music_artist: s.music_artist,
+      id: s.id, handle: key, name: s.author_name || key, avatar: s.author_avatar || "",
+      image: s.image_url, video: s.video_url, text: s.caption,
+      music_url: s.music_url, music_title: s.music_title, music_artist: s.music_artist,
     });
   }
 
@@ -60,21 +52,19 @@ export default function StoriesBar({ user }) {
 
   return (
     <>
-      <div className="flex gap-4 px-4 py-3 overflow-x-auto scrollbar-none border-b border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent">
-        <div className="flex flex-col items-center gap-1.5 shrink-0">
+      <div className="flex gap-3 px-3 py-3 overflow-x-auto scrollbar-none border-b border-[#2F3336]">
+        <div className="flex flex-col items-center gap-1 shrink-0">
           <div className="relative">
             <button
               onClick={() => (mine ? setOpenGroup(mine) : setComposer(true))}
-              className="block w-[62px] h-[62px] transition-transform duration-200 hover:scale-[1.04]"
+              className="block w-16 h-16 rounded-full transition-transform hover:scale-105"
             >
-              <div className={`w-[62px] h-[62px] rounded-full p-[2px] ${mine ? RING : "bg-white/15 neon-edge-soft"}`}>
-                <div className="w-full h-full rounded-full bg-[#2a2152] p-[2px]">
-                  <div className="w-full h-full rounded-full bg-[#2a2152] overflow-hidden flex items-center justify-center">
-                    {authorAvatar ? (
-                      <img src={authorAvatar} alt="you" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-base font-bold text-amber-200">{initials(authorName)}</span>
-                    )}
+              <div className={`w-16 h-16 rounded-full p-[2px] ${mine ? "bg-white" : "bg-[#2F3336]"}`}>
+                <div className="w-full h-full rounded-full bg-black p-[2px]">
+                  <div className="w-full h-full rounded-full bg-[#16181c] overflow-hidden flex items-center justify-center">
+                    {authorAvatar
+                      ? <img src={authorAvatar} alt="you" className="w-full h-full object-cover" />
+                      : <span className="text-lg font-bold text-white">{initials(authorName)}</span>}
                   </div>
                 </div>
               </div>
@@ -82,35 +72,31 @@ export default function StoriesBar({ user }) {
             <button
               onClick={() => setComposer(true)}
               title="Add to your story"
-              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-fuchsia-400 border-2 border-[#241d45] flex items-center justify-center hover:bg-fuchsia-300"
+              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#1d9bf0] border-2 border-black flex items-center justify-center hover:brightness-110"
             >
-              <Plus className="w-3 h-3 text-black" />
+              <Plus className="w-3 h-3 text-white" />
             </button>
           </div>
-          <span className="text-[11px] text-white/75 max-w-[66px] truncate">{mine ? "Your story" : "Add story"}</span>
+          <span className="text-[11px] text-white/70 max-w-[68px] truncate">{mine ? "Your story" : "Add story"}</span>
         </div>
 
         {others.map((g) => (
-          <button key={g.handle} onClick={() => setOpenGroup(g)} className="flex flex-col items-center gap-1.5 shrink-0 group">
-            <div className={`w-[62px] h-[62px] rounded-full p-[2px] ${RING} transition-transform duration-200 group-hover:scale-[1.04]`}>
-              <div className="w-full h-full rounded-full bg-[#2a2152] p-[2px]">
-                <div className="w-full h-full rounded-full bg-[#2a2152] overflow-hidden flex items-center justify-center">
-                  {g.avatar ? (
-                    <img src={g.avatar} alt={g.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-base font-bold text-fuchsia-200">{initials(g.name)}</span>
-                  )}
+          <button key={g.handle} onClick={() => setOpenGroup(g)} className="flex flex-col items-center gap-1 shrink-0 group">
+            <div className="w-16 h-16 rounded-full p-[2px] bg-white transition-transform group-hover:scale-105">
+              <div className="w-full h-full rounded-full bg-black p-[2px]">
+                <div className="w-full h-full rounded-full bg-[#16181c] overflow-hidden flex items-center justify-center">
+                  {g.avatar
+                    ? <img src={g.avatar} alt={g.name} className="w-full h-full object-cover" />
+                    : <span className="text-lg font-bold text-white/80">{initials(g.name)}</span>}
                 </div>
               </div>
             </div>
-            <span className="text-[11px] text-white/75 max-w-[66px] truncate">@{g.handle}</span>
+            <span className="text-[11px] text-white/70 max-w-[68px] truncate">@{g.handle}</span>
           </button>
         ))}
       </div>
 
-      {openGroup && (
-        <StoryViewer items={openGroup.items} startIdx={0} onClose={() => setOpenGroup(null)} />
-      )}
+      {openGroup && <StoryViewer items={openGroup.items} startIdx={0} onClose={() => setOpenGroup(null)} />}
 
       {composer && (
         <StoryComposer

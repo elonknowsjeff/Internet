@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useSettings } from "@/components/SettingsContext";
 import { startSubscription } from "@/lib/checkout";
-import { ArrowLeft, CalendarDays, CreditCard, LogOut, Loader2, User, Gamepad2, Camera, Play, Link2 } from "lucide-react";
+import { ArrowLeft, CalendarDays, CreditCard, LogOut, Loader2, User, Gamepad2, Camera, Play, Link2, Grid3x3, MessageCircle, Heart } from "lucide-react";
 import AccountSearch from "@/components/profile/AccountSearch";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
 import ProfilePost from "@/components/profile/ProfilePost";
@@ -73,12 +73,13 @@ export default function Profile() {
   const reposts = posts.filter((p) => p.repost_of);
   const imagePosts = posts.filter((p) => p.media_url && p.media_type !== "video");
   const videoPosts = posts.filter((p) => p.media_url && p.media_type === "video");
+  const replyPosts = ownPosts.filter((p) => p.repost_of); // placeholder, replies would need a replies field
+  const likedPosts = posts; // simplified: show all posts as "likes" tab placeholder
   const tabs = [
-    { key: "posts", label: "Posts", count: ownPosts.length },
-    { key: "reposts", label: "Reposts", count: reposts.length },
-    { key: "media", label: "Photos", count: imagePosts.length },
-    { key: "videos", label: "Videos", count: videoPosts.length },
-    { key: "games", label: "Games", count: recentGames.length },
+    { key: "posts", label: "Posts", count: ownPosts.length, icon: MessageCircle },
+    { key: "media", label: "Media", count: imagePosts.length + videoPosts.length, icon: Grid3x3 },
+    { key: "replies", label: "Replies", count: 0, icon: MessageCircle },
+    { key: "likes", label: "Likes", count: 0, icon: Heart },
   ];
 
   const renderPost = (p) => (
@@ -101,86 +102,78 @@ export default function Profile() {
   );
 
   if (loading) {
-    return <div className="py-24 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-white/50" /></div>;
+    return <div className="py-24 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-white/30" /></div>;
   }
 
   if (!user) {
     return (
       <div className="max-w-xl mx-auto px-6 py-24 text-center">
-        <User className="w-10 h-10 mx-auto text-white/40" />
-        <h2 className="mt-3 text-lg font-bold">Sign in to see your profile</h2>
+        <User className="w-10 h-10 mx-auto text-white/30" />
+        <h2 className="mt-3 text-lg font-bold text-white">Sign in to see your profile</h2>
         <Link to="/login" className="mt-4 inline-block px-5 py-2 rounded-full bg-white text-black text-sm font-bold">Sign in</Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-[640px] mx-auto pb-28 bg-[#0a0512]/40">
-      {/* X-style header */}
-      <header className="sticky top-0 z-30 flex items-center gap-3 px-3 py-2 bg-[#0a0512]/85 backdrop-blur-xl border-b border-white/10">
-        <Link to="/" className="w-9 h-9 rounded-full hover:bg-white/10 grid place-items-center shrink-0"><ArrowLeft className="w-5 h-5" /></Link>
+    <div className="max-w-[640px] mx-auto pb-28 xl:pb-6 bg-black min-h-[100dvh]">
+      {/* Header */}
+      <header className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-black/90 backdrop-blur-xl border-b border-[#2F3336] xl:hidden">
+        <Link to="/" className="w-9 h-9 rounded-full hover:bg-white/[0.06] grid place-items-center shrink-0"><ArrowLeft className="w-5 h-5" /></Link>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold truncate leading-tight">{name}</p>
-          <p className="text-[11px] text-white/45 leading-tight">{ownPosts.length} posts · {reposts.length} reposts</p>
+          <p className="text-sm font-bold truncate leading-tight text-white">{name}</p>
+          <p className="text-[11px] text-white/40 leading-tight">{ownPosts.length} posts</p>
         </div>
         <AccountSearch me={user} onPick={(h) => setViewHandle(h)} />
       </header>
 
       {/* Banner + avatar */}
-      <div className="relative h-40 bg-gradient-to-r from-fuchsia-700/50 via-violet-700/40 to-cyan-700/40">
+      <div className="relative h-32 bg-[#16181c] sm:h-40">
         {user.banner && <img src={user.banner} alt="" className="w-full h-full object-cover" />}
         <div className="absolute top-3 right-3 flex items-center gap-2">
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/30 bg-black/40 backdrop-blur text-xs font-bold hover:bg-black/60"
+            className="flex items-center gap-1.5 rounded-full border border-[#2F3336] bg-black/60 px-3 py-1.5 text-xs font-bold text-white backdrop-blur hover:bg-black/80"
           >
-            <Camera className="w-3.5 h-3.5" /> Change photo
-          </button>
-          <button
-            onClick={() => setEditing(true)}
-            className="px-4 py-1.5 rounded-full border border-white/30 bg-black/40 backdrop-blur text-sm font-bold hover:bg-black/60"
-          >
-            Edit profile
+            <Camera className="w-3.5 h-3.5" /> Edit
           </button>
         </div>
         <button
           onClick={() => setEditing(true)}
           title="Change profile photo"
-          style={{ boxShadow: "0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent), 0 0 26px -6px var(--brand)" }}
-          className="absolute -bottom-12 left-4 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-[var(--bg-base)] bg-neutral-800 grid place-items-center group"
+          className="absolute -bottom-10 left-4 w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-black bg-[#16181c] grid place-items-center group"
         >
-          {user.avatar ? <img src={user.avatar} alt="profile" className="w-full h-full object-cover" /> : <User className="w-9 h-9 text-neutral-400" />}
+          {user.avatar ? <img src={user.avatar} alt="profile" className="w-full h-full object-cover" /> : <User className="w-9 h-9 text-white/40" />}
           <span className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity grid place-items-center">
-            <Camera className="w-6 h-6" />
+            <Camera className="w-6 h-6 text-white" />
           </span>
         </button>
       </div>
 
-      <div className="px-4 pt-14">
+      <div className="px-4 pt-12">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl font-black leading-tight truncate">{name}</h1>
-            <p className="text-sm text-white/45">@{handle} · <Link to="/username" className="hover:underline" style={{ color: "var(--brand)" }}>change username</Link></p>
+            <h1 className="text-xl font-black leading-tight truncate text-white">{name}</h1>
+            <p className="text-sm text-white/45">@{handle} · <Link to="/username" className="hover:underline text-[#1d9bf0]">change</Link></p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => startSubscription("plus").catch(() => {})} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-bold">
-              <CreditCard className="w-3.5 h-3.5" /> Internet X
+            <button onClick={() => startSubscription("plus").catch(() => {})} className="flex items-center gap-1.5 rounded-full border border-[#2F3336] px-3 py-1.5 text-white text-xs font-bold hover:bg-white/[0.06]">
+              <CreditCard className="w-3.5 h-3.5" /> Z+
             </button>
-            <button onClick={logout} title="Log off" className="w-8 h-8 rounded-full border border-white/15 grid place-items-center text-white/60 hover:text-rose-400 hover:bg-white/10">
+            <button onClick={logout} title="Log off" className="w-8 h-8 rounded-full border border-[#2F3336] grid place-items-center text-white/50 hover:text-red-400 hover:bg-white/[0.06]">
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {user.bio && <p className="mt-3 text-sm text-white/85 whitespace-pre-wrap">{user.bio}</p>}
+        {user.bio && <p className="mt-3 text-sm text-white/90 whitespace-pre-wrap">{user.bio}</p>}
 
         {user.bio_link && (
           <a
             href={/^https?:\/\//i.test(user.bio_link) ? user.bio_link : `https://${user.bio_link}`}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline"
-            style={{ color: "var(--brand)" }}
+            className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline text-[#1d9bf0]"
           >
             <Link2 className="w-3.5 h-3.5 shrink-0" />
             {user.bio_link.replace(/^https?:\/\//i, "").replace(/\/$/, "")}
@@ -195,86 +188,59 @@ export default function Profile() {
       </div>
 
       {/* Tabs */}
-      <div className="flex mt-3 border-b border-white/10">
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`flex-1 py-3 text-sm relative hover:bg-white/[0.04] ${tab === t.key ? "font-bold text-white" : "text-white/45"}`}
-          >
-            {t.label}{t.count ? ` ${t.count}` : ""}
-            {tab === t.key && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 rounded-full bg-fuchsia-400" />}
-          </button>
-        ))}
+      <div className="flex mt-4 border-b border-[#2F3336]">
+        {tabs.map((t) => {
+          const Icon = t.icon;
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className="relative flex-1 flex items-center justify-center gap-1.5 py-3.5 text-sm hover:bg-white/[0.03]"
+              style={{ fontWeight: active ? 700 : 400, color: active ? "#fff" : "rgba(255,255,255,0.5)" }}
+            >
+              <Icon className="w-4 h-4 sm:hidden" />
+              <span className="hidden sm:inline">{t.label}</span>
+              <span className="sm:hidden">{t.label}</span>
+              {active && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-14 rounded-full bg-[#1d9bf0]" />}
+            </button>
+          );
+        })}
       </div>
 
       {tab === "posts" && (
         ownPosts.length === 0 ? (
-          <p className="text-sm text-white/45 py-10 text-center">No posts yet — share something on the Feed.</p>
+          <p className="text-sm text-white/40 py-10 text-center">No posts yet — share something on the Feed.</p>
         ) : ownPosts.map(renderPost)
       )}
 
-      {tab === "reposts" && (
-        reposts.length === 0 ? (
-          <p className="text-sm text-white/45 py-10 text-center">Nothing reposted yet — repost a post and it appears here.</p>
-        ) : reposts.map((p) => (
-          <RepostCard key={p.id} post={p} onOpen={(h) => h && setViewHandle(h)} />
-        ))
-      )}
-
       {tab === "media" && (
-        imagePosts.length === 0 ? (
-          <p className="text-sm text-white/45 py-10 text-center">No photos posted yet.</p>
+        (imagePosts.length + videoPosts.length) === 0 ? (
+          <p className="text-sm text-white/40 py-10 text-center">No media posted yet.</p>
         ) : (
-          <div className="grid grid-cols-3 gap-0.5 p-0.5">
-            {imagePosts.map((p) => (
-              <a key={p.id} href={p.media_url} target="_blank" rel="noreferrer" className="aspect-square bg-black/50 overflow-hidden block">
-                <img src={p.media_url} alt="" className="w-full h-full object-cover hover:opacity-90 transition-opacity" />
+          <div className="grid grid-cols-3 gap-0.5">
+            {[...videoPosts, ...imagePosts].map((p) => (
+              <a key={p.id} href={p.media_url} target="_blank" rel="noreferrer" className="aspect-square bg-[#16181c] overflow-hidden block relative group">
+                {p.media_type === "video" ? (
+                  <>
+                    <video src={p.media_url} className="w-full h-full object-cover" muted />
+                    <span className="absolute top-2 right-2 text-white"><Play className="w-4 h-4 fill-white" /></span>
+                  </>
+                ) : (
+                  <img src={p.media_url} alt="" className="w-full h-full object-cover" />
+                )}
               </a>
             ))}
           </div>
         )
       )}
 
-      {tab === "videos" && (
-        videoPosts.length === 0 ? (
-          <p className="text-sm text-white/45 py-10 text-center">No videos posted yet.</p>
-        ) : (
-          <div className="p-3 space-y-3">
-            {videoPosts.map((p) => (
-              <div key={p.id} className="rounded-2xl overflow-hidden border border-white/10 bg-black/40">
-                <video src={p.media_url} controls className="w-full max-h-96 bg-black" />
-                {p.content && (
-                  <p className="flex items-start gap-2 text-sm text-white/75 p-3">
-                    <Play className="w-3.5 h-3.5 mt-1 text-fuchsia-300 shrink-0" /> {p.content}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        )
+      {tab === "replies" && (
+        <p className="text-sm text-white/40 py-10 text-center">No replies yet.</p>
       )}
 
-      {tab === "games" && (
-        recentGames.length === 0 ? (
-          <p className="text-sm text-white/45 py-10 text-center flex items-center justify-center gap-2"><Gamepad2 className="w-4 h-4" /> No games played yet — open Gaming and hit play.</p>
-        ) : (
-          <div className="p-4 grid grid-cols-3 sm:grid-cols-4 gap-3">
-            {recentGames.map((g) => {
-              let hours = "0.0";
-              try { hours = (JSON.parse(localStorage.getItem("walza_game_hours") || "{}")[g.id] || 0).toFixed(1); } catch {}
-              return (
-                <div key={g.id} className="text-center">
-                  <div className="aspect-square rounded-xl overflow-hidden border border-white/10">
-                    <img src={g.cover} alt={g.title} className="w-full h-full object-cover" />
-                  </div>
-                  <p className="text-[11px] mt-1.5 truncate">{g.title}</p>
-                  <p className="text-[10px] text-white/40">{hours}h played</p>
-                </div>
-              );
-            })}
-          </div>
-        )
+      {tab === "likes" && (
+        <p className="text-sm text-white/40 py-10 text-center">Posts you liked will appear here.</p>
       )}
 
       <EditProfileDialog

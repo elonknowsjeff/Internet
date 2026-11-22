@@ -52,75 +52,75 @@ export default function PostActions({
   };
 
   return (
-    <div className="flex items-center justify-between mt-1.5 max-w-[425px] -ml-2 text-white/50">
-      <button onClick={() => onComment?.(post)} className={`${base} -ml-2 hover:text-cyan-300 hover:bg-cyan-400/10`}>
-        <MessageCircle className={`w-[18px] h-[18px] ${commentsOpen ? "text-cyan-300" : ""}`} />
-        <span key={`c-${comments}`} className="text-xs tabular-nums animate-count-pop">{comments}</span>
+    <div className="flex items-center justify-between mt-1.5 max-w-[425px] -ml-2 text-white/45">
+      <button onClick={() => onComment?.(post)} className={`${base} -ml-2 hover:text-[#1d9bf0] hover:bg-[#1d9bf0]/10`}>
+        <MessageCircle className={`w-[18px] h-[18px] ${commentsOpen ? "text-[#1d9bf0]" : ""}`} />
+        <span key={`c-${comments}`} className="text-xs tabular-nums">{comments}</span>
       </button>
 
       <button
         onClick={() => onRepost?.(post)}
-        className={`${base} ${reposted ? "text-emerald-400" : "hover:text-emerald-300 hover:bg-emerald-400/10"}`}
+        className={`${base} ${reposted ? "text-[#17bf63]" : "hover:text-[#17bf63] hover:bg-[#17bf63]/10"}`}
       >
-        <Repeat2 className={`w-[18px] h-[18px] ${reposted ? "animate-repost-spin" : ""}`} />
-        <span key={`r-${rebuzzs}`} className="text-xs tabular-nums animate-count-pop">{rebuzzs}</span>
+        <Repeat2 className="w-[18px] h-[18px]" />
+        <span key={`r-${rebuzzs}`} className="text-xs tabular-nums">{rebuzzs}</span>
       </button>
 
       <span className="relative">
         {bursts.map((b) => (
           <span
             key={b.id}
-            className="pointer-events-none absolute left-1/2 top-1/2 rounded-full bg-rose-400"
+            className="pointer-events-none absolute left-1/2 top-1/2 rounded-full bg-[#f91880]"
             style={{ width: b.s, height: b.s, "--tx": `${b.x}px`, "--ty": `${b.y}px`, animation: "post-burst 600ms ease-out forwards" }}
           />
         ))}
         <button
           onClick={tapLike}
-          className={`${base} ${liked ? "text-rose-400" : "hover:text-rose-400 hover:bg-rose-400/10"}`}
+          className={`${base} ${liked ? "text-[#f91880]" : "hover:text-[#f91880] hover:bg-[#f91880]/10"}`}
         >
-          <Heart className={`w-[18px] h-[18px] ${liked ? "fill-rose-400 animate-heart-pop" : ""}`} />
-          <span key={`l-${likes}`} className="text-xs tabular-nums animate-count-pop">{likes}</span>
+          <Heart className={`w-[18px] h-[18px] ${liked ? "fill-[#f91880]" : ""}`} />
+          <span key={`l-${likes}`} className="text-xs tabular-nums">{likes}</span>
         </button>
       </span>
 
       <button
         onClick={() => onBookmark?.(post)}
-        className={`${base} ${bookmarked ? "text-[color:var(--brand)]" : "hover:text-[color:var(--brand)] hover:bg-white/10"}`}
+        className={`${base} ${bookmarked ? "text-[#1d9bf0]" : "hover:text-[#1d9bf0] hover:bg-white/[0.06]"}`}
         title={bookmarked ? "Remove bookmark" : "Bookmark"}
       >
         <Bookmark className={`w-[18px] h-[18px] ${bookmarked ? "fill-current" : ""}`} />
       </button>
 
-      <button onClick={share} className={`${base} hover:text-cyan-300 hover:bg-cyan-400/10`} title="Share post">
-        {copied ? <Check className="w-[18px] h-[18px] text-emerald-400" /> : <Share2 className="w-[18px] h-[18px]" />}
+      <button onClick={share} className={`${base} hover:text-[#1d9bf0] hover:bg-[#1d9bf0]/10`} title="Share post">
+        {copied ? <Check className="w-[18px] h-[18px] text-[#17bf63]" /> : <Share2 className="w-[18px] h-[18px]" />}
       </button>
 
       {canContact && (
         <>
-          <button onClick={() => onDm?.(post.author_handle)} className={`${base} hover:text-fuchsia-300 hover:bg-fuchsia-400/10`} title="Message">
+          <button onClick={() => onDm?.(post.author_handle)} className={`${base} hover:text-[#1d9bf0] hover:bg-[#1d9bf0]/10`} title="Message">
             <Send className="w-[18px] h-[18px]" />
           </button>
           <span className="relative">
             <button
               onClick={() => setCallMenu((v) => !v)}
-              className={`${base} -mr-2 ${callMenu ? "text-emerald-300 bg-emerald-400/10" : "hover:text-emerald-300 hover:bg-emerald-400/10"}`}
+              className={`${base} -mr-2 ${callMenu ? "text-[#17bf63] bg-[#17bf63]/10" : "hover:text-[#17bf63] hover:bg-[#17bf63]/10"}`}
               title="Call"
             >
               <Phone className="w-[18px] h-[18px]" />
             </button>
             {callMenu && (
-              <span className="absolute right-0 bottom-full mb-2 w-40 rounded-xl border border-white/10 bg-[#140e2b] shadow-2xl overflow-hidden z-40 animate-pop-in">
+              <span className="absolute right-0 bottom-full mb-2 w-40 rounded-xl border border-[#2F3336] bg-black shadow-2xl overflow-hidden z-40">
                 <button
                   onClick={() => { setCallMenu(false); onCall?.(post.author_handle, "audio"); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-white/10"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-white/[0.06]"
                 >
-                  <Phone className="w-3.5 h-3.5 text-emerald-300" /> Voice call
+                  <Phone className="w-3.5 h-3.5 text-[#17bf63]" /> Voice call
                 </button>
                 <button
                   onClick={() => { setCallMenu(false); onCall?.(post.author_handle, "video"); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-white/10"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-white/[0.06]"
                 >
-                  <Video className="w-3.5 h-3.5 text-fuchsia-300" /> Video call
+                  <Video className="w-3.5 h-3.5 text-[#1d9bf0]" /> Video call
                 </button>
               </span>
             )}
