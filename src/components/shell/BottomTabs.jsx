@@ -11,37 +11,57 @@ import {
 import BrandLogo from "@/components/BrandLogo";
 import ProfilePhotoDialog from "@/components/profile/ProfilePhotoDialog";
 
-// Every app, in plain sight on the main bar — nothing hidden.
-const APPS = [
-  { to: "/", label: "Feed", icon: HomeIcon, match: (p, cat) => p === "/" && cat !== "gaming" && cat !== "entertainment" && cat !== "aichat" },
-  { to: "/messages", label: "Messages", icon: MessageSquare, match: (p) => p === "/messages" },
-  { to: "/stories", label: "Stories", icon: Sparkles, match: (p) => p === "/stories" },
-  { to: "/discover", label: "Discover", icon: Compass, match: (p) => p === "/discover" },
-  { to: "/news", label: "News", icon: Newspaper, match: (p) => p === "/news" },
-  { to: "/articles", label: "Articles", icon: BookOpen, match: (p) => p === "/articles" },
-  { to: "/music", label: "Music", icon: Music2, match: (p) => p === "/music" },
-  { to: "/video", label: "Video", icon: Youtube, match: (p) => p === "/video" },
-  { to: "/movies", label: "Series", icon: Film, match: (p) => p === "/movies" },
-  { to: "/cable", label: "Live TV", icon: Tv, match: (p) => p === "/cable" },
-  { to: "/radio", label: "Radio", icon: Radio, match: (p) => p === "/radio" },
-  { to: "/?cat=gaming", label: "Arcade", icon: Gamepad2, match: (p, cat) => p === "/" && cat === "gaming" },
-  { to: "/assistant", label: "AI Chat", icon: Sparkles, match: (p, cat) => p === "/assistant" || (p === "/" && cat === "aichat") },
-  { to: "/desktop", label: "Desktop", icon: Monitor, match: (p) => p === "/desktop" },
-  { to: "/browser", label: "Browser", icon: Globe, match: (p) => p === "/browser" },
-  { to: "/productivity", label: "Productivity", icon: ListChecks, match: (p) => p === "/productivity" },
-  { to: "/notes", label: "Notes", icon: StickyNote, match: (p) => p === "/notes" },
-  { to: "/calendar", label: "Calendar", icon: CalendarDays, match: (p) => p === "/calendar" },
-  { to: "/calculator", label: "Calculator", icon: CalculatorIcon, match: (p) => p === "/calculator" },
-  { to: "/sheets", label: "Sheets", icon: Table, match: (p) => p === "/sheets" },
-  { to: "/docs", label: "Docs", icon: FileText, match: (p) => p === "/docs" },
-  { to: "/slides", label: "Slides", icon: Presentation, match: (p) => p === "/slides" },
-  { to: "/cloud", label: "Cloud", icon: CloudIcon, match: (p) => p === "/cloud" },
-  { to: "/market", label: "Market", icon: Store, match: (p) => p === "/market" },
-  { to: "/finance", label: "Finance", icon: TrendingUp, match: (p) => p === "/finance" },
-  { to: "/hotels", label: "Hotels", icon: BedDouble, match: (p) => p === "/hotels" },
-  { to: "/flights", label: "Flights", icon: Plane, match: (p) => p === "/flights" },
-  { to: "/dating", label: "Dating", icon: Heart, match: (p) => p === "/dating" },
-  { to: "/upload", label: "Upload", icon: Upload, match: (p) => p === "/upload" },
+// Every app, in plain sight on the main bar — grouped into themed sections.
+const SECTIONS = [
+  {
+    name: "Social",
+    apps: [
+      { to: "/", label: "Feed", icon: HomeIcon, match: (p, cat) => p === "/" && cat !== "gaming" && cat !== "entertainment" && cat !== "aichat" },
+      { to: "/messages", label: "Messages", icon: MessageSquare, match: (p) => p === "/messages" },
+      { to: "/stories", label: "Stories", icon: Sparkles, match: (p) => p === "/stories" },
+      { to: "/discover", label: "Discover", icon: Compass, match: (p) => p === "/discover" },
+      { to: "/news", label: "News", icon: Newspaper, match: (p) => p === "/news" },
+      { to: "/articles", label: "Articles", icon: BookOpen, match: (p) => p === "/articles" },
+      { to: "/dating", label: "Dating", icon: Heart, match: (p) => p === "/dating" },
+      { to: "/upload", label: "Upload", icon: Upload, match: (p) => p === "/upload" },
+    ],
+  },
+  {
+    name: "Entertainment",
+    apps: [
+      { to: "/music", label: "Music", icon: Music2, match: (p) => p === "/music" },
+      { to: "/video", label: "Video", icon: Youtube, match: (p) => p === "/video" },
+      { to: "/movies", label: "Series", icon: Film, match: (p) => p === "/movies" },
+      { to: "/cable", label: "Live TV", icon: Tv, match: (p) => p === "/cable" },
+      { to: "/radio", label: "Radio", icon: Radio, match: (p) => p === "/radio" },
+      { to: "/?cat=gaming", label: "Arcade", icon: Gamepad2, match: (p, cat) => p === "/" && cat === "gaming" },
+      { to: "/assistant", label: "AI Chat", icon: Sparkles, match: (p, cat) => p === "/assistant" || (p === "/" && cat === "aichat") },
+    ],
+  },
+  {
+    name: "Productivity",
+    apps: [
+      { to: "/productivity", label: "Hub", icon: ListChecks, match: (p) => p === "/productivity" },
+      { to: "/notes", label: "Notes", icon: StickyNote, match: (p) => p === "/notes" },
+      { to: "/calendar", label: "Calendar", icon: CalendarDays, match: (p) => p === "/calendar" },
+      { to: "/calculator", label: "Calc", icon: CalculatorIcon, match: (p) => p === "/calculator" },
+      { to: "/sheets", label: "Sheets", icon: Table, match: (p) => p === "/sheets" },
+      { to: "/docs", label: "Docs", icon: FileText, match: (p) => p === "/docs" },
+      { to: "/slides", label: "Slides", icon: Presentation, match: (p) => p === "/slides" },
+      { to: "/cloud", label: "Cloud", icon: CloudIcon, match: (p) => p === "/cloud" },
+    ],
+  },
+  {
+    name: "Tools",
+    apps: [
+      { to: "/desktop", label: "Desktop", icon: Monitor, match: (p) => p === "/desktop" },
+      { to: "/browser", label: "Browser", icon: Globe, match: (p) => p === "/browser" },
+      { to: "/market", label: "Market", icon: Store, match: (p) => p === "/market" },
+      { to: "/finance", label: "Finance", icon: TrendingUp, match: (p) => p === "/finance" },
+      { to: "/hotels", label: "Hotels", icon: BedDouble, match: (p) => p === "/hotels" },
+      { to: "/flights", label: "Flights", icon: Plane, match: (p) => p === "/flights" },
+    ],
+  },
 ];
 
 export default function BottomTabs() {
@@ -147,8 +167,13 @@ export default function BottomTabs() {
           <Link to="/" className="mr-1 hidden h-10 w-10 shrink-0 place-items-center rounded-xl hover:bg-white/10 sm:grid" title="Internet X">
             <BrandLogo size={22} />
           </Link>
-          {APPS.map((item) => <AppIcon key={item.label} item={item} />)}
-          <span className="mx-1 hidden h-7 w-px shrink-0 bg-white/10 sm:block" />
+          {SECTIONS.map((sec) => (
+            <div key={sec.name} className="flex shrink-0 items-center gap-0.5">
+              <span className="hidden shrink-0 select-none px-1 text-[8.5px] font-semibold uppercase tracking-wider text-white/30 lg:block">{sec.name}</span>
+              <span className="mx-1 hidden h-7 w-px shrink-0 bg-white/10 sm:block" />
+              {sec.apps.map((item) => <AppIcon key={item.label} item={item} />)}
+            </div>
+          ))}
           <button
             onClick={() => setAccountOpen((v) => !v)}
             aria-label="Account"
