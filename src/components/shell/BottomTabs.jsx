@@ -15,6 +15,7 @@ import ProfilePhotoDialog from "@/components/profile/ProfilePhotoDialog";
 const SECTIONS = [
   {
     name: "Social",
+    color: "#38bdf8",
     apps: [
       { to: "/", label: "Feed", icon: HomeIcon, match: (p, cat) => p === "/" && cat !== "gaming" && cat !== "entertainment" && cat !== "aichat" },
       { to: "/messages", label: "Messages", icon: MessageSquare, match: (p) => p === "/messages" },
@@ -28,6 +29,7 @@ const SECTIONS = [
   },
   {
     name: "Entertainment",
+    color: "#fb7185",
     apps: [
       { to: "/music", label: "Music", icon: Music2, match: (p) => p === "/music" },
       { to: "/video", label: "Video", icon: Youtube, match: (p) => p === "/video" },
@@ -38,6 +40,7 @@ const SECTIONS = [
   },
   {
     name: "Productivity",
+    color: "#34d399",
     apps: [
       { to: "/productivity", label: "Hub", icon: ListChecks, match: (p) => p === "/productivity" },
       { to: "/notes", label: "Notes", icon: StickyNote, match: (p) => p === "/notes" },
@@ -51,6 +54,7 @@ const SECTIONS = [
   },
   {
     name: "Tools",
+    color: "#fbbf24",
     apps: [
       { to: "/desktop", label: "Desktop", icon: Monitor, match: (p) => p === "/desktop" },
       { to: "/browser", label: "Browser", icon: Globe, match: (p) => p === "/browser" },
@@ -90,7 +94,7 @@ export default function BottomTabs() {
     try { await base44.auth.logout(); } catch { window.location.href = "/"; }
   };
 
-  const AppIcon = ({ item }) => {
+  const AppIcon = ({ item, color }) => {
     const active = item.match(pathname, cat);
     const Icon = item.icon;
     return (
@@ -99,12 +103,12 @@ export default function BottomTabs() {
           className="relative grid h-10 w-10 place-items-center rounded-xl transition-all duration-150"
           style={active
             ? { background: "color-mix(in srgb, var(--brand) 20%, transparent)", boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--brand) 42%, transparent)" }
-            : {}}
+            : { background: "color-mix(in srgb, " + (color || "#888") + " 10%, transparent)" }}
         >
           <Icon
             className="h-[18px] w-[18px] transition-transform duration-150 group-active:scale-90"
-            strokeWidth={active ? 2.3 : 1.7}
-            style={{ color: active ? "var(--brand)" : "rgba(255,255,255,0.72)" }}
+            strokeWidth={active ? 2.3 : 1.8}
+            style={{ color: active ? "var(--brand)" : (color || "rgba(255,255,255,0.72)") }}
           />
           {item.to === "/messages" && unread > 0 && (
             <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[9px] font-bold text-black" style={{ background: "var(--brand)" }}>
@@ -169,7 +173,7 @@ export default function BottomTabs() {
             <div key={sec.name} className="flex shrink-0 items-center gap-0.5">
               <span className="hidden shrink-0 select-none px-1 text-[8.5px] font-semibold uppercase tracking-wider text-white/30 lg:block">{sec.name}</span>
               <span className="mx-1 hidden h-7 w-px shrink-0 bg-white/10 sm:block" />
-              {sec.apps.map((item) => <AppIcon key={item.label} item={item} />)}
+              {sec.apps.map((item) => <AppIcon key={item.label} item={item} color={sec.color} />)}
             </div>
           ))}
           <button
