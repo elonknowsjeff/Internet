@@ -278,6 +278,7 @@ html, body, #root { width: 100%; max-width: 100%; }
 [data-theme="theater"] { --bg-base:#05050a; --aurora-1:#00E1FF; --aurora-2:#FF2D9B; --aurora-3:#7C5CFF; --accent:#00E1FF; --accent-2:#FF2D9B; --text:#F2F1FA; --brand:#00E1FF; --brand-2:#FF2D9B; --aurora-opacity:0.7; }
 [data-theme="clean"] { --bg-base:#0a0b0e; --aurora-1:#141a26; --aurora-2:#101620; --aurora-3:#0c111a; --accent:#0a84ff; --accent-2:#3b82f6; --text:#ECEEF2; --brand:#0a84ff; --brand-2:#3b82f6; --aurora-opacity:0.4; }
 [data-theme="galaxy"] { --bg-base:#04050a; --aurora-1:#0a1a3a; --aurora-2:#3a2600; --aurora-3:#04263a; --accent:#ffb74d; --accent-2:#4dd2ff; --text:#EAF1FF; --brand:#ffb74d; --brand-2:#4dd2ff; --aurora-opacity:0.5; }
+[data-theme="z"] { --bg-base:#000000; --aurora-1:#000; --aurora-2:#000; --aurora-3:#000; --accent:#1d9bf0; --accent-2:#ffffff; --text:#FFFFFF; --brand:#1d9bf0; --brand-2:#ffffff; --aurora-opacity:0; --surface:rgba(255,255,255,0.04); --surface-solid:#0a0a0a; --border:#2f3336; --radius-card:16px; }
 
 /* Clean-Instagram surface + control helpers (theme-aware) */
 .ig-panel { background: var(--surface); backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%); border: 1px solid var(--border); }

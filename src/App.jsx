@@ -50,6 +50,11 @@ import Productivity from '@/pages/Productivity';
 import Apps from '@/pages/Apps';
 import Browser from '@/pages/Browser';
 import LiveTV from '@/pages/LiveTV';
+import ZLayout from '@/components/z/ZLayout';
+import ZHome from '@/pages/z/ZHome';
+import ZExplore from '@/pages/z/ZExplore';
+import ZProfile from '@/pages/z/ZProfile';
+import ZNotifications from '@/pages/z/ZNotifications';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -85,7 +90,8 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/mfa" element={<Mfa />} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/z" replace />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/rides" element={<Navigate to="/?cat=food" replace />} />
         <Route path="/market" element={<Market />} />
         <Route path="/music" element={<Music />} />
@@ -124,6 +130,17 @@ const AuthenticatedApp = () => {
         <Route path="/cable" element={<LiveTV />} />
         <Route path="/terms" element={<Terms />} />
       </Route>
+
+      <Route element={<ZLayout />}>
+        <Route path="/z" element={<ZHome />} />
+        <Route path="/z/explore" element={<ZExplore />} />
+        <Route path="/z/profile" element={<ZProfile />} />
+        <Route path="/z/reels" element={<Video />} />
+        <Route path="/z/messages" element={<Messages />} />
+        <Route path="/z/notifications" element={<ZNotifications />} />
+        <Route path="/z/wallet" element={<Finance />} />
+      </Route>
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
     </ErrorBoundary>
