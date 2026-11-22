@@ -62,9 +62,18 @@ export default function UnifiedFeed() {
   const [bookmarked, setBookmarked] = useState({});
   const [tag, setTag] = useState(null);
   const [profileHandle, setProfileHandle] = useState(null);
+  const [feedTab, setFeedTab] = useState("foryou");
+  const [following, setFollowing] = useState([]);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.me().then((u) => {
+      setUser(u);
+      if (u) {
+        base44.entities.Follow.list("-created_date", 500)
+          .then((rows) => setFollowing(asItems(rows).filter((f) => f.follower_id === u.id).map((f) => f.following_handle).filter(Boolean)))
+          .catch(() => {});
+      }
+    }).catch(() => {});
     const unsub = base44.entities.Post?.subscribe?.(() => loadPosts());
     return () => { if (typeof unsub === "function") unsub(); };
   }, []);
@@ -175,17 +184,19 @@ export default function UnifiedFeed() {
   // Interleave the three streams into one timeline by recency.
   const stream = useMemo(() => {
     const items = [];
+    const isFollowing = feedTab === "following";
     posts.forEach((p) => {
       if (tag && !new RegExp("#" + tag + "\\b", "i").test(p.content || "")) return;
+      if (isFollowing && !following.includes(p.author_handle)) return;
       items.push({ type: "social", ts: new Date(p.created_date || 0).getTime() || Date.now(), data: p });
     });
-    if (!tag) {
+    if (!tag && !isFollowing) {
       news.forEach((n, i) => items.push({ type: "news", ts: Date.now() - i * 60000 - 30000, data: n }));
       ent.forEach((e, i) => items.push({ type: "ent", ts: Date.now() - i * 90000 - 120000, data: e }));
     }
     items.sort((a, b) => b.ts - a.ts);
     return items;
-  }, [posts, news, ent, tag]);
+  }, [posts, news, ent, tag, feedTab, following]);
 
   const filtered = chip === "all" ? stream : stream.filter((it) => it.type === chip);
   const counts = {
@@ -199,6 +210,26 @@ export default function UnifiedFeed() {
       {/* Stories */}
       <div className="mt-3 overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl">
         <StoriesBar user={user} />
+      </div>
+
+      {/* For You / Following tabs */}
+      <div className="sticky top-[52px] z-20 mt-3 flex gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] p-1 backdrop-blur-xl">
+        {[
+          { key: "foryou", label: "For You" },
+          { key: "following", label: "Following" },
+        ].map((t) => {
+          const active = feedTab === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setFeedTab(t.key)}
+              className={`flex-1 rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${active ? "text-black" : "text-white/55 hover:text-white"}`}
+              style={active ? { background: "var(--brand)" } : undefined}
+            >
+              {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Composer */}
@@ -242,7 +273,7 @@ export default function UnifiedFeed() {
       <TrendingHashtags posts={posts} active={tag} onSelect={setTag} />
 
       {/* Filter chips */}
-      <div className="sticky top-[52px] z-20 mt-3 flex gap-1.5 overflow-x-auto scrollbar-none">
+      <div className="sticky top-[104px] z-20 mt-3 flex gap-1.5 overflow-x-auto scrollbar-none">
         {CHIPS.map((c) => {
           const active = chip === c.key;
           const count = c.key === "all" ? stream.length : counts[c.key];

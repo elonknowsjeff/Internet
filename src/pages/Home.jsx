@@ -53,7 +53,7 @@ export default function Home() {
   const [params] = useSearchParams();
   const cat = params.get("cat") || "social";
   const [user, setUser] = useState(null);
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("feed");
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
   const isGaming = cat === "gaming";
@@ -73,7 +73,7 @@ export default function Home() {
         ) : isSocial ? (
           feedMode ? (
             <>
-              <div className="sticky top-[52px] z-20 mt-2 flex items-center gap-2">
+              <div className="mt-2 flex items-center gap-2">
                 <button
                   onClick={() => setView("grid")}
                   className="flex items-center gap-1.5 rounded-full border border-white/12 bg-[#0b0b0f]/80 px-3 py-1.5 text-[12px] font-semibold text-white/70 backdrop-blur-xl hover:text-white"
