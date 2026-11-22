@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Home as HomeIcon, Compass, Clapperboard, MessageSquare, Film, Music2, Youtube,
-  Tv, Radio, Gamepad2, Sparkles, Monitor, ListChecks, StickyNote, CalendarDays,
-  Calculator, Table, FileText, Presentation, Cloud as CloudIcon, Globe, Newspaper,
+  Radio, Gamepad2, Sparkles, Monitor, ListChecks, StickyNote, CalendarDays,
+  Calculator, Table, FileText, Presentation, Globe, Newspaper,
   BookOpen, Store, TrendingUp, BedDouble, Plane, Heart, User, Settings, Upload,
-  LayoutGrid, Hash, Users,
+  LayoutGrid, Hash,
 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import BrandLogo from "@/components/BrandLogo";
+import StoriesBar from "@/components/StoriesBar";
+import HomeSidebar from "@/components/home/HomeSidebar";
 
 // Every feature as a visible tile — nothing hidden in drawers.
 const TILES = [
@@ -19,7 +22,6 @@ const TILES = [
   { to: "/music", label: "Music", Icon: Music2, tint: "from-orange-500 to-amber-600" },
   { to: "/video", label: "Video", Icon: Youtube, tint: "from-red-500 to-rose-600" },
   { to: "/movies", label: "Movies", Icon: Film, tint: "from-indigo-500 to-violet-600" },
-  { to: "/cable", label: "Live TV", Icon: Tv, tint: "from-cyan-500 to-sky-600" },
   { to: "/radio", label: "Radio", Icon: Radio, tint: "from-lime-500 to-green-600" },
   { to: "/?cat=gaming", label: "Arcade", Icon: Gamepad2, tint: "from-purple-500 to-fuchsia-600" },
   { to: "/assistant", label: "AI Chat", Icon: Sparkles, tint: "from-blue-500 to-cyan-600" },
@@ -31,7 +33,6 @@ const TILES = [
   { to: "/sheets", label: "Sheets", Icon: Table, tint: "from-green-500 to-emerald-600" },
   { to: "/docs", label: "Docs", Icon: FileText, tint: "from-blue-500 to-indigo-600" },
   { to: "/slides", label: "Slides", Icon: Presentation, tint: "from-orange-500 to-red-600" },
-  { to: "/cloud", label: "Cloud", Icon: CloudIcon, tint: "from-sky-500 to-cyan-600" },
   { to: "/browser", label: "Browser", Icon: Globe, tint: "from-cyan-500 to-blue-600" },
   { to: "/news", label: "News", Icon: Newspaper, tint: "from-amber-500 to-orange-600" },
   { to: "/articles", label: "Articles", Icon: BookOpen, tint: "from-stone-500 to-amber-700" },
@@ -68,10 +69,13 @@ function Tile({ tile, onFeed }) {
 }
 
 export default function WiiHome({ onFeed }) {
+  const [user, setUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
+
   return (
     <div className="pb-28 pt-3">
       {/* Hero */}
-      <header className="mb-5 flex items-center gap-3 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-4 backdrop-blur-xl">
+      <header className="mb-3 flex items-center gap-3 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-4 backdrop-blur-xl">
         <BrandLogo size={56} />
         <div className="leading-tight">
           <h1 className="text-[22px] font-extrabold tracking-[-0.02em]">Internet X</h1>
@@ -82,11 +86,21 @@ export default function WiiHome({ onFeed }) {
         </span>
       </header>
 
-      {/* Tile grid — Wii U style, everything visible */}
-      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
-        {TILES.map((t) => (
-          <Tile key={t.label} tile={t} onFeed={onFeed} />
-        ))}
+      {/* Stories on the dashboard */}
+      <div className="mb-3 rounded-3xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+        <StoriesBar user={user} />
+      </div>
+
+      <div className="flex gap-4">
+        {/* Tile grid — everything visible */}
+        <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6">
+            {TILES.map((t) => (
+              <Tile key={t.label} tile={t} onFeed={onFeed} />
+            ))}
+          </div>
+        </div>
+        <HomeSidebar user={user} />
       </div>
     </div>
   );

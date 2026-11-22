@@ -10,6 +10,7 @@ import MusicUpload from "@/components/music/MusicUpload";
 import MusicMarketplace from "@/components/music/MusicMarketplace";
 import PlaylistsPanel from "@/components/music/PlaylistsPanel";
 import MidiStudio from "@/components/music/MidiStudio";
+import MusicFeatured from "@/components/music/MusicFeatured";
 import { useSpotify } from "@/components/SpotifyProvider";
 
 const EMPTY_ART = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300";
@@ -134,6 +135,10 @@ export default function Music() {
         marketView={<div className="p-1"><MusicMarketplace user={user} audio={audio} current={current} playing={playing} /></div>}
         studioView={<div className="p-1"><MidiStudio /></div>}
       />
+
+      <div className="mt-5">
+        <MusicFeatured user={user} />
+      </div>
 
       {extra === "charts" && (
         <Overlay title="Charts · Billboard Hot 100" onClose={() => setExtra(null)}>
