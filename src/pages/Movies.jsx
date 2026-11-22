@@ -5,25 +5,35 @@ import NetflixRow from "@/components/movies/NetflixRow";
 import Billboard from "@/components/movies/Billboard";
 import AiMovieStudio from "@/components/movies/AiMovieStudio";
 import UploadMovieDialog from "@/components/movies/UploadMovieDialog";
+import BrandLogo from "@/components/BrandLogo";
 
-const TABS = ["Home", "Movies", "TV shows", "Bollywood", "Kids"];
-const CATALOG_KEY = "walza_movie_catalog_v3";
-const LIST_KEY = "walza_my_list";
+const GENRES = [
+  { key: "all", label: "All", re: /.*/ },
+  { key: "horror", label: "Horror", re: /horror/ },
+  { key: "drama", label: "Drama", re: /drama/ },
+  { key: "thriller", label: "Thriller", re: /thriller|crime|mystery/ },
+  { key: "comedy", label: "Comedy", re: /comedy/ },
+  { key: "scifi", label: "Sci-Fi", re: /sci|fantasy|adventure/ },
+  { key: "romance", label: "Romance", re: /romance/ },
+  { key: "action", label: "Action", re: /action/ },
+  { key: "doc", label: "Documentary", re: /documentary|history|biograph/ },
+  { key: "ai", label: "AI Movies", re: null },
+];
 
-const seedMovies = [
-  { title: "Nebula Drift", genre: "Sci-Fi", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400", release_date: "2026-12-18", synopsis: "A lone navigator charts the edge of a dying galaxy in search of a second Earth." },
-  { title: "The Last Letter", genre: "Drama", poster: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400", release_date: "2026-11-05", synopsis: "Two strangers exchange letters across decades without ever meeting." },
-  { title: "Iron Coast", genre: "Action", poster: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400", release_date: "2027-01-22", synopsis: "A retired diver is pulled back for one last heist beneath the city." },
-  { title: "Whisperwood", genre: "Horror", poster: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=400", release_date: "2026-10-31", synopsis: "The forest remembers everyone who enters — and none who leave." },
-  { title: "Golden Hour", genre: "Romance", poster: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=400", release_date: "2027-02-14", synopsis: "A photographer and a baker share one perfect summer in Lisbon." },
-  { title: "Protocol Zero", genre: "Thriller", poster: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400", release_date: "2026-12-25", synopsis: "An analyst uncovers a conspiracy buried in the code she wrote." },
+const CATALOG_KEY = "xsi_series_catalog_v1";
+const LIST_KEY = "xsi_my_list";
+
+const seedSeries = [
+  { title: "Whisperwood", genre: "Horror", poster: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=400", release_date: "2026-10-31", synopsis: "The forest remembers everyone who enters — and none who leave.", language: "Hollywood", trailer: "" },
+  { title: "The Last Letter", genre: "Drama", poster: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400", release_date: "2026-11-05", synopsis: "Two strangers exchange letters across decades without ever meeting.", language: "Hollywood", trailer: "" },
+  { title: "Protocol Zero", genre: "Thriller", poster: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400", release_date: "2026-12-25", synopsis: "An analyst uncovers a conspiracy buried in the code she wrote.", language: "Hollywood", trailer: "" },
 ];
 
 export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState("Home");
+  const [genre, setGenre] = useState("all");
   const [q, setQ] = useState("");
   const [trailer, setTrailer] = useState(null);
   const [fetching, setFetching] = useState(false);
@@ -49,11 +59,10 @@ export default function Movies() {
     try {
       const data = await base44.entities.Movie.list("-created_date", 300);
       if (data.length === 0) {
-        await base44.entities.Movie.bulkCreate(seedMovies);
+        await base44.entities.Movie.bulkCreate(seedSeries);
         setMovies(await base44.entities.Movie.list("-created_date", 300));
       } else setMovies(data);
-    } catch (e) {}
-    finally { setLoading(false); }
+    } catch (e) {} finally { setLoading(false); }
   };
 
   useEffect(() => {
@@ -62,47 +71,40 @@ export default function Movies() {
       const raw = localStorage.getItem(CATALOG_KEY);
       if (raw) {
         const saved = JSON.parse(raw);
-        if (Date.now() - saved.ts < 86400000 && saved.movies?.length > 20) { setCatalog(saved.movies); return; }
+        if (Date.now() - saved.ts < 86400000 && saved.series?.length > 20) { setCatalog(saved.series); return; }
       }
     } catch (e) {}
     (async () => {
       try {
         const res = await base44.integrations.Core.InvokeLLM({
-          prompt: "Return 60 real movies: the biggest Hollywood, Bollywood and international releases from 2024 through 2027, plus the most popular classics of all time. Include at least 12 Bollywood titles and at least 8 international titles (Korean, Spanish, Japanese, French). Avoid duplicates. For each: title, genre, release_date (YYYY-MM-DD), a one-line synopsis, the language label ('Hollywood', 'Bollywood' or the country), and the official YouTube trailer video id (the 11-character id). Use live web context for real, current data.",
+          prompt: "Return 70 real web series and shows across every genre: horror, drama, thriller, crime, comedy, sci-fi, fantasy, romance, action, documentary, K-drama, anime. Include a strong mix of genres so every genre has at least 5 titles. Avoid duplicates. For each: title, genre (one primary genre), release_date (YYYY-MM-DD), a one-line synopsis, the language/origin ('Hollywood', 'K-drama', 'Anime', 'Bollywood', etc.), and the official YouTube trailer video id (the 11-character id). Use live web context for real, current data.",
           add_context_from_internet: true, model: "gemini_3_flash",
-          response_json_schema: { type: "object", properties: { movies: { type: "array", items: { type: "object", properties: { title: { type: "string" }, genre: { type: "string" }, release_date: { type: "string" }, synopsis: { type: "string" }, language: { type: "string" }, trailer: { type: "string" } } } } } },
+          response_json_schema: { type: "object", properties: { series: { type: "array", items: { type: "object", properties: { title: { type: "string" }, genre: { type: "string" }, release_date: { type: "string" }, synopsis: { type: "string" }, language: { type: "string" }, trailer: { type: "string" } } } } } },
         });
         const seen = new Set();
-        const list = (res?.movies || []).filter((m) => {
+        const list = (res?.series || []).filter((m) => {
           const t = (m.title || "").trim().toLowerCase();
           if (!t || seen.has(t)) return false;
-          seen.add(t);
-          return true;
+          seen.add(t); return true;
         }).map((m) => {
           const id = (m.trailer || "").trim();
-          const letters = (id.match(/[A-Za-z]/g) || []).length;
-          const valid = /^[A-Za-z0-9_-]{11}$/.test(id) && letters >= 5;
+          const valid = /^[A-Za-z0-9_-]{11}$/.test(id) && (id.match(/[A-Za-z]/g) || []).length >= 5;
           return {
             ...m,
             trailer: valid ? id : "",
             poster: valid
               ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
-              : `https://placehold.co/400x600/241d45/d4d4d4?text=${encodeURIComponent(m.title || "Movie")}`,
+              : `https://placehold.co/400x600/1a1530/d4d4d4?text=${encodeURIComponent(m.title || "Series")}`,
           };
         });
         setCatalog(list);
-        try { localStorage.setItem(CATALOG_KEY, JSON.stringify({ ts: Date.now(), movies: list })); } catch (e) {}
+        try { localStorage.setItem(CATALOG_KEY, JSON.stringify({ ts: Date.now(), series: list })); } catch (e) {}
         try {
           const existing = new Set((await base44.entities.Movie.list("-created_date", 300)).map((x) => (x.title || "").toLowerCase()));
           const today = new Date().toISOString().slice(0, 10);
           const fresh = list.filter((m) => !existing.has((m.title || "").toLowerCase())).map((m) => ({
-            title: m.title,
-            genre: m.genre || "Drama",
-            poster: m.poster,
-            synopsis: m.synopsis || "",
-            release_date: m.release_date || today,
-            language: m.language || "Hollywood",
-            trailer: m.trailer || "",
+            title: m.title, genre: m.genre || "Drama", poster: m.poster, synopsis: m.synopsis || "",
+            release_date: m.release_date || today, language: m.language || "Hollywood", trailer: m.trailer || "",
             status: (m.release_date || today) <= today ? "now_showing" : "coming_soon",
           }));
           if (fresh.length) await base44.entities.Movie.bulkCreate(fresh);
@@ -119,7 +121,7 @@ export default function Movies() {
     setFetching(true);
     try {
       const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `Find the official YouTube trailer video id (11-character) for the movie "${m.title}" (${m.genre || ""}, releasing ${m.release_date || ""}). Use live web context.`,
+        prompt: `Find the official YouTube trailer video id (11-character) for "${m.title}" (${m.genre || ""}, ${m.release_date || ""}). Use live web context.`,
         add_context_from_internet: true, model: "gemini_3_flash",
         response_json_schema: { type: "object", properties: { youtube_id: { type: "string" } } },
       });
@@ -137,52 +139,56 @@ export default function Movies() {
       return next;
     });
   };
-
   const inList = (m) => myList.some((x) => x.title === (m?.title || ""));
 
-  const results = q.trim() ? catalog.filter((m) => `${m.title} ${m.genre} ${m.language}`.toLowerCase().includes(q.toLowerCase())) : [];
   const aiFilms = movies.filter((m) => m.ai_generated);
   const community = movies.filter((m) => m.video_uri);
+  const results = q.trim() ? catalog.filter((m) => `${m.title} ${m.genre} ${m.language}`.toLowerCase().includes(q.toLowerCase())) : [];
 
-  let view = catalog;
-  if (tab === "Bollywood") view = catalog.filter((m) => /bolly|hindi|india/i.test(m.language || ""));
-  if (tab === "Kids") view = catalog.filter((m) => /animation|family|comedy|fantasy|kids|adventure/i.test(m.genre || ""));
-  if (tab === "TV shows") view = catalog.filter((m) => /drama|thriller|crime|mystery|series/i.test(m.genre || ""));
+  // Group catalog by genre into sliding rails
+  const genreRails = GENRES.filter((g) => g.key !== "all" && g.key !== "ai" && g.re)
+    .map((g) => ({ ...g, items: catalog.filter((m) => g.re.test((m.genre || "") + " " + (m.language || ""))) }))
+    .filter((g) => g.items.length >= 2);
 
   const today = new Date();
-  const inTheatres = view.filter((m) => new Date(m.release_date) <= today);
-  const upcoming = view.filter((m) => new Date(m.release_date) > today);
-  const bollywood = view.filter((m) => /bolly|hindi|india/i.test(m.language || ""));
-  const rest = view.filter((m) => !/bolly|hindi|india/i.test(m.language || ""));
-  const featured = (q.trim() ? results[0] : inTheatres[0] || upcoming[0] || view[0]) || movies[0];
+  const newReleases = catalog.filter((m) => new Date(m.release_date) <= today);
+  const featured = (q.trim() ? results[0] : newReleases[0] || catalog[0]) || movies[0];
+
+  const showAi = genre === "ai";
+  const singleGenre = genre !== "all" && genre !== "ai" ? GENRES.find((g) => g.key === genre) : null;
 
   return (
     <div className="bg-[#0a0814] min-h-screen pb-28">
-      {/* netflix-style nav */}
+      {/* Nav */}
       <header className={`sticky top-0 z-30 transition-colors duration-300 ${scrolled || q.trim() ? "bg-[#0a0814]/97 backdrop-blur-xl border-b border-white/10" : "bg-gradient-to-b from-black/85 to-transparent"}`}>
         <div className="flex items-center gap-3 px-3 sm:px-10 py-3">
-          <span className="shrink-0 text-[14px] sm:text-[16px] font-black tracking-[0.3em] text-[#e50914]">Valo</span>
-          <nav className="hidden md:flex items-center gap-4">
-            {TABS.map((t) => (
-              <button key={t} onClick={() => { setTab(t); setQ(""); }} className={`text-[13px] transition-colors ${tab === t ? "font-semibold text-white" : "text-neutral-400 hover:text-white"}`}>{t}</button>
-            ))}
-          </nav>
+          <span className="flex shrink-0 items-center gap-2">
+            <BrandLogo size={26} />
+            <span className="text-[13px] sm:text-[15px] font-black tracking-[0.22em]">SERIES</span>
+          </span>
           <div className="flex-1" />
           <div className="flex items-center gap-2 bg-black/60 border border-white/15 rounded-full px-3 py-1.5 w-32 sm:w-56">
             <Search className="w-4 h-4 text-neutral-400 shrink-0" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search titles" className="flex-1 min-w-0 bg-transparent outline-none text-sm" />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search series" className="flex-1 min-w-0 bg-transparent outline-none text-sm" />
             {q && <button onClick={() => setQ("")}><X className="w-3.5 h-3.5 text-neutral-400" /></button>}
           </div>
           <button onClick={() => setUploadOpen(true)} className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.08] px-3 py-1.5 text-[11px] font-bold hover:bg-white/[0.14]">
             <Upload className="h-3.5 w-3.5" /> <span className="hidden sm:block">Upload</span>
           </button>
           <button onClick={() => setAiOpen(true)} className="flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 px-3 py-1.5 text-[11px] font-bold text-black">
-            <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:block">AI Studio</span>
+            <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:block">AI Movie</span>
           </button>
         </div>
-        <div className="md:hidden flex gap-3 overflow-x-auto scrollbar-none px-3 pb-2">
-          {TABS.map((t) => (
-            <button key={t} onClick={() => { setTab(t); setQ(""); }} className={`shrink-0 text-xs ${tab === t ? "font-semibold text-white" : "text-neutral-400"}`}>{t}</button>
+        {/* Genre chips — sliding bar of every genre */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-none px-3 sm:px-10 pb-2.5">
+          {GENRES.map((g) => (
+            <button
+              key={g.key}
+              onClick={() => { setGenre(g.key); setQ(""); }}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-semibold transition-colors ${genre === g.key ? "bg-white text-black" : "border border-white/15 text-white/65 hover:text-white hover:border-white/35"}`}
+            >
+              {g.label}
+            </button>
           ))}
         </div>
       </header>
@@ -190,53 +196,53 @@ export default function Movies() {
       {q.trim() ? (
         <div className="pt-4">
           <NetflixRow title={`Results for "${q}"`} items={results} onPlay={playTrailer} onAddList={toggleList} />
-          {!results.length && <p className="px-10 py-16 text-neutral-500 text-sm">No titles match that search.</p>}
+          {!results.length && <p className="px-10 py-16 text-neutral-500 text-sm">No series match that search.</p>}
+        </div>
+      ) : showAi ? (
+        <div className="relative z-10 pt-4">
+          <Billboard movie={aiFilms[0] || featured} onPlay={playTrailer} onAddList={toggleList} inList={inList(aiFilms[0] || featured)} />
+          <div className="-mt-16 relative z-10">
+            <NetflixRow title="AI Movies · made with Internet X" items={aiFilms} onPlay={playTrailer} onAddList={toggleList} />
+            <NetflixRow title="Community uploads" items={community} onPlay={playTrailer} onAddList={toggleList} />
+            {!aiFilms.length && (
+              <button onClick={() => setAiOpen(true)} className="mt-6 mx-4 sm:mx-10 w-[calc(100%-2rem)] sm:w-[calc(100%-5rem)] rounded-xl border border-dashed border-cyan-400/40 bg-cyan-400/5 p-5 text-left hover:bg-cyan-400/10">
+                <p className="flex items-center gap-2 font-semibold text-sm"><Sparkles className="w-4 h-4 text-cyan-300" /> No AI movies yet</p>
+                <p className="text-xs text-neutral-400 mt-1">Describe a movie and Internet X writes it and paints the poster. Your films show up here.</p>
+              </button>
+            )}
+          </div>
+        </div>
+      ) : singleGenre ? (
+        <div className="relative z-10 pt-4">
+          <Billboard movie={(singleGenre.re.test((featured?.genre || "") + " ") ? featured : catalog.find((m) => singleGenre.re.test((m.genre || "") + " "))) || featured} onPlay={playTrailer} onAddList={toggleList} inList={false} />
+          <div className="-mt-16 relative z-10">
+            <NetflixRow title={`${singleGenre.label} series`} items={catalog.filter((m) => singleGenre.re.test((m.genre || "") + " " + (m.language || "")))} onPlay={playTrailer} onAddList={toggleList} />
+            <NetflixRow title={`${singleGenre.label} · community`} items={community.filter((m) => singleGenre.re.test((m.genre || "") + " "))} onPlay={playTrailer} onAddList={toggleList} />
+          </div>
         </div>
       ) : (
         <>
           <Billboard movie={featured} onPlay={playTrailer} onAddList={toggleList} inList={inList(featured)} />
 
-          <div className="relative z-10 -mt-16">
-            <NetflixRow title={tab === "TV shows" ? "Trending series" : "Top 10 today"} items={view.slice(0, 10)} onPlay={playTrailer} ranked onAddList={toggleList} />
+          <div className="relative z-10 -mt-16 space-y-1">
+            <NetflixRow title="Trending now" items={catalog.slice(0, 14)} onPlay={playTrailer} ranked onAddList={toggleList} />
             {myList.length > 0 && <NetflixRow title="My List" items={myList} onPlay={playTrailer} onAddList={toggleList} />}
-            <NetflixRow title="New releases" items={inTheatres} onPlay={playTrailer} onAddList={toggleList} />
-            <NetflixRow title="Because you watched Nebula Drift" items={rest.filter((m) => /sci|action|thriller/i.test(m.genre || "")).slice(0, 14)} onPlay={playTrailer} onAddList={toggleList} />
-            {bollywood.length > 0 && <NetflixRow title="Bollywood spotlight" items={bollywood} onPlay={playTrailer} onAddList={toggleList} />}
-            <NetflixRow title="Coming soon" items={upcoming} onPlay={playTrailer} onAddList={toggleList} />
-            <NetflixRow title="Award-winning dramas" items={rest.filter((m) => /drama|romance/i.test(m.genre || ""))} onPlay={playTrailer} onAddList={toggleList} />
-            <NetflixRow title="AI movies · made with Valo" items={aiFilms} onPlay={playTrailer} onAddList={toggleList} />
+            <NetflixRow title="New episodes" items={newReleases} onPlay={playTrailer} onAddList={toggleList} />
+
+            {/* A sliding rail for every genre */}
+            {genreRails.map((g) => (
+              <NetflixRow key={g.key} title={`${g.label} series`} items={g.items} onPlay={playTrailer} onAddList={toggleList} />
+            ))}
+
+            <NetflixRow title="AI Movies · made with Internet X" items={aiFilms} onPlay={playTrailer} onAddList={toggleList} />
             <NetflixRow title="Community uploads · every genre" items={community} onPlay={playTrailer} onAddList={toggleList} />
 
-            {loading && <div className="flex items-center gap-2 text-neutral-400 text-sm px-10 py-6"><Loader2 className="w-4 h-4 animate-spin" /> Loading your library…</div>}
-
-            <section className="mt-8 px-4 sm:px-10">
-              <div className="flex items-baseline gap-2 mb-3">
-                <h3 className="text-[15px] sm:text-xl font-bold tracking-tight">Web movies · all titles</h3>
-                <span className="text-[11px] text-neutral-500">{view.length} movies</span>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-2">
-                {view.map((m, i) => (
-                  <button key={`${m.title}-${i}`} onClick={() => playTrailer(m)} className="group text-left">
-                    <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-neutral-900 ring-1 ring-white/5 group-hover:ring-white/40 transition-all">
-                      {m.poster ? (
-                        <img src={m.poster} alt={m.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center"><Film className="w-6 h-6 text-neutral-600" /></div>
-                      )}
-                      <span className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Play className="w-7 h-7 fill-white" />
-                      </span>
-                    </div>
-                    <p className="text-[11px] font-medium mt-1 line-clamp-2 leading-tight text-neutral-300">{m.title}</p>
-                  </button>
-                ))}
-              </div>
-            </section>
+            {loading && <div className="flex items-center gap-2 text-neutral-400 text-sm px-10 py-6"><Loader2 className="w-4 h-4 animate-spin" /> Loading series…</div>}
 
             {!loading && !aiFilms.length && (
               <button onClick={() => setAiOpen(true)} className="mt-6 mx-4 sm:mx-10 w-[calc(100%-2rem)] sm:w-[calc(100%-5rem)] rounded-xl border border-dashed border-cyan-400/40 bg-cyan-400/5 p-5 text-left hover:bg-cyan-400/10">
-                <p className="flex items-center gap-2 font-semibold text-sm"><Film className="w-4 h-4 text-cyan-300" /> No AI films yet</p>
-                <p className="text-xs text-neutral-400 mt-1">Describe a movie and Valo writes it and paints the poster. Your films show up in the AI movies row.</p>
+                <p className="flex items-center gap-2 font-semibold text-sm"><Sparkles className="w-4 h-4 text-cyan-300" /> No AI movies yet</p>
+                <p className="text-xs text-neutral-400 mt-1">Describe a movie and Internet X writes it and paints the poster. Your films show up in the AI Movies rail.</p>
               </button>
             )}
           </div>
@@ -278,7 +284,6 @@ export default function Movies() {
       )}
 
       <UploadMovieDialog open={uploadOpen} user={user} onClose={() => setUploadOpen(false)} onPublished={() => { setUploadOpen(false); loadMovies(); }} />
-
       {aiOpen && <AiMovieStudio onClose={() => setAiOpen(false)} onCreated={loadMovies} />}
     </div>
   );
