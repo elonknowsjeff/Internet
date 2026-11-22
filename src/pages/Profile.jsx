@@ -116,9 +116,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-[640px] mx-auto pb-28 xl:pb-6 bg-black min-h-[100dvh]">
+    <div className="max-w-[640px] mx-auto pb-28 lg:pb-6 bg-black min-h-[100dvh]">
       {/* Header */}
-      <header className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-black/90 backdrop-blur-xl border-b border-[#2F3336] xl:hidden">
+      <header className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-black/90 backdrop-blur-xl border-b border-[#2F3336] lg:hidden">
         <Link to="/" className="w-9 h-9 rounded-full hover:bg-white/[0.06] grid place-items-center shrink-0"><ArrowLeft className="w-5 h-5" /></Link>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold truncate leading-tight text-white">{name}</p>

@@ -98,7 +98,7 @@ export default function ZNav() {
             </span>
           )}
         </span>
-        <span className="hidden xl:inline">{item.label}</span>
+        <span className="hidden lg:inline">{item.label}</span>
       </Link>
     );
   };
@@ -116,7 +116,7 @@ export default function ZNav() {
           {NAV.map((item) => <SidebarItem key={item.label} item={item} />)}
           <button
             onClick={() => navigate("/upload")}
-            className="mx-2 mt-3 flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[17px] font-bold text-black transition-transform active:scale-95 xl:mx-0"
+            className="mx-2 mt-3 flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[17px] font-bold text-black transition-transform active:scale-95 lg:mx-0"
           >
             <Plus className="h-5 w-5" strokeWidth={2.5} />
             <span className="hidden lg:inline">Create</span>
@@ -130,7 +130,7 @@ export default function ZNav() {
             className="flex w-full items-center gap-5 rounded-full px-4 py-3 text-[19px] hover:bg-white/[0.06]"
           >
             <MoreHorizontal className="h-[26px] w-[26px]" strokeWidth={1.8} />
-            <span className="hidden xl:inline">More</span>
+            <span className="hidden lg:inline">More</span>
           </button>
           {moreOpen && (
             <div className="absolute bottom-0 left-full ml-3 w-64 rounded-2xl border border-[#2F3336] bg-black p-2 shadow-2xl">
@@ -163,7 +163,7 @@ export default function ZNav() {
               ? <img src={user.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
               : <User className="h-4 w-4 text-white/60" />}
           </span>
-          <span className="hidden min-w-0 flex-1 text-left xl:block">
+          <span className="hidden min-w-0 flex-1 text-left lg:block">
             <span className="block truncate text-[14px] font-bold">{user?.display_name || user?.full_name || "Guest"}</span>
             <span className="block truncate text-[12px] text-white/45">@{user?.username || (user?.email ? user.email.split("@")[0] : "guest")}</span>
           </span>
@@ -186,7 +186,7 @@ export default function ZNav() {
       </aside>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-around border-t border-[#2F3336] bg-black/95 px-2 pb-[env(safe-area-inset-bottom)] pt-1 backdrop-blur-xl xl:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-around border-t border-[#2F3336] bg-black/95 px-2 pb-[env(safe-area-inset-bottom)] pt-1 backdrop-blur-xl lg:hidden">
         {MOBILE_NAV.map((item) => {
           const active = isActive(item);
           const Icon = item.icon;

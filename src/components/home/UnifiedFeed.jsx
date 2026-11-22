@@ -201,7 +201,7 @@ export default function UnifiedFeed() {
   const counts = { social: posts.length, news: news.length, entertainment: ent.length };
 
   return (
-    <div className="mx-auto w-full max-w-[640px] pb-28 xl:pb-6">
+    <div className="mx-auto w-full max-w-[640px] pb-28 lg:pb-6">
       {/* Stories */}
       <div className="border-b border-[#2F3336]">
         <StoriesBar user={user} />

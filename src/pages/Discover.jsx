@@ -88,7 +88,7 @@ export default function Discover() {
   }, [posts]);
 
   return (
-    <div className="mx-auto max-w-[1100px] px-4 py-4 pb-28 xl:pb-6">
+    <div className="mx-auto max-w-[1100px] px-4 py-4 pb-28 lg:pb-6">
       {/* Search header */}
       <div className="relative sticky top-0 z-30 bg-black/90 backdrop-blur-xl pb-3">
         <div className="flex items-center gap-3 border-b border-[#2F3336] pb-3">

@@ -9,7 +9,7 @@ export default function FeedTopBar() {
   const [themesOpen, setThemesOpen] = useState(false);
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-14 w-full items-center gap-3 border-b border-[#2F3336] bg-black/90 px-4 backdrop-blur-xl xl:hidden">
+      <header className="sticky top-0 z-40 flex h-14 w-full items-center gap-3 border-b border-[#2F3336] bg-black/90 px-4 backdrop-blur-xl lg:hidden">
         <Link to="/" className="flex shrink-0 items-center gap-2">
           <ZIcon size={28} />
           <span className="text-xl font-black tracking-tighter text-white">Z</span>

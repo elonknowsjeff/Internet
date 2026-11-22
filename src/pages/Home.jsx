@@ -67,19 +67,19 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] bg-black">
       <FeedTopBar />
-      <main className={`mx-auto w-full px-3 sm:px-4 ${feedMode ? "max-w-[640px]" : "max-w-[1240px]"} xl:px-6`}>
+      <main className={`mx-auto w-full px-3 sm:px-4 ${feedMode ? "max-w-[640px]" : "max-w-[1240px]"} lg:px-6`}>
         {isGaming ? (
           <ArcadeHub />
         ) : isAi ? (
           <Assistant />
         ) : isNotifications ? (
-          <div className="mx-auto max-w-[640px] pb-28 xl:pb-6">
+          <div className="mx-auto max-w-[640px] pb-28 lg:pb-6">
             <NotificationCenter user={user} />
           </div>
         ) : isSocial ? (
           feedMode ? (
             <>
-              <div className="mt-2 flex items-center gap-2 xl:hidden">
+              <div className="mt-2 flex items-center gap-2 lg:hidden">
                 <button
                   onClick={() => setView("grid")}
                   className="flex items-center gap-1.5 rounded-full border border-[#2F3336] px-3 py-1.5 text-[12px] font-semibold text-white/60 hover:text-white"
