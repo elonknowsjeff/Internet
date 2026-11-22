@@ -28,6 +28,7 @@ export default function MusicFeatured({ user }) {
   const [bbLoading, setBbLoading] = useState(true);
   const [spotifyOpen, setSpotifyOpen] = useState(false);
   const [ytPicks, setYtPicks] = useState([]);
+  const [ytPlay, setYtPlay] = useState(null);
 
   useEffect(() => {
     let c = false;
@@ -122,7 +123,7 @@ export default function MusicFeatured({ user }) {
         )}
       </section>
 
-      {/* YouTube Music */}
+      {/* YouTube Music — real video grid, plays inline */}
       <section>
         <div className="mb-2.5 flex items-center gap-2 px-1">
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-red-500/20"><Youtube className="h-4 w-4 text-red-500" /></span>
@@ -131,30 +132,54 @@ export default function MusicFeatured({ user }) {
           <Link to="/video" className="ml-auto text-[12px] font-semibold text-red-400 hover:text-red-300">More video →</Link>
         </div>
         {ytPicks.length === 0 ? (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="aspect-video rounded-xl bg-white/[0.04] animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {ytPicks.map((v) => (
-              <a key={v.video_id} href={`https://www.youtube.com/watch?v=${v.video_id}`} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] hover:border-red-500/40">
-                <div className="relative aspect-video bg-black">
-                  <img src={`https://i.ytimg.com/vi/${v.video_id}/hqdefault.jpg`} alt="" loading="lazy" className="h-full w-full object-cover opacity-80 group-hover:opacity-100" />
-                  <span className="absolute inset-0 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-red-600 text-white"><Play className="h-5 w-5 fill-white" /></span>
+              <button key={v.video_id} onClick={() => setYtPlay(v)} className="group overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] text-left hover:border-red-500/40">
+                <div className="relative aspect-video bg-black overflow-hidden">
+                  <img src={`https://i.ytimg.com/vi/${v.video_id}/hqdefault.jpg`} alt="" loading="lazy" className="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <span className="absolute inset-0 grid place-items-center bg-black/20 transition-colors group-hover:bg-black/10">
+                    <span className="grid h-11 w-11 place-items-center rounded-full bg-red-600 text-white shadow-lg group-hover:scale-110 transition-transform"><Play className="h-5 w-5 fill-white" /></span>
                   </span>
+                  <span className="absolute bottom-1.5 right-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[9px] font-bold text-white/90">HD</span>
                 </div>
-                <div className="p-2">
-                  <p className="text-[12px] font-semibold leading-tight line-clamp-2">{v.title}</p>
-                  <p className="text-[10.5px] text-white/40 truncate">{v.channel}</p>
+                <div className="p-2.5">
+                  <p className="text-[12.5px] font-semibold leading-tight line-clamp-2">{v.title}</p>
+                  <p className="text-[10.5px] text-white/40 truncate mt-0.5">{v.channel}</p>
                 </div>
-              </a>
+              </button>
             ))}
           </div>
         )}
       </section>
+
+      {ytPlay && (
+        <div className="fixed inset-0 z-[60] grid place-items-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setYtPlay(null)}>
+          <div className="w-full max-w-3xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-2 flex items-center justify-between">
+              <div className="min-w-0">
+                <p className="text-[14px] font-bold truncate">{ytPlay.title}</p>
+                <p className="text-[11.5px] text-white/45 truncate">{ytPlay.channel}</p>
+              </div>
+              <button onClick={() => setYtPlay(null)} className="grid h-9 w-9 place-items-center rounded-full hover:bg-white/10 shrink-0">✕</button>
+            </div>
+            <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black">
+              <iframe
+                src={`https://www.youtube.com/embed/${ytPlay.video_id}?autoplay=1&rel=0`}
+                title={ytPlay.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {spotifyOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSpotifyOpen(false)}>

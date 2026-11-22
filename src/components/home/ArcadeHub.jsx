@@ -13,27 +13,31 @@ import Game2048 from "@/components/games/Game2048";
 import FlappyBird from "@/components/games/FlappyBird";
 import Pong from "@/components/games/Pong";
 
-// kind: 2d | 3d — drives the category filters and the badge colour.
+// kind: 2d | 3d | cat — drives the category filters and the badge colour.
 const GAMES = [
-  { key: "shooter", title: "Nebula Strike 3D", desc: "First-person shooter", icon: Crosshair, grad: "from-fuchsia-500 to-violet-700", Comp: Shooter3D, kind: "3d", tag: "3D" },
-  { key: "racer3d", title: "Neon Racer 3D", desc: "3D arcade racer", icon: Box, grad: "from-cyan-400 to-blue-600", Comp: Shooter3D, kind: "3d", tag: "3D" },
-  { key: "fighter", title: "Street Brawl", desc: "2D arcade fighter", icon: Crosshair, grad: "from-rose-500 to-amber-500", Comp: StreetFighter, kind: "2d", tag: "2D" },
-  { key: "pacman", title: "Pac-Man", desc: "Chomp the dots", icon: Gamepad2, grad: "from-amber-400 to-yellow-600", Comp: PacMan, kind: "2d", tag: "2D" },
-  { key: "breakout", title: "Breakout", desc: "Break every brick", icon: Zap, grad: "from-cyan-500 to-blue-600", Comp: Breakout, kind: "2d", tag: "2D" },
-  { key: "snake", title: "Snake", desc: "Classic arcade", icon: Gamepad2, grad: "from-fuchsia-500 to-purple-600", Comp: SnakeGame, kind: "2d", tag: "2D" },
-  { key: "memory", title: "Memory Match", desc: "Find the pairs", icon: Grid3x3, grad: "from-cyan-500 to-blue-600", Comp: MemoryGame, kind: "2d", tag: "2D" },
-  { key: "ttt", title: "Tic-Tac-Toe", desc: "Play vs the AI", icon: Grid3x3, grad: "from-emerald-500 to-teal-600", Comp: TicTacToe, kind: "2d", tag: "2D" },
-  { key: "reaction", title: "Reaction Test", desc: "How fast are you?", icon: Zap, grad: "from-amber-500 to-orange-600", Comp: ReactionGame, kind: "2d", tag: "Arcade" },
-  { key: "2048", title: "2048", desc: "Slide & merge to 2048", icon: Hash, grad: "from-amber-400 to-orange-600", Comp: Game2048, kind: "2d", tag: "Puzzle" },
-  { key: "flappy", title: "Flappy", desc: "Tap to fly through gaps", icon: Bird, grad: "from-yellow-400 to-amber-500", Comp: FlappyBird, kind: "2d", tag: "Arcade" },
-  { key: "pong", title: "Pong", desc: "Beat the AI paddle", icon: Circle, grad: "from-cyan-400 to-blue-600", Comp: Pong, kind: "2d", tag: "Arcade" },
-  { key: "ai", title: "AI Adventure", desc: "Generate a story game", icon: Sparkles, grad: "from-cyan-400 to-fuchsia-500", Comp: AIAdventure, kind: "2d", tag: "AI" },
+  { key: "shooter", title: "Nebula Strike 3D", desc: "First-person shooter", icon: Crosshair, grad: "from-fuchsia-500 to-violet-700", Comp: Shooter3D, cat: "fps", tag: "FPS" },
+  { key: "racer3d", title: "Neon Racer 3D", desc: "3D arcade racer", icon: Box, grad: "from-cyan-400 to-blue-600", Comp: Shooter3D, cat: "racing", tag: "Racing" },
+  { key: "fighter", title: "Street Brawl", desc: "2D arcade fighter", icon: Crosshair, grad: "from-rose-500 to-amber-500", Comp: StreetFighter, cat: "fighting", tag: "Fighting" },
+  { key: "ai", title: "AI Adventure", desc: "Generate a story game", icon: Sparkles, grad: "from-cyan-400 to-fuchsia-500", Comp: AIAdventure, cat: "adventure", tag: "Adventure" },
+  { key: "pacman", title: "Pac-Man", desc: "Chomp the dots", icon: Gamepad2, grad: "from-amber-400 to-yellow-600", Comp: PacMan, cat: "arcade", tag: "Arcade" },
+  { key: "breakout", title: "Breakout", desc: "Break every brick", icon: Zap, grad: "from-cyan-500 to-blue-600", Comp: Breakout, cat: "arcade", tag: "Arcade" },
+  { key: "snake", title: "Snake", desc: "Classic arcade", icon: Gamepad2, grad: "from-fuchsia-500 to-purple-600", Comp: SnakeGame, cat: "arcade", tag: "Arcade" },
+  { key: "memory", title: "Memory Match", desc: "Find the pairs", icon: Grid3x3, grad: "from-cyan-500 to-blue-600", Comp: MemoryGame, cat: "puzzle", tag: "Puzzle" },
+  { key: "ttt", title: "Tic-Tac-Toe", desc: "Play vs the AI", icon: Grid3x3, grad: "from-emerald-500 to-teal-600", Comp: TicTacToe, cat: "puzzle", tag: "Puzzle" },
+  { key: "reaction", title: "Reaction Test", desc: "How fast are you?", icon: Zap, grad: "from-amber-500 to-orange-600", Comp: ReactionGame, cat: "arcade", tag: "Arcade" },
+  { key: "2048", title: "2048", desc: "Slide & merge to 2048", icon: Hash, grad: "from-amber-400 to-orange-600", Comp: Game2048, cat: "puzzle", tag: "Puzzle" },
+  { key: "flappy", title: "Flappy", desc: "Tap to fly through gaps", icon: Bird, grad: "from-yellow-400 to-amber-500", Comp: FlappyBird, cat: "arcade", tag: "Arcade" },
+  { key: "pong", title: "Pong", desc: "Beat the AI paddle", icon: Circle, grad: "from-cyan-400 to-blue-600", Comp: Pong, cat: "arcade", tag: "Arcade" },
 ];
 
 const FILTERS = [
   { key: "all", label: "All", icon: Layers },
-  { key: "3d", label: "3D Games", icon: Box },
-  { key: "2d", label: "2D Games", icon: Grid3x3 },
+  { key: "fps", label: "FPS", icon: Crosshair },
+  { key: "adventure", label: "Adventure", icon: Sparkles },
+  { key: "racing", label: "Racing", icon: Box },
+  { key: "fighting", label: "Fighting", icon: Crosshair },
+  { key: "arcade", label: "Arcade", icon: Gamepad2 },
+  { key: "puzzle", label: "Puzzle", icon: Grid3x3 },
 ];
 
 export default function ArcadeHub() {
@@ -45,7 +49,7 @@ export default function ArcadeHub() {
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return GAMES.filter((g) => (filter === "all" || g.kind === filter) && (!q || g.title.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q)));
+    return GAMES.filter((g) => (filter === "all" || g.cat === filter) && (!q || g.title.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q)));
   }, [filter, query]);
 
   const featured = GAMES.find((g) => g.key === "shooter");

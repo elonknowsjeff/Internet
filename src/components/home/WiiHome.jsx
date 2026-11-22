@@ -21,7 +21,6 @@ const TILES = [
   { to: "/?cat=entertainment", label: "Entertainment", Icon: Film, tint: "from-rose-500 to-red-600" },
   { to: "/music", label: "Music", Icon: Music2, tint: "from-orange-500 to-amber-600" },
   { to: "/video", label: "Video", Icon: Youtube, tint: "from-red-500 to-rose-600" },
-  { to: "/movies", label: "Movies", Icon: Film, tint: "from-indigo-500 to-violet-600" },
   { to: "/radio", label: "Radio", Icon: Radio, tint: "from-lime-500 to-green-600" },
   { to: "/?cat=gaming", label: "Arcade", Icon: Gamepad2, tint: "from-purple-500 to-fuchsia-600" },
   { to: "/assistant", label: "AI Chat", Icon: Sparkles, tint: "from-blue-500 to-cyan-600" },

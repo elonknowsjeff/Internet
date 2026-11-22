@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Users, UserPlus, Check, Loader2, Search } from "lucide-react";
 import AccountView from "@/components/social/AccountView";
@@ -12,13 +12,16 @@ const nameOf = (u) => u?.display_name || u?.full_name || handleOf(u) || "User";
 
 export default function Discover() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [me, setMe] = useState(null);
   const [users, setUsers] = useState([]);
   const [latest, setLatest] = useState({});
   const [following, setFollowing] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(params.get("q") || "");
   const [view, setView] = useState(null);
+
+  useEffect(() => { setQ(params.get("q") || ""); }, [params]);
 
   useEffect(() => {
     (async () => {

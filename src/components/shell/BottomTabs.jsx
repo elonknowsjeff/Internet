@@ -31,8 +31,6 @@ const SECTIONS = [
     apps: [
       { to: "/music", label: "Music", icon: Music2, match: (p) => p === "/music" },
       { to: "/video", label: "Video", icon: Youtube, match: (p) => p === "/video" },
-      { to: "/movies", label: "Series", icon: Film, match: (p) => p === "/movies" },
-      { to: "/cable", label: "Live TV", icon: Tv, match: (p) => p === "/cable" },
       { to: "/radio", label: "Radio", icon: Radio, match: (p) => p === "/radio" },
       { to: "/?cat=gaming", label: "Arcade", icon: Gamepad2, match: (p, cat) => p === "/" && cat === "gaming" },
       { to: "/assistant", label: "AI Chat", icon: Sparkles, match: (p, cat) => p === "/assistant" || (p === "/" && cat === "aichat") },

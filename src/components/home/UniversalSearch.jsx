@@ -47,21 +47,22 @@ export default function UniversalSearch() {
   }, [q]);
 
   const has = people.length || posts.length;
+  const goResults = () => { const query = q.trim(); if (query.length < 2) return; setOpen(false); nav(`/discover?q=${encodeURIComponent(query)}`); };
 
   return (
     <div ref={ref} className="relative w-full max-w-[460px]">
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 focus-within:border-[color:var(--brand)]/60 transition-colors">
+      <form onSubmit={(e) => { e.preventDefault(); goResults(); }} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 focus-within:border-[color:var(--brand)]/60 transition-colors">
         <Search className="w-4 h-4 text-white/40 shrink-0" />
         <input
           value={q}
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
-          placeholder="Search people, posts and accounts"
+          placeholder="Search people and accounts"
           className="flex-1 min-w-0 bg-transparent text-[13.5px] outline-none placeholder-white/35"
         />
         {loading ? <Loader2 className="w-4 h-4 animate-spin text-white/40 shrink-0" />
-          : q ? <button onClick={() => { setQ(""); setPeople([]); setPosts([]); }} className="shrink-0"><X className="w-4 h-4 text-white/40" /></button> : null}
-      </div>
+          : q ? <button type="button" onClick={() => { setQ(""); setPeople([]); setPosts([]); }} className="shrink-0"><X className="w-4 h-4 text-white/40" /></button> : null}
+      </form>
       {open && q.trim().length >= 2 && (
         <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-white/10 bg-[#131316] shadow-[0_24px_64px_-24px_rgba(0,0,0,0.9)] overflow-hidden z-50 max-h-[60vh] overflow-y-auto thin-scrollbar">
           {!has && !loading ? (
@@ -85,16 +86,19 @@ export default function UniversalSearch() {
                 </div>
               )}
               {posts.length > 0 && (
-                <div className="p-1.5 border-t border-white/[0.06]">
-                  <p className="px-2.5 py-1.5 text-[10px] uppercase tracking-wide text-white/40">Posts</p>
-                  {posts.map((p) => (
-                    <button key={p.id} onClick={() => { setOpen(false); nav(`/?cat=social`); }} className="block w-full px-2.5 py-2 rounded-xl hover:bg-white/[0.04] text-left">
-                      <p className="text-[12px] text-white/70 line-clamp-2">{p.content}</p>
-                      <p className="text-[10.5px] text-white/35 mt-0.5 flex items-center gap-1"><AtSign className="w-2.5 h-2.5" />{p.author_handle || "user"}</p>
-                    </button>
-                  ))}
-                </div>
+               <div className="p-1.5 border-t border-white/[0.06]">
+                 <p className="px-2.5 py-1.5 text-[10px] uppercase tracking-wide text-white/40">Posts</p>
+                 {posts.map((p) => (
+                   <button key={p.id} onClick={() => { setOpen(false); nav(`/?cat=social`); }} className="block w-full px-2.5 py-2 rounded-xl hover:bg-white/[0.04] text-left">
+                     <p className="text-[12px] text-white/70 line-clamp-2">{p.content}</p>
+                     <p className="text-[10.5px] text-white/35 mt-0.5 flex items-center gap-1"><AtSign className="w-2.5 h-2.5" />{p.author_handle || "user"}</p>
+                   </button>
+                 ))}
+               </div>
               )}
+              <button onClick={goResults} className="w-full border-t border-white/[0.06] px-4 py-2.5 text-left text-[12.5px] font-semibold hover:bg-white/[0.04]" style={{ color: "var(--brand)" }}>
+               Search accounts for "{q.trim()}" →
+              </button>
             </>
           )}
         </div>
